@@ -162,8 +162,8 @@
                 <div class="relative z-10">
                     <div class="text-center max-w-xl mx-auto mb-10">
                         <span class="bg-blue-500/30 text-blue-200 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Unete a la red</span>
-                        <h2 class="text-2xl sm:text-4xl font-extrabold mb-3">¿Tenés un negocio, app o página web?</h2>
-                        <p class="text-blue-200 text-sm sm:text-base">Sumá tu emprendimiento al directorio regional de San Francisco, Arroyito y Zona de forma totalmente gratuita.</p>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold mb-3">¿Tenés un negocio, queres tener tu app o página web?</h2>
+                        <p class="text-blue-200 text-sm sm:text-base">Sumá tu emprendimiento al directorio regional de San Francisco, Arroyito y Zona. Solicitalo rapidamente.</p>
                     </div>
 
                     <form id="business-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
@@ -213,7 +213,7 @@
 
                         <div class="text-center pt-2">
                             <button type="submit" class="bg-white text-blue-900 font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition-all w-full sm:w-auto">
-                                <i class="fa-solid fa-paper-plane mr-2"></i> Enviar mi Negocio al Directorio
+                                <i class="fa-solid fa-paper-plane mr-2"></i> Enviar mi Solicitud de poner mi Negocio al Directorio
                             </button>
                         </div>
                     </form>
@@ -429,8 +429,24 @@
         </div>
     </footer>
 
-    <!-- JavaScript Data and Logic -->
-    <script>
+    <!-- Firebase SDK & App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWX0Iahmrb8086ASP01mepWLiLlwKMHvM",
+            authDomain: "pumashopp-a3535.firebaseapp.com",
+            projectId: "pumashopp-a3535",
+            storageBucket: "pumashopp-a3535.firebasestorage.app",
+            messagingSenderId: "443896359532",
+            appId: "1:443896359532:web:3bea6404cd626058108649",
+            measurementId: "G-0WK1QN3WHK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         // Default categories with icons
         const defaultCategories = [
             { name: "Gastronomía", icon: "fa-solid fa-utensils text-orange-500" },
@@ -440,10 +456,9 @@
             { name: "Tecnología", icon: "fa-solid fa-laptop text-indigo-500" }
         ];
 
-        // Initial Mock Database of Services & Apps with featured flag
+        // Initial Mock Database
         const defaultServices = [
             {
-                id: 1,
                 name: "Pizzería La Strada",
                 category: "Gastronomía",
                 locality: "San Francisco",
@@ -454,7 +469,6 @@
                 featured: true
             },
             {
-                id: 2,
                 name: "Arroyito Materiales",
                 category: "Comercios",
                 locality: "Arroyito",
@@ -465,7 +479,6 @@
                 featured: true
             },
             {
-                id: 3,
                 name: "Centro Odontológico Integral",
                 category: "Salud y Belleza",
                 locality: "San Francisco",
@@ -476,7 +489,6 @@
                 featured: false
             },
             {
-                id: 4,
                 name: "TecnoSur Informática",
                 category: "Tecnología",
                 locality: "Zona",
@@ -487,7 +499,6 @@
                 featured: true
             },
             {
-                id: 5,
                 name: "Café del Boulevard",
                 category: "Gastronomía",
                 locality: "Arroyito",
@@ -498,7 +509,6 @@
                 featured: false
             },
             {
-                id: 6,
                 name: "Ferretería Industrial San Justo",
                 category: "Comercios",
                 locality: "San Francisco",
@@ -509,7 +519,6 @@
                 featured: false
             },
             {
-                id: 7,
                 name: "Estudio Contabilidad Digital",
                 category: "Servicios",
                 locality: "Zona",
@@ -520,7 +529,6 @@
                 featured: false
             },
             {
-                id: 8,
                 name: "Gimnasio Evolution Fit",
                 category: "Salud y Belleza",
                 locality: "Arroyito",
@@ -532,25 +540,56 @@
             }
         ];
 
-        // Load data from localStorage or fallback to defaults
-        let categoriesData = JSON.parse(localStorage.getItem('sf_categories')) || defaultCategories;
-        let servicesData = JSON.parse(localStorage.getItem('sf_services')) || defaultServices;
+        let categoriesData = [];
+        let servicesData = [];
 
-        function saveToLocalStorage() {
-            localStorage.setItem('sf_categories', JSON.stringify(categoriesData));
-            localStorage.setItem('sf_services', JSON.stringify(servicesData));
-        }
-
-        // State variables
         let currentCategory = 'Todas';
         let currentLocality = 'Todas';
         let searchQuery = '';
 
+        // Load data from Firebase Firestore
+        async function loadDataFromFirebase() {
+            try {
+                // Load categories
+                const catSnapshot = await getDocs(collection(db, "categorias"));
+                if (catSnapshot.empty) {
+                    for (let cat of defaultCategories) {
+                        await addDoc(collection(db, "categorias"), cat);
+                    }
+                    categoriesData = [...defaultCategories];
+                } else {
+                    categoriesData = [];
+                    catSnapshot.forEach(doc => {
+                        categoriesData.syncId = doc.id;
+                        categoriesData.push({ id: doc.id, ...doc.data() });
+                    });
+                }
+
+                // Load services
+                const servSnapshot = await getDocs(collection(db, "negocios"));
+                if (servSnapshot.empty) {
+                    for (let serv of defaultServices) {
+                        await addDoc(collection(db, "negocios"), serv);
+                    }
+                    servicesData = [...defaultServices];
+                } else {
+                    servicesData = [];
+                    servSnapshot.forEach(doc => {
+                        servicesData.push({ id: doc.id, ...doc.data() });
+                    });
+                }
+
+                renderCategories();
+                renderServices();
+                initSlider();
+            } catch (error) {
+                console.error("Error al cargar datos de Firebase:", error);
+            }
+        }
+
         // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
-            renderCategories();
-            renderServices();
-            initSlider();
+            loadDataFromFirebase();
 
             // Mobile menu toggle
             const menuBtn = document.getElementById('mobile-menu-btn');
@@ -564,7 +603,7 @@
         let activeSlideIndex = 0;
         let sliderInterval;
 
-        function renderBannerSlider() {
+        window.renderBannerSlider = function() {
             const featuredItems = servicesData.filter(s => s.featured);
             const sliderContainer = document.getElementById('banner-slider');
             const dotsContainer = document.getElementById('slider-dots');
@@ -594,7 +633,7 @@
                         <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">${item.name}</h1>
                         <p class="text-slate-300 text-sm sm:text-base mb-6 line-clamp-2">${item.description}</p>
                         <div class="flex gap-3">
-                            <button onclick="openModal(${item.id})" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-slate-100 transition-all">
+                            <button onclick="openModal('${item.id}')" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-slate-100 transition-all">
                                 Ver Detalles <i class="fa-solid fa-arrow-right"></i>
                             </button>
                             <a href="https://wa.me/549${item.whatsapp}" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-emerald-700 transition-all">
@@ -610,7 +649,7 @@
             `).join('');
         }
 
-        function updateSlider() {
+        window.updateSlider = function() {
             const slides = document.querySelectorAll('.banner-slide');
             const dots = document.querySelectorAll('.slider-dot');
             slides.forEach((slide, index) => {
@@ -621,21 +660,21 @@
             });
         }
 
-        function nextSlide() {
+        window.nextSlide = function() {
             const slides = document.querySelectorAll('.banner-slide');
             if (slides.length === 0) return;
             activeSlideIndex = (activeSlideIndex + 1) % slides.length;
             updateSlider();
         }
 
-        function prevSlide() {
+        window.prevSlide = function() {
             const slides = document.querySelectorAll('.banner-slide');
             if (slides.length === 0) return;
             activeSlideIndex = (activeSlideIndex - 1 + slides.length) % slides.length;
             updateSlider();
         }
 
-        function currentSlide(index) {
+        window.currentSlide = function(index) {
             activeSlideIndex = index;
             updateSlider();
         }
@@ -647,12 +686,13 @@
         }
 
         // Render Category Filter Buttons & Selects
-        function renderCategories() {
+        window.renderCategories = function() {
             const container = document.getElementById('category-filters-container');
             const formSelect = document.getElementById('form-category');
             const adminSelect = document.getElementById('admin-bus-category');
 
-            // Category filters row
+            if (!container) return;
+
             container.innerHTML = `
                 <button onclick="filterByCategory('Todas')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${currentCategory === 'Todas' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
                     <i class="fa-solid fa-border-all"></i> Todas las categorías
@@ -663,25 +703,22 @@
                 </button>
             `).join('');
 
-            // Registration form select
             if (formSelect) {
                 formSelect.innerHTML = categoriesData.map(cat => `<option value="${cat.name}" class="bg-slate-900">${cat.name}</option>`).join('');
             }
 
-            // Admin form select
             if (adminSelect) {
                 adminSelect.innerHTML = categoriesData.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
             }
         }
 
-        // Filter and Search Handlers
-        function filterByCategory(category) {
+        window.filterByCategory = function(category) {
             currentCategory = category;
             renderCategories();
             renderServices();
         }
 
-        function filterByLocation(locality) {
+        window.filterByLocation = function(locality) {
             currentLocality = locality;
             document.querySelectorAll('.loc-btn').forEach(btn => {
                 if (btn.textContent === locality) {
@@ -693,15 +730,16 @@
             renderServices();
         }
 
-        function handleSearch() {
+        window.handleSearch = function() {
             searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
             renderServices();
         }
 
         // Render Services Grid
-        function renderServices() {
+        window.renderServices = function() {
             const grid = document.getElementById('services-grid');
             const emptyState = document.getElementById('empty-state');
+            if (!grid) return;
 
             const filtered = servicesData.filter(item => {
                 const matchCategory = currentCategory === 'Todas' || item.category === currentCategory;
@@ -745,7 +783,7 @@
                         <a href="https://wa.me/549${item.whatsapp}" target="_blank" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
                             <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
                         </a>
-                        <button onclick="openModal(${item.id})" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
+                        <button onclick="openModal('${item.id}')" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-circle-info text-sm"></i> Ver más
                         </button>
                     </div>
@@ -754,7 +792,7 @@
         }
 
         // Modal Controls
-        function openModal(id) {
+        window.openModal = function(id) {
             const item = servicesData.find(s => s.id === id);
             if (!item) return;
 
@@ -771,26 +809,26 @@
             modal.classList.add('flex');
         }
 
-        function closeModal() {
+        window.closeModal = function() {
             const modal = document.getElementById('details-modal');
             modal.classList.remove('flex');
             modal.classList.add('hidden');
         }
 
         // Designer Authentication & Dashboard Logic
-        function openDesignerLoginModal() {
+        window.openDesignerLoginModal = function() {
             const modal = document.getElementById('designer-login-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
         }
 
-        function closeDesignerLoginModal() {
+        window.closeDesignerLoginModal = function() {
             const modal = document.getElementById('designer-login-modal');
             modal.classList.remove('flex');
             modal.classList.add('hidden');
         }
 
-        function handleDesignerLogin(e) {
+        window.handleDesignerLogin = function(e) {
             e.preventDefault();
             const pass = document.getElementById('designer-password').value;
             if (pass === 'Hjs2154') {
@@ -803,7 +841,7 @@
             }
         }
 
-        function openDesignerDashboard() {
+        window.openDesignerDashboard = function() {
             renderAdminBusinessList();
             renderAdminCategoryList();
             const modal = document.getElementById('designer-dashboard-modal');
@@ -811,7 +849,7 @@
             modal.classList.add('flex');
         }
 
-        function closeDesignerDashboard() {
+        window.closeDesignerDashboard = function() {
             const modal = document.getElementById('designer-dashboard-modal');
             modal.classList.remove('flex');
             modal.classList.add('hidden');
@@ -820,7 +858,7 @@
             renderServices();
         }
 
-        function switchAdminTab(tab) {
+        window.switchAdminTab = function(tab) {
             const tabNegocios = document.getElementById('admin-tab-negocios');
             const tabCategorias = document.getElementById('admin-tab-categorias');
             const btnNegocios = document.getElementById('tab-btn-negocios');
@@ -839,9 +877,10 @@
             }
         }
 
-        // Admin Business CRUD
-        function renderAdminBusinessList() {
+        // Admin Business CRUD (Firebase)
+        window.renderAdminBusinessList = function() {
             const list = document.getElementById('admin-business-list');
+            if (!list) return;
             list.innerHTML = servicesData.map(item => `
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
@@ -855,14 +894,14 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="editBusiness(${item.id})" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteBusiness(${item.id})" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="editBusiness('${item.id}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteBusiness('${item.id}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function handleAdminBusinessSubmit(e) {
+        window.handleAdminBusinessSubmit = async function(e) {
             e.preventDefault();
             const id = document.getElementById('admin-bus-id').value;
             const name = document.getElementById('admin-bus-name').value;
@@ -874,26 +913,30 @@
             const description = document.getElementById('admin-bus-desc').value;
             const featured = document.getElementById('admin-bus-featured').checked;
 
-            if (id) {
-                // Edit
-                const index = servicesData.findIndex(s => s.id == id);
-                if (index !== -1) {
-                    servicesData[index] = { id: Number(id), name, category, locality, whatsapp: phone.replace(/\D/g,''), website, image, description, featured };
-                }
-                showToast("¡Negocio actualizado!", "Los datos del comercio fueron modificados con éxito.");
-            } else {
-                // Create
-                const newId = servicesData.length > 0 ? Math.max(...servicesData.map(s => s.id)) + 1 : 1;
-                servicesData.unshift({ id: newId, name, category, locality, whatsapp: phone.replace(/\D/g,''), website, image, description, featured });
-                showToast("¡Negocio creado!", "El nuevo comercio fue agregado al directorio y banner.");
-            }
+            const businessData = { name, category, locality, whatsapp: phone.replace(/\D/g,''), website, image, description, featured };
 
-            saveToLocalStorage();
-            resetAdminBusForm();
-            renderAdminBusinessList();
+            try {
+                if (id) {
+                    await updateDoc(doc(db, "negocios", id), businessData);
+                    const index = servicesData.findIndex(s => s.id === id);
+                    if (index !== -1) servicesData[index] = { id, ...businessData };
+                    showToast("¡Negocio actualizado!", "Los datos fueron modificados en la nube.");
+                } else {
+                    const docRef = await addDoc(collection(db, "negocios"), businessData);
+                    servicesData.unshift({ id: docRef.id, ...businessData });
+                    showToast("¡Negocio creado!", "El comercio fue agregado a la nube.");
+                }
+                resetAdminBusForm();
+                renderAdminBusinessList();
+                renderServices();
+                renderBannerSlider();
+            } catch (error) {
+                console.error("Error al guardar en Firebase:", error);
+                showToast("Error", "No se pudo guardar en la base de datos.");
+            }
         }
 
-        function editBusiness(id) {
+        window.editBusiness = function(id) {
             const item = servicesData.find(s => s.id === id);
             if (!item) return;
             document.getElementById('admin-bus-id').value = item.id;
@@ -908,24 +951,31 @@
             document.getElementById('admin-bus-submit-btn').textContent = "Actualizar Negocio";
         }
 
-        function deleteBusiness(id) {
-            if (confirm("¿Estás seguro de eliminar este negocio?")) {
-                servicesData = servicesData.filter(s => s.id !== id);
-                saveToLocalStorage();
-                renderAdminBusinessList();
-                showToast("Negocio eliminado", "El elemento fue removido del directorio.");
+        window.deleteBusiness = async function(id) {
+            if (confirm("¿Estás seguro de eliminar este negocio de la nube?")) {
+                try {
+                    await deleteDoc(doc(db, "negocios", id));
+                    servicesData = servicesData.filter(s => s.id !== id);
+                    renderAdminBusinessList();
+                    renderServices();
+                    renderBannerSlider();
+                    showToast("Negocio eliminado", "El elemento fue removido.");
+                } catch (error) {
+                    console.error("Error al eliminar:", error);
+                }
             }
         }
 
-        function resetAdminBusForm() {
+        window.resetAdminBusForm = function() {
             document.getElementById('admin-business-form').reset();
             document.getElementById('admin-bus-id').value = '';
             document.getElementById('admin-bus-submit-btn').textContent = "Guardar Negocio";
         }
 
-        // Admin Category CRUD
-        function renderAdminCategoryList() {
+        // Admin Category CRUD (Firebase)
+        window.renderAdminCategoryList = function() {
             const list = document.getElementById('admin-category-list');
+            if (!list) return;
             list.innerHTML = categoriesData.map(cat => `
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
@@ -939,47 +989,45 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="editCategory('${cat.name}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteCategory('${cat.name}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="deleteCategory('${cat.name}', '${cat.id}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function handleAdminCatSubmit(e) {
+        window.handleAdminCatSubmit = async function(e) {
             e.preventDefault();
             const oldName = document.getElementById('admin-cat-old-name').value;
             const name = document.getElementById('admin-cat-name').value.trim();
             const icon = document.getElementById('admin-cat-icon').value.trim();
 
-            if (oldName) {
-                // Edit category name & icon
-                const cat = categoriesData.find(c => c.name === oldName);
-                if (cat) {
-                    cat.name = name;
-                    cat.icon = icon;
+            try {
+                if (oldName) {
+                    const cat = categoriesData.find(c => c.name === oldName);
+                    if (cat && cat.id) {
+                        await updateDoc(doc(db, "categorias", cat.id), { name, icon });
+                        cat.name = name;
+                        cat.icon = icon;
+                    }
+                    showToast("¡Categoría actualizada!", "Los cambios se aplicaron correctamente.");
+                } else {
+                    if (categoriesData.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+                        showToast("Error", "Ya existe una categoría con ese nombre.");
+                        return;
+                    }
+                    const docRef = await addDoc(collection(db, "categorias"), { name, icon });
+                    categoriesData.push({ id: docRef.id, name, icon });
+                    showToast("¡Categoría creada!", "La nueva categoría está lista.");
                 }
-                // Update services using this category
-                servicesData.forEach(s => {
-                    if (s.category === oldName) s.category = name;
-                });
-                showToast("¡Categoría actualizada!", "Los cambios se aplicaron correctamente.");
-            } else {
-                // Create new category
-                if (categoriesData.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-                    showToast("Error", "Ya existe una categoría con ese nombre.");
-                    return;
-                }
-                categoriesData.push({ name, icon });
-                showToast("¡Categoría creada!", "La nueva categoría está lista para usar.");
+                resetAdminCatForm();
+                renderAdminCategoryList();
+                renderCategories();
+            } catch (error) {
+                console.error("Error al guardar categoría:", error);
             }
-
-            saveToLocalStorage();
-            resetAdminCatForm();
-            renderAdminCategoryList();
-            renderCategories();
         }
 
-        function editCategory(name) {
+        window.editCategory = function(name) {
             const cat = categoriesData.find(c => c.name === name);
             if (!cat) return;
             document.getElementById('admin-cat-old-name').value = cat.name;
@@ -988,28 +1036,32 @@
             document.getElementById('admin-cat-submit-btn').textContent = "Actualizar Categoría";
         }
 
-        function deleteCategory(name) {
+        window.deleteCategory = async function(name, id) {
             if (categoriesData.length <= 1) {
                 showToast("Acción no permitida", "Debe existir al menos una categoría.");
                 return;
             }
             if (confirm(`¿Estás seguro de eliminar la categoría "${name}"?`)) {
-                categoriesData = categoriesData.filter(c => c.name !== name);
-                saveToLocalStorage();
-                renderAdminCategoryList();
-                renderCategories();
-                showToast("Categoría eliminada", "Se removió la categoría del sistema.");
+                try {
+                    await deleteDoc(doc(db, "categorias", id));
+                    categoriesData = categoriesData.filter(c => c.name !== name);
+                    renderAdminCategoryList();
+                    renderCategories();
+                    showToast("Categoría eliminada", "Se removió la categoría.");
+                } catch (error) {
+                    console.error("Error al eliminar categoría:", error);
+                }
             }
         }
 
-        function resetAdminCatForm() {
+        window.resetAdminCatForm = function() {
             document.getElementById('admin-cat-form').reset();
             document.getElementById('admin-cat-old-name').value = '';
             document.getElementById('admin-cat-submit-btn').textContent = "Guardar Categoría";
         }
 
-        // Public Form Submit Handler
-        function handleFormSubmit(e) {
+        // Public Form Submit Handler (Firebase)
+        window.handleFormSubmit = async function(e) {
             e.preventDefault();
 
             const name = document.getElementById('form-name').value;
@@ -1021,7 +1073,6 @@
             const description = document.getElementById('form-desc').value;
 
             const newService = {
-                id: servicesData.length > 0 ? Math.max(...servicesData.map(s => s.id)) + 1 : 1,
                 name,
                 category,
                 locality,
@@ -1032,15 +1083,19 @@
                 featured: false
             };
 
-            servicesData.unshift(newService);
-            saveToLocalStorage();
-            renderServices();
-
-            document.getElementById('business-form').reset();
-            showToast("¡Negocio agregado con éxito!", `${name} ya se encuentra publicado en el directorio.`);
+            try {
+                const docRef = await addDoc(collection(db, "negocios"), newService);
+                servicesData.unshift({ id: docRef.id, ...newService });
+                renderServices();
+                document.getElementById('business-form').reset();
+                showToast("¡Negocio agregado con éxito!", `${name} ya se encuentra publicado en la nube.`);
+            } catch (error) {
+                console.error("Error al enviar solicitud:", error);
+                showToast("Error", "No se pudo registrar el negocio.");
+            }
         }
 
-        function showToast(title, desc) {
+        window.showToast = function(title, desc) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-title').textContent = title;
             document.getElementById('toast-desc').textContent = desc;
