@@ -1657,8 +1657,8 @@
 
             contenedorTienda.innerHTML += `
               <div class="bg-white rounded-xl border ${esOferta ? 'border-amber-300 ring-1 ring-amber-200' : 'border-gray-200'} shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow">
-                <div class="h-40 overflow-hidden bg-gray-100 relative">
-                  <img src="${imgProd}" alt="${p.nombre}" onerror="this.src='${imagenPorDefecto}'" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                <div class="h-36 sm:h-40 overflow-hidden bg-gray-100 relative flex items-center justify-center p-2">
+                  <img src="${imgProd}" alt="${p.nombre}" onerror="this.src='${imagenPorDefecto}'" class="max-h-full max-w-full w-auto h-auto object-contain hover:scale-105 transition-transform duration-500">
                   <span class="absolute top-2 left-2 text-[10px] uppercase font-bold ${esOferta ? 'bg-amber-500' : 'bg-red-600'} text-white px-2 py-0.5 rounded shadow">
                     ${esOferta ? '🔥 ' : ''}${p.categoria || 'Pollería'}
                   </span>
@@ -1688,7 +1688,7 @@
           tablaDisenador.innerHTML += `
             <tr class="hover:bg-gray-50 text-[11px]">
               <td class="p-2 border-r text-center">
-                <img src="${imgProd}" class="w-10 h-10 object-cover rounded mx-auto border" onerror="this.src='${imagenPorDefecto}'">
+                <img src="${imgProd}" class="w-10 h-10 object-contain rounded mx-auto border bg-gray-50 p-0.5" onerror="this.src='${imagenPorDefecto}'">
               </td>
               <td class="p-2 border-r font-bold text-gray-900">${p.nombre}</td>
               <td class="p-2 border-r"><span class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded font-semibold">${p.categoria || 'Pollería'}</span></td>
