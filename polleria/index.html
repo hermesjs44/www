@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
+<!-- Navegación de Regreso -->
+<nav class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-6 py-2.5 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <!-- Botón Volver al Hub Central -->
+            <a href="https://hermesjs44.github.io/www/" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center transition-colors shadow-sm">
+                <i class="fa-solid fa-arrow-left mr-2"></i> Volver a Directorio
+            </a>
+        </div>
+    </div>
+</nav>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,9 +70,9 @@
       <span class="bg-rey-darkred text-white text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full">Suma puntos y descuentos desde la App</span>
     </div>
     <!-- BOTÓN CANDADO DE ACCESO -->
-    <button onclick="abrirModalAcceso()" class="absolute right-4 text-gray-900 hover:text-rey-darkred transition-colors bg-white/40 hover:bg-white/70 p-1.5 rounded-full shadow-sm" title="Acceso Diseñador / Administrador">
+    <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="absolute right-4 text-gray-900 hover:text-rey-darkred transition-colors bg-white/40 hover:bg-white/70 p-1.5 rounded-full shadow-sm" title="Acceso Diseñador / Administrador">
       <i class="fa-solid fa-lock text-sm"></i>
-    </button>
+    </a>
   </div>
 
   <!-- HEADER / BANNER / MEMBRETE PRINCIPAL -->
@@ -69,35 +80,33 @@
     <div class="max-w-7xl mx-auto px-4 py-3 md:py-4 flex justify-between items-center gap-4">
       
       <!-- LOGO Y MEMBRETE DE MARCA -->
-      <a href="#inicio" class="flex items-center gap-3 group">
+      <div class="flex items-center gap-3 group">
         <div class="relative">
-          <img src="icono-512.png" onerror="this.onerror=null; this.src='iconorey.jpg';" alt="Pollería REY Logo" class="h-12 w-12 md:h-16 md:w-16 rounded-full border-2 border-rey-gold object-cover shadow-lg group-hover:scale-105 transition-transform">
+          <img src="icono-512.png" onerror="this.onerror=null; this.src='https://hermesjs44.github.io/polleriaREY/logo_polleria.jpg';" alt="Pollería REY Logo" class="h-12 w-12 md:h-16 md:w-16 rounded-full border-2 border-rey-gold object-cover shadow-lg group-hover:scale-105 transition-transform">
           <span class="absolute -bottom-1 -right-1 bg-rey-gold text-gray-900 text-[9px] font-black px-1.5 py-0.2 rounded-full border border-white">REY</span>
         </div>
         <div>
           <h1 class="font-display font-black text-2xl md:text-3xl tracking-tight text-white flex items-center gap-2 drop-shadow-md">
             Pollería REY <i class="fa-solid font-black text-rey-gold text-lg md:text-xl"></i>
           </h1>
-          <p class="text-[11px] md:text-xs text-amber-200 font-medium tracking-wide">¡Pollería Rey.No vendemos pollo…👉 vendemos calidad de verdad,
-Fresco todos los días, precios justos y promos que convienen. El rey del sabor!</p>
+          <p class="text-[11px] md:text-xs text-amber-200 font-medium tracking-wide">¡Pollería Rey.No vendemos pollo…👉 vendemos calidad de verdad, Fresco todos los días, precios justos y promos que convienen. El rey del sabor!</p>
         </div>
-      </a>
+      </div>
 
       <!-- NAVEGACIÓN Y ACCIÓN -->
       <div class="flex items-center gap-3">
         <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-white/90">
-          <a href="#promos" class="hover:text-rey-gold transition-colors">Promociones</a>
-          <a href="#local" class="hover:text-rey-gold transition-colors">Nuestro Local</a>
-          <a href="#catalogo" class="hover:text-rey-gold transition-colors">Menú y Pedidos</a>
-          <a href="#app" class="hover:text-rey-gold transition-colors">Nuestra App</a>
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="hover:text-rey-gold transition-colors">Promociones</a>
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="hover:text-rey-gold transition-colors">Nuestro Local</a>
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="hover:text-rey-gold transition-colors">Nuestra App</a>
         </nav>
 
         <!-- BOTÓN CARRITO REFUERZO -->
-        <button onclick="irAlCarrito()" class="relative bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold px-3.5 py-2 rounded-xl text-xs md:text-sm shadow-md transition-all flex items-center gap-2 hover:scale-105">
+        <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="relative bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold px-3.5 py-2 rounded-xl text-xs md:text-sm shadow-md transition-all flex items-center gap-2 hover:scale-105">
           <i class="fa-solid fa-cart-shopping text-base"></i>
           <span class="hidden sm:inline">Tu Pedido</span>
-          <span id="badge-cart-count" class="bg-rey-darkred text-white text-[11px] font-black px-2 py-0.5 rounded-full">0</span>
-        </button>
+          <span class="bg-rey-darkred text-white text-[11px] font-black px-2 py-0.5 rounded-full">0</span>
+        </a>
       </div>
 
     </div>
@@ -123,10 +132,10 @@ Fresco todos los días, precios justos y promos que convienen. El rey del sabor!
 
         <!-- BOTONES DE ACCIÓN RÁPIDA -->
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start pt-2">
-          <a href="#catalogo" class="bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold text-sm md:text-base px-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold text-sm md:text-base px-6 py-3.5 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
             <i class="fa-solid fa-utensils"></i> Pedir Online Ahora
           </a>
-          <a href="#app" class="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm md:text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2">
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white font-bold text-sm md:text-base px-5 py-3.5 rounded-xl transition-all flex items-center gap-2">
             <i class="fa-solid fa-mobile-screen-button text-rey-gold"></i> Usar Nuestra App
           </a>
         </div>
@@ -190,7 +199,7 @@ Fresco todos los días, precios justos y promos que convienen. El rey del sabor!
             </div>
 
             <div class="pt-1">
-              <a href="#catalogo" class="w-full bg-rey-red hover:bg-rey-darkred text-white text-xs font-extrabold py-2.5 rounded-xl transition-colors shadow flex items-center justify-center gap-2">
+              <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="w-full bg-rey-red hover:bg-rey-darkred text-white text-xs font-extrabold py-2.5 rounded-xl transition-colors shadow flex items-center justify-center gap-2">
                 <i class="fa-solid fa-basket-shopping"></i> Hacer Pedido para Retirar o Envío
               </a>
             </div>
@@ -237,9 +246,9 @@ Fresco todos los días, precios justos y promos que convienen. El rey del sabor!
               <span class="text-xs text-gray-400 line-through ml-2">$17.900</span>
             </div>
           </div>
-          <button onclick="agregarPromoDirecta('Combo Familiar REY', 14900, '🍗')" class="mt-4 w-full bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold py-2.5 rounded-xl text-xs transition-colors shadow flex items-center justify-center gap-2">
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="mt-4 w-full bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold py-2.5 rounded-xl text-xs transition-colors shadow flex items-center justify-center gap-2">
             <i class="fa-solid fa-plus"></i> Agregar Promo
-          </button>
+          </a>
         </div>
 
         <!-- PROMO 2 -->
@@ -255,9 +264,9 @@ Fresco todos los días, precios justos y promos que convienen. El rey del sabor!
               <span class="text-xs text-gray-400 line-through ml-2">$33.500</span>
             </div>
           </div>
-          <button onclick="agregarPromoDirecta('Super Combo Milanesas', 29500, '🥩')" class="mt-4 w-full bg-rey-red hover:bg-rey-darkred text-white font-extrabold py-2.5 rounded-xl text-xs transition-colors shadow flex items-center justify-center gap-2">
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="mt-4 w-full bg-rey-red hover:bg-rey-darkred text-white font-extrabold py-2.5 rounded-xl text-xs transition-colors shadow flex items-center justify-center gap-2">
             <i class="fa-solid fa-plus"></i> Agregar Promo
-          </button>
+          </a>
         </div>
 
         <!-- PROMO 3 -->
@@ -273,9 +282,9 @@ Fresco todos los días, precios justos y promos que convienen. El rey del sabor!
               <span class="text-xs text-gray-400 line-through ml-2">$10.000</span>
             </div>
           </div>
-          <button onclick="agregarPromoDirecta('Combo Patas & Muslos', 8900, '🍗')" class="mt-4 w-full bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold py-2.5 rounded-xl text-xs transition-colors shadow flex items-center justify-center gap-2">
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="mt-4 w-full bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold py-2.5 rounded-xl text-xs transition-colors shadow flex items-center justify-center gap-2">
             <i class="fa-solid fa-plus"></i> Agregar Promo
-          </button>
+          </a>
         </div>
 
       </div>
@@ -324,7 +333,7 @@ Fresco todos los días, precios justos y promos que convienen. El rey del sabor!
             <h3 class="font-display font-extrabold text-lg text-white">Pollería REY App</h3>
             <p class="text-xs text-amber-200">Disponible en tu navegador sin descargas pesadas</p>
           </div>
-          <a href="#catalogo" class="block w-full bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold py-3 rounded-xl text-xs transition-colors shadow-lg">
+          <a href="https://hermesjs44.github.io/www/polleria/app/index.html" class="block w-full bg-rey-gold hover:bg-rey-darkgold text-gray-900 font-extrabold py-3 rounded-xl text-xs transition-colors shadow-lg">
             🚀 Iniciar Pedido en la App Web
           </a>
         </div>
@@ -332,202 +341,6 @@ Fresco todos los días, precios justos y promos que convienen. El rey del sabor!
 
     </div>
   </section>
-
-  <!-- CATÁLOGO Y SISTEMA DE PEDIDOS INTERACTIVO -->
-  <main id="catalogo" class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full my-6">
-    
-    <div class="text-center max-w-2xl mx-auto mb-8 space-y-2">
-      <h2 class="font-display font-black text-3xl md:text-4xl text-gray-900 flex justify-center items-center gap-2">
-        <i class="fa-solid fa-utensils text-rey-red text-2xl"></i> Nuestro Catálogo de Productos
-      </h2>
-      <p class="text-xs md:text-sm text-gray-500">
-        Elegí tus productos frescos y completá tu pedido en pocos segundos.
-      </p>
-    </div>
-
-    <!-- MAIN GRID DE CATALOGO Y CARRITO -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      
-      <!-- SECCIÓN PRODUCTOS -->
-      <section class="lg:col-span-7 space-y-6">
-        
-        <!-- FILTRO DE CATEGORÍAS -->
-        <div class="flex flex-wrap gap-2 pb-2 border-b border-gray-200" id="contenedor-filtros">
-          <button onclick="filtrarCategoria('Todas')" class="btn-cat font-bold text-xs px-4 py-2 rounded-full bg-rey-red text-white shadow">
-            Todas
-          </button>
-          <button onclick="filtrarCategoria('Ofertas')" class="btn-cat font-bold text-xs px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
-            🔥 Ofertas
-          </button>
-          <button onclick="filtrarCategoria('Pollería')" class="btn-cat font-bold text-xs px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
-            🍗 Pollería Fresca
-          </button>
-          <button onclick="filtrarCategoria('Elaborados')" class="btn-cat font-bold text-xs px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
-            🥩 Elaborados
-          </button>
-          <button onclick="filtrarCategoria('Despensa')" class="btn-cat font-bold text-xs px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300">
-            🛒 Acompañamientos
-          </button>
-        </div>
-
-        <!-- LISTADO DE PRODUCTOS CARGADOS -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="grid-productos">
-          <!-- Renderizado dinámico vía JS -->
-        </div>
-
-      </section>
-
-      <!-- SECCIÓN CARRITO Y FORMULARIO DE PEDIDO -->
-      <section id="seccion-carrito" class="lg:col-span-5 bg-white p-5 rounded-2xl border border-gray-200 shadow-xl flex flex-col justify-between h-fit space-y-5 sticky top-24">
-        
-        <div class="border-b pb-3 flex justify-between items-center">
-          <h3 class="font-display font-extrabold text-lg text-gray-900 flex items-center gap-2">
-            <i class="fa-solid fa-cart-shopping text-rey-red"></i> Resumen de Pedido
-          </h3>
-          <span id="cant-items" class="text-xs bg-red-100 text-rey-red px-2.5 py-0.5 rounded-full font-bold">0 productos</span>
-        </div>
-
-        <!-- ITEMS EN EL CARRITO -->
-        <ul id="items-carrito" class="divide-y divide-gray-100 text-xs max-h-56 overflow-y-auto space-y-1">
-          <li class="text-xs text-gray-400 italic py-4 text-center">
-            Tu carrito está vacío. Agregá productos del catálogo.
-          </li>
-        </ul>
-
-        <!-- DESGLOSE DE COSTOS -->
-        <div class="border-t pt-3 space-y-1.5 text-xs">
-          <div class="flex justify-between items-center text-gray-600">
-            <span>Subtotal:</span>
-            <span id="subtotal-carrito" class="font-bold text-gray-800">$0</span>
-          </div>
-          <div id="fila-costo-envio" class="flex justify-between items-center text-gray-600">
-            <span>🛵 Envío a Domicilio:</span>
-            <span id="monto-envio-display" class="font-bold text-gray-800">$1.200</span>
-          </div>
-          <div class="flex justify-between items-center pt-2 border-t text-base font-black text-gray-900">
-            <span>Total a Pagar:</span>
-            <span id="total-carrito" class="text-xl text-rey-red">$0</span>
-          </div>
-        </div>
-
-        <!-- FORMULARIO CHECKOUT DE ENVIOS / RETIRO -->
-        <form id="form-checkout" onsubmit="realizarPedidoWhatsApp(event)" class="space-y-3 pt-3 border-t">
-          <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Datos para la Entrega</h4>
-          
-          <div>
-            <input type="text" id="cli-nombre" placeholder="Nombre Completo *" required class="w-full text-xs p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rey-red focus:outline-none">
-          </div>
-          <div>
-            <input type="tel" id="cli-telefono" placeholder="WhatsApp / Teléfono *" required class="w-full text-xs p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rey-red focus:outline-none">
-          </div>
-
-          <!-- MODALIDAD: DELIVERY O RETIRO -->
-          <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 space-y-2">
-            <label class="font-bold text-xs text-gray-800 flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" id="cli-retiro-local" onchange="alternarModoEntrega(this.checked)" class="rounded text-rey-red focus:ring-rey-red w-4 h-4">
-              🏪 Deseo retirar personalmente en el local (Sin costo de envío)
-            </label>
-
-            <div id="contenedor-direccion">
-              <input type="text" id="cli-direccion" placeholder="Dirección de Envío (Calle, Número, Barrio) *" required class="w-full text-xs p-2.5 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-rey-red focus:outline-none">
-            </div>
-
-            <div>
-              <label id="lbl-horario-preferente" class="block text-[11px] font-semibold text-gray-700 mb-1">
-                🕒 Horario Preferente (Aproximado)
-              </label>
-              <div class="flex items-center gap-2">
-                <input type="time" id="cli-horario-desde" class="w-full text-xs p-1.5 border border-gray-300 rounded bg-white">
-                <span class="text-xs font-bold text-gray-400">a</span>
-                <input type="time" id="cli-horario-hasta" class="w-full text-xs p-1.5 border border-gray-300 rounded bg-white">
-              </div>
-            </div>
-          </div>
-
-          <!-- PAGO -->
-          <div>
-            <select id="cli-pago" onchange="gestionarSeleccionPago(this.value)" class="w-full text-xs p-2.5 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-rey-red focus:outline-none font-semibold">
-              <option value="efectivo">💵 Efectivo al recibir/retirar</option>
-              <option value="transferencia">💳 Transferencia / Alias Mercado Pago</option>
-            </select>
-          </div>
-
-          <div id="alerta-alias-copiado" class="hidden p-2.5 bg-green-50 border border-green-300 text-green-800 text-xs rounded-lg font-semibold flex items-center justify-between">
-            <span id="texto-alerta-alias">📋 Alias copiado</span>
-            <button type="button" onclick="copiarAlias()" class="bg-green-600 text-white font-bold px-2 py-1 rounded text-[10px]">
-              Copiar Alias
-            </button>
-          </div>
-
-          <div>
-            <textarea id="cli-observaciones" rows="2" placeholder="Notas adicionales (Ej: Pago con $20.000, timbre no funciona)" class="w-full text-xs p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rey-red focus:outline-none"></textarea>
-          </div>
-
-          <button type="submit" class="w-full bg-rey-red hover:bg-rey-darkred text-white font-extrabold text-sm py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
-            <i class="fa-brands fa-whatsapp text-lg"></i> Enviar Pedido por WhatsApp
-          </button>
-        </form>
-
-      </section>
-
-    </div>
-
-  </main>
-
-  <!-- MODAL DE ACCESO PROTEGIDO (DISEÑADOR / ADMINISTRADOR) -->
-  <div id="modal-acceso" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-4 border-rey-gold space-y-5 relative">
-      
-      <!-- BOTÓN CERRAR -->
-      <button onclick="cerrarModalAcceso()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 font-bold text-lg">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-
-      <div class="text-center space-y-2">
-        <div class="inline-flex bg-rey-gold/20 text-rey-darkgold p-3 rounded-full text-2xl">
-          <i class="fa-solid fa-lock"></i>
-        </div>
-        <h3 class="font-display font-black text-xl text-gray-900">Acceso Restringido</h3>
-        <p class="text-xs text-gray-500">Ingrese sus credenciales para acceder al panel de Diseñador o Administrador.</p>
-      </div>
-
-      <form onsubmit="procesarLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Usuario</label>
-          <input type="text" id="login-usuario" placeholder="Ej. hermes o hjs" required class="w-full text-xs p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-rey-red focus:outline-none">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
-          <input type="password" id="login-password" placeholder="••••••••" required class="w-full text-xs p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-rey-red focus:outline-none">
-        </div>
-
-        <div id="error-login" class="hidden p-2.5 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-bold text-center">
-          Usuario o contraseña incorrectos.
-        </div>
-
-        <button type="submit" class="w-full bg-rey-red hover:bg-rey-darkred text-white font-extrabold text-sm py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2">
-          <i class="fa-solid fa-right-to-bracket"></i> Ingresar al Sistema
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- MODAL DE PANEL DISEÑADOR / ADMIN (OCULTO POR DEFECTO) -->
-  <div id="modal-panel-gestion" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-4 border-rey-gold space-y-4 relative">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 id="titulo-panel" class="font-display font-black text-xl text-gray-900">Panel</h3>
-        <button onclick="cerrarPanelGestion()" class="text-gray-400 hover:text-gray-700 font-bold text-lg"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div id="contenido-panel" class="text-xs text-gray-600 space-y-3">
-        <!-- Contenido dinámico según el rol -->
-      </div>
-      <button onclick="cerrarPanelGestion()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2.5 rounded-xl text-xs">
-        Cerrar Sesión / Salir
-      </button>
-    </div>
-  </div>
 
   <!-- FOOTER / PIE DE PÁGINA PUBLICITARIO -->
   <footer class="bg-rey-dark text-white mt-auto border-t-4 border-rey-gold">
@@ -563,303 +376,5 @@ Fresco todos los días, precios justos y promos que convienen. El rey del sabor!
     </div>
   </footer>
 
-  <!-- SCRIPT CON LÓGICA Y DATOS -->
-  <script>
-    // CONFIGURACIÓN INICIAL
-    const COSTO_ENVIO_FIJO = 1200;
-    const ALIAS_MERCADO_PAGO = "POLLERIA.REY.MP";
-    const TELEFONO_WHATSAPP = "5493564123456"; // Teléfono configurado para WhatsApp
-
-    // CATÁLOGO DE PRODUCTOS PUBLICITARIO
-    const PRODUCTOS = [
-      { id: 1, nombre: "Pollo Entero Fresco (kg)", categoria: "Pollería", precio: 3800, icono: "🍗", desc: "Limpio, trozado o entero listo para cocinar." },
-      { id: 2, nombre: "Milanesas de Pechuga (kg)", categoria: "Ofertas", precio: 5200, icono: "🥩", desc: "Preparadas artesanalmente con pan rallado y especias." },
-      { id: 3, nombre: "Pata y Muslo Seleccionada (kg)", categoria: "Pollería", precio: 4100, icono: "🍗", desc: "Corte tierno, ideal para horno o parrilla." },
-      { id: 4, nombre: "Supremas de Pechuga (kg)", categoria: "Pollería", precio: 5900, icono: "🥩", desc: "Deshuesadas y limpias de primera calidad." },
-      { id: 5, nombre: "Medallones de Pollo c/Queso (kg)", categoria: "Elaborados", precio: 4800, icono: "🍔", desc: "Rellenos con muzzarella de primera marca." },
-      { id: 6, nombre: "Papas Fritas Congeladas (kg)", categoria: "Despensa", precio: 3200, icono: "🍟", desc: "Corte tradicional listas para freír." },
-      { id: 7, nombre: "Huevos Frescos de Campo (Cartón 30u)", categoria: "Despensa", precio: 4500, icono: "🥚", desc: "Directo de granja, tamaño grande." },
-      { id: 8, nombre: "Pollo Relleno Especial (Unidad)", categoria: "Elaborados", precio: 12900, icono: "🔥", desc: "Relleno de jamón, queso, pimientos y huevo." }
-    ];
-
-    let carrito = [];
-    let categoriaActual = "Todas";
-
-    // INICIALIZACIÓN
-    window.addEventListener("DOMContentLoaded", () => {
-      renderizarProductos();
-      actualizarCarritoUI();
-    });
-
-    // RENDERIZAR PRODUCTOS
-    function renderizarProductos() {
-      const grid = document.getElementById("grid-productos");
-      if (!grid) return;
-
-      grid.innerHTML = "";
-
-      let filtrados = PRODUCTOS;
-      if (categoriaActual !== "Todas") {
-        filtrados = PRODUCTOS.filter(p => p.categoria.toLowerCase() === categoriaActual.toLowerCase());
-      }
-
-      filtrados.forEach(p => {
-        const esOferta = p.categoria === "Ofertas";
-        grid.innerHTML += `
-          <div class="bg-white rounded-2xl border ${esOferta ? 'border-rey-gold ring-1 ring-rey-gold' : 'border-gray-200'} p-4 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-            <div class="space-y-2">
-              <div class="flex justify-between items-start">
-                <span class="text-xs font-bold ${esOferta ? 'bg-rey-gold text-gray-900' : 'bg-red-100 text-rey-red'} px-2.5 py-0.5 rounded-full">
-                  ${p.categoria}
-                </span>
-                <span class="text-2xl">${p.icono}</span>
-              </div>
-              <h3 class="font-bold text-gray-900 text-base">${p.nombre}</h3>
-              <p class="text-xs text-gray-500">${p.desc}</p>
-            </div>
-            <div class="pt-3 border-t border-gray-100 flex justify-between items-center mt-3">
-              <span class="font-black text-xl text-rey-red">$${p.precio.toLocaleString('es-AR')}</span>
-              <button onclick="agregarAlCarrito(${p.id})" class="bg-rey-red hover:bg-rey-darkred text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-colors shadow flex items-center gap-1">
-                <i class="fa-solid fa-plus"></i> Agregar
-              </button>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    // FILTRAR POR CATEGORÍA
-    function filtrarCategoria(cat) {
-      categoriaActual = cat;
-      const btns = document.querySelectorAll("#contenedor-filtros button");
-      btns.forEach(btn => {
-        if (btn.innerText.includes(cat)) {
-          btn.className = "btn-cat font-bold text-xs px-4 py-2 rounded-full bg-rey-red text-white shadow";
-        } else {
-          btn.className = "btn-cat font-bold text-xs px-4 py-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300";
-        }
-      });
-      renderizarProductos();
-    }
-
-    // AGREGAR COMBOS O PROMOS DIRECTAS
-    function agregarPromoDirecta(nombre, precio, icono) {
-      const existe = carrito.find(i => i.nombre === nombre);
-      if (existe) {
-        existe.cantidad += 1;
-      } else {
-        carrito.push({ id: Date.now(), nombre, precio, icono, cantidad: 1 });
-      }
-      actualizarCarritoUI();
-      irAlCarrito();
-    }
-
-    // AGREGAR DEL CATÁLOGO
-    function agregarAlCarrito(id) {
-      const prod = PRODUCTOS.find(p => p.id === id);
-      if (!prod) return;
-
-      const existe = carrito.find(i => i.id === id);
-      if (existe) {
-        existe.cantidad += 1;
-      } else {
-        carrito.push({ id: prod.id, nombre: prod.nombre, precio: prod.precio, icono: prod.icono, cantidad: 1 });
-      }
-      actualizarCarritoUI();
-    }
-
-    // ACTUALIZAR CARRITO EN PANTALLA
-    function actualizarCarritoUI() {
-      const lista = document.getElementById("items-carrito");
-      const cantItems = document.getElementById("cant-items");
-      const badgeCount = document.getElementById("badge-cart-count");
-      const subtotalEl = document.getElementById("subtotal-carrito");
-      const totalEl = document.getElementById("total-carrito");
-      const montoEnvioEl = document.getElementById("monto-envio-display");
-      const esRetiro = document.getElementById("cli-retiro-local") ? document.getElementById("cli-retiro-local").checked : false;
-
-      if (carrito.length === 0) {
-        lista.innerHTML = `<li class="text-xs text-gray-400 italic py-4 text-center">Tu carrito está vacío. Agregá productos del catálogo.</li>`;
-        cantItems.innerText = "0 productos";
-        badgeCount.innerText = "0";
-        subtotalEl.innerText = "$0";
-        totalEl.innerText = "$0";
-        if (montoEnvioEl) montoEnvioEl.innerText = "$0";
-        return;
-      }
-
-      let subtotal = 0;
-      let totalCant = 0;
-      lista.innerHTML = "";
-
-      carrito.forEach((item, index) => {
-        subtotal += item.precio * item.cantidad;
-        totalCant += item.cantidad;
-        lista.innerHTML += `
-          <li class="py-2 flex justify-between items-center text-xs">
-            <div>
-              <span class="font-bold text-gray-900">${item.cantidad}x</span> ${item.icono} ${item.nombre}
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="font-extrabold text-gray-800">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
-              <button onclick="eliminarItem(${index})" class="text-red-500 hover:text-red-700 font-bold px-1.5 py-0.5 rounded">✕</button>
-            </div>
-          </li>
-        `;
-      });
-
-      const costoEnvioAplicado = esRetiro ? 0 : COSTO_ENVIO_FIJO;
-      const total = subtotal + costoEnvioAplicado;
-
-      cantItems.innerText = `${totalCant} ${totalCant === 1 ? 'producto' : 'productos'}`;
-      badgeCount.innerText = totalCant;
-      subtotalEl.innerText = `$${subtotal.toLocaleString('es-AR')}`;
-      if (montoEnvioEl) montoEnvioEl.innerText = esRetiro ? "Gratis (Retiro)" : `$${costoEnvioAplicado.toLocaleString('es-AR')}`;
-      totalEl.innerText = `$${total.toLocaleString('es-AR')}`;
-    }
-
-    function eliminarItem(index) {
-      carrito.splice(index, 1);
-      actualizarCarritoUI();
-    }
-
-    // ALTERNAR ENTREGA Y RETIRO
-    function alternarModoEntrega(esRetiro) {
-      const contDireccion = document.getElementById("contenedor-direccion");
-      const inputDireccion = document.getElementById("cli-direccion");
-      const lblHorario = document.getElementById("lbl-horario-preferente");
-
-      if (esRetiro) {
-        contDireccion.classList.add("hidden");
-        inputDireccion.removeAttribute("required");
-        lblHorario.innerText = "🏪 Horario preferente de retiro en local";
-      } else {
-        contDireccion.classList.remove("hidden");
-        inputDireccion.setAttribute("required", "true");
-        lblHorario.innerText = "🕒 Horario preferente de entrega (Delivery)";
-      }
-      actualizarCarritoUI();
-    }
-
-    function gestionarSeleccionPago(metodo) {
-      if (metodo === "transferencia") {
-        copiarAlias();
-      } else {
-        document.getElementById("alerta-alias-copiado").classList.add("hidden");
-      }
-    }
-
-    function copiarAlias() {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(ALIAS_MERCADO_PAGO);
-      }
-      const alerta = document.getElementById("alerta-alias-copiado");
-      const texto = document.getElementById("texto-alerta-alias");
-      texto.innerHTML = `📋 Alias copiado: <strong>${ALIAS_MERCADO_PAGO}</strong>`;
-      alerta.classList.remove("hidden");
-    }
-
-    function irAlCarrito() {
-      const sec = document.getElementById("seccion-carrito");
-      if (sec) sec.scrollIntoView({ behavior: "smooth" });
-    }
-
-    // LÓGICA DE MODAL ACCESO Y ROLES
-    function abrirModalAcceso() {
-      document.getElementById("login-usuario").value = "";
-      document.getElementById("login-password").value = "";
-      document.getElementById("error-login").classList.add("hidden");
-      document.getElementById("modal-acceso").classList.remove("hidden");
-    }
-
-    function cerrarModalAcceso() {
-      document.getElementById("modal-acceso").classList.add("hidden");
-    }
-
-    function procesarLogin(e) {
-      e.preventDefault();
-      const u = document.getElementById("login-usuario").value.trim();
-      const p = document.getElementById("login-password").value.trim();
-      const err = document.getElementById("error-login");
-
-      if (u === "hermes" && p === "Hjs2154") {
-        cerrarModalAcceso();
-        abrirPanelGestion("Diseñador", "Herramientas de personalización visual, estilos y maquetación.");
-      } else if (u === "hjs" && p === "Hermesjs") {
-        cerrarModalAcceso();
-        abrirPanelGestion("Administrador", "Gestión de productos, precios, estadísticas y configuración general de la Pollería.");
-      } else {
-        err.classList.remove("hidden");
-      }
-    }
-
-    function abrirPanelGestion(rol, descripcion) {
-      document.getElementById("titulo-panel").innerText = `Panel de ${rol}`;
-      document.getElementById("contenido-panel").innerHTML = `
-        <p class="font-bold text-gray-800">¡Sesión iniciada correctamente como ${rol}!</p>
-        <p>${descripcion}</p>
-        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
-          <span class="block font-bold text-amber-800">Estado del Sistema</span>
-          <span>Catálogo activo, pasarela de WhatsApp configurada correctamente.</span>
-        </div>
-      `;
-      document.getElementById("modal-panel-gestion").classList.remove("hidden");
-    }
-
-    function cerrarPanelGestion() {
-      document.getElementById("modal-panel-gestion").classList.add("hidden");
-    }
-
-    // ENVIAR PEDIDO POR WHATSAPP
-    function realizarPedidoWhatsApp(e) {
-      e.preventDefault();
-
-      if (carrito.length === 0) {
-        alert("Por favor agregá al menos un producto al carrito antes de realizar el pedido.");
-        return;
-      }
-
-      const nombre = document.getElementById("cli-nombre").value.trim();
-      const telefono = document.getElementById("cli-telefono").value.trim();
-      const esRetiro = document.getElementById("cli-retiro-local").checked;
-      const direccion = esRetiro ? "Retiro en el local" : document.getElementById("cli-direccion").value.trim();
-      const horaDesde = document.getElementById("cli-horario-desde").value;
-      const horaHasta = document.getElementById("cli-horario-hasta").value;
-      const pago = document.getElementById("cli-pago").value === "transferencia" ? `Transferencia / Mercado Pago (Alias: ${ALIAS_MERCADO_PAGO})` : "Efectivo";
-      const observaciones = document.getElementById("cli-observaciones").value.trim() || "Sin observaciones adicionales.";
-
-      let horarioTexto = "Lo antes posible";
-      if (horaDesde || horaHasta) {
-        horarioTexto = `De ${horaDesde || '--:--'} a ${horaHasta || '--:--'} hs`;
-      }
-
-      const subtotal = carrito.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
-      const envio = esRetiro ? 0 : COSTO_ENVIO_FIJO;
-      const total = subtotal + envio;
-
-      let resumenItems = "";
-      carrito.forEach(i => {
-        resumenItems += `• ${i.icono} ${i.cantidad}x ${i.nombre} - $${(i.precio * i.cantidad).toLocaleString('es-AR')}\n`;
-      });
-
-      const mensaje = 
-`👑 *NUEVO PEDIDO - POLLERÍA REY* 👑
-👤 *Cliente:* ${nombre}
-📱 *Teléfono:* ${telefono}
-${esRetiro ? '🏪 *Modalidad:* RETIRO EN LOCAL' : `🛵 *Modalidad:* ENVÍO A DOMICILIO\n📍 *Dirección:* ${direccion}`}
-🕒 *Horario Preferente:* ${horarioTexto}
-💳 *Forma de Pago:* ${pago}
-
-📋 *DETALLE DEL PEDIDO:*
-${resumenItems}
-${!esRetiro ? `🛵 *Costo de Envío:* $${envio.toLocaleString('es-AR')}\n` : ''}💵 *TOTAL A PAGAR:* $${total.toLocaleString('es-AR')}
-
-📝 *Observaciones:* ${observaciones}`;
-
-      // Redireccionar a WhatsApp
-      const urlWa = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
-      window.open(urlWa, "_blank");
-    }
-  </script>
 </body>
 </html>
