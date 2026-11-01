@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- Enlace al archivo Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Configuración de color para la barra del celular -->
+<meta name="theme-color" content="#d32f2f">
+
+<!-- Registro del Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker registrado con éxito', reg))
+        .catch(err => console.error('Error al registrar el Service Worker', err));
+    });
+  }
+</script>  
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pollería REY - Sistema de Gestión y Pedidos v1.01.02</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- PWA Manifest Inline -->
+  <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Poller%C3%ADa%20REY%22,%22short_name%22:%22Poller%C3%ADaREY%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22#dc2626%22,%22theme_color%22:%22#b91c1c%22}">
+</head>
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
+
+  <!-- BARRA DE RESUMEN DE CARRITO -->
+  <div id="barra-resumen-carrito" class="bg-amber-400 text-gray-900 px-4 py-2 shadow-md sticky top-0 z-50 flex justify-between items-center border-b border-amber-500">
+    <div class="flex items-center gap-2">
+      <span class="text-base md:text-lg">🛒</span>
+      <span class="text-xs md:text-sm font-bold">Resumen de Pedido:</span>
+      <span id="resumen-cant-items" class="bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full text-xs font-black">0 productos</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-xs md:text-sm font-medium">Total:</span>
+      <span id="resumen-total-importe" class="text-sm md:text-base font-black text-red-800">$0</span>
+      <button onclick="irAlCarrito()" class="bg-red-700 hover:bg-red-800 text-white text-[11px] md:text-xs font-bold px-2.5 py-1 rounded transition-colors shadow">
+        Ver Carrito 👇
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL DE PREMIO -->
+  <div id="modal-premio" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-amber-200 text-center space-y-4">
+      <div class="text-4xl">🎁 🍗</div>
+      <h3 class="text-xl font-extrabold text-gray-900">¡Sumá puntos y ganá premios!</h3>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Estás realizando tu pedido como <strong class="text-red-600">Anónimo</strong>. Si te registrás o iniciás sesión con tu correo, acumularás puntos con esta compra para canjear por productos y descuentos.
+      </p>
+
+      <div class="space-y-2 pt-2">
+        <button onclick="abrirLoginDesdePremio()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-xl text-xs shadow transition-colors flex items-center justify-center gap-2">
+          📧 Iniciar Sesión / Registrarme con Correo
+        </button>
+        <button onclick="confirmarPedidoAnonimo()" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 rounded-xl text-xs transition-colors">
+          🛒 Continuar como Anónimo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE LOGIN -->
+  <div id="modal-login" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-gray-100 relative">
+      <button onclick="cerrarModalLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 font-bold text-sm">✕</button>
+
+      <div class="text-center mb-6">
+        <!-- LOGO DEL NEGOCIO -->
+        <img src="https://polleria.imgix.net/sandbox/logo.jpg" alt="Pollería REY Logo" class="h-16 mx-auto mb-2 rounded border border-gray-200 shadow-sm object-contain bg-white p-1">
+        <h2 class="text-2xl font-extrabold text-gray-900">Pollería REY</h2>
+        <p class="text-xs text-gray-500 mt-1">Ingresa con tu correo o usuario para acceder</p>
+      </div>
+
+      <form onsubmit="ejecutarLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Usuario o Correo</label>
+          <input type="text" id="login-usuario" required placeholder="tu@correo.com o tu usuario" class="w-full text-sm p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1 uppercase">Contraseña</label>
+          <input type="password" id="login-pass" required placeholder="••••••••" class="w-full text-sm p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+        
+        <div id="login-error" class="hidden p-2 bg-red-50 border border-red-200 text-xs text-red-600 font-bold rounded text-center">
+          Usuario o contraseña incorrectos.
+        </div>
+
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-sm transition-colors shadow-lg">
+          🔑 Iniciar Sesión / Registrarse
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- NAVEGACIÓN PRINCIPAL -->
+  <header class="bg-red-700 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+      <div class="flex items-center gap-3">
+        <!-- LOGO DEL NEGOCIO -->
+        <img src="https://polleria.imgix.net/sandbox/logo.jpg" alt="Pollería REY Logo" class="h-10 w-auto rounded border border-white/30 shadow-sm object-contain bg-white p-0.5">
+        <div>
+          <h1 class="font-extrabold text-xl tracking-wide text-amber-300 drop-shadow">Pollería REY</h1>
+          <span class="text-[10px] font-mono bg-red-900/80 px-1.5 py-0.5 rounded text-amber-200 border border-red-600">v1.01.02</span>
+        </div>
+      </div>
+
+      <div id="user-badge" class="flex items-center gap-2 bg-red-800/90 px-3 py-1.5 rounded-lg text-xs border border-red-600">
+        <span>👤 <strong id="user-nombre-display" class="text-amber-300">anonimo</strong> (<span id="user-rol-display" class="capitalize font-semibold">cliente</span>)</span>
+        
+        <button id="btn-login-header" onclick="abrirModalLogin()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-2 py-1 rounded text-[10px] transition-colors ml-1">
+          🔑 Iniciar Sesión
+        </button>
+        <button id="btn-logout-header" onclick="cerrarSesion()" class="bg-red-950 hover:bg-black text-white font-bold px-2 py-1 rounded text-[10px] transition-colors ml-1 hidden">
+          🚪 Salir
+        </button>
+      </div>
+
+      <nav id="nav-tabs" class="flex bg-red-900/60 p-1 rounded-lg text-xs md:text-sm font-semibold gap-1 flex-wrap">
+        <button id="btn-tab-cliente" onclick="mostrarVista('cliente')" class="tab-btn px-3 py-1.5 rounded-md text-red-100 hover:bg-red-800">
+          🛍️ Tienda
+        </button>
+        <button id="btn-tab-clientes-compras" onclick="mostrarVista('clientes-compras')" class="tab-btn px-3 py-1.5 rounded-md text-red-100 hover:bg-red-800 hidden">
+          👥 Clientes y Promos
+        </button>
+        <button id="btn-tab-delivery" onclick="mostrarVista('delivery')" class="tab-btn px-3 py-1.5 rounded-md text-red-100 hover:bg-red-800 hidden">
+          🛵 Delivery
+        </button>
+        <button id="btn-tab-puntos" onclick="mostrarVista('puntos')" class="tab-btn px-3 py-1.5 rounded-md text-red-100 hover:bg-red-800 hidden">
+          ⭐ Puntos
+        </button>
+        <button id="btn-tab-disenador" onclick="mostrarVista('disenador')" class="tab-btn px-3 py-1.5 rounded-md text-red-100 hover:bg-red-800 hidden">
+          🎨 Diseñador
+        </button>
+        <button id="btn-tab-admin" onclick="mostrarVista('admin')" class="tab-btn px-3 py-1.5 rounded-md text-red-100 hover:bg-red-800 hidden">
+          👑 Panel Admin
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- VISTA 1: TIENDA DEL CLIENTE -->
+  <main id="vista-cliente" class="max-w-7xl mx-auto p-4 md:p-6 flex-1 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <section class="lg:col-span-2 space-y-4">
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-3 rounded text-xs text-amber-900 flex justify-between items-center">
+          <span>🔥 <strong>Pollería REY:</strong> ¡Los mejores cortes de pollo fresco directamente a tu casa!</span>
+        </div>
+
+        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+          🍗 Catálogo de Productos
+        </h2>
+
+        <!-- SELECTOR / FILTRO DE CATEGORÍAS EN TIENDA -->
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">Seleccionar Categoría:</label>
+          <div id="contenedor-filtro-categorias" class="flex flex-wrap gap-2 pb-2 border-b border-gray-200">
+            <button onclick="filtrarPorCategoria('Todas')" class="btn-filtro-cat bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow transition-colors">
+              Todas
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="lista-productos">
+          <div class="col-span-full text-center py-8 text-gray-400 text-xs italic">
+            Cargando catálogo en tiempo real...
+          </div>
+        </div>
+      </section>
+
+      <!-- Carrito -->
+      <section id="seccion-carrito" class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between h-fit space-y-4">
+        <!-- LOGO DEL DISEÑADOR -->
+        <div class="flex justify-center border-b pb-3">
+          <img src="https://polleria.imgix.net/sandbox/logo%20hermes.jpg" alt="Logo Diseñador" class="h-12 w-auto object-contain">
+        </div>
+
+        <h2 class="text-lg font-bold text-gray-800 border-b pb-2 flex justify-between items-center">
+          🛒 Tu Carrito <span id="cant-items" class="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded-full font-bold">0 items</span>
+        </h2>
+
+        <ul id="items-carrito" class="divide-y divide-gray-100 text-sm max-h-48 overflow-y-auto space-y-1">
+          <li class="text-xs text-gray-400 italic py-2 text-center">El carrito está vacío.</li>
+        </ul>
+
+        <div class="border-t pt-2 space-y-1">
+          <div id="fila-costo-envio" class="flex justify-between items-center text-xs text-gray-600">
+            <span>🛵 Envío a domicilio:</span>
+            <span id="monto-envio-display" class="font-bold text-gray-800">$0</span>
+          </div>
+          <div class="flex justify-between items-center pt-1">
+            <span class="font-bold text-gray-700">Total:</span>
+            <span id="total-carrito" class="text-xl font-black text-red-700">$0</span>
+          </div>
+        </div>
+
+        <form id="form-checkout" onsubmit="realizarPedido(event)" class="space-y-3 pt-2 border-t">
+          <h3 class="text-xs font-bold text-gray-500 uppercase">Datos para el Pedido</h3>
+          
+          <div>
+            <input type="text" id="cli-nombre" placeholder="Nombre completo" required class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-red-500">
+          </div>
+          <div>
+            <input type="tel" id="cli-telefono" placeholder="WhatsApp / Teléfono" required class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-red-500">
+          </div>
+
+          <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-200 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <label class="font-bold text-gray-700 flex items-center gap-1.5 cursor-pointer">
+                <input type="checkbox" id="cli-retiro-local" onchange="alternarModoEntrega(this.checked)" class="rounded text-red-600 focus:ring-red-500">
+                🏪 Retiro personalmente en el local
+              </label>
+            </div>
+
+            <div id="contenedor-direccion">
+              <input type="text" id="cli-direccion" placeholder="Dirección de entrega" required class="w-full text-xs p-2 border border-gray-300 rounded bg-white focus:ring-1 focus:ring-red-500">
+            </div>
+
+            <div>
+              <label id="lbl-horario-preferente" class="block text-[11px] font-semibold text-gray-600 mb-1">
+                🕒 Horario preferente de entrega (Aproximado)
+              </label>
+              <div class="flex items-center gap-1.5">
+                <input type="time" id="cli-horario-desde" class="w-full text-xs p-1.5 border border-gray-300 rounded bg-white">
+                <span class="text-xs font-bold text-gray-400">a</span>
+                <input type="time" id="cli-horario-hasta" class="w-full text-xs p-1.5 border border-gray-300 rounded bg-white">
+              </div>
+              <p id="subtexto-horario" class="text-[10px] text-gray-400 italic mt-0.5">Ej: de 12:00 a 13:00 hs.</p>
+            </div>
+          </div>
+
+          <div>
+            <select id="cli-pago" onchange="gestionarSeleccionPago(this.value)" class="w-full text-xs p-2 border border-gray-300 rounded bg-white focus:ring-1 focus:ring-red-500">
+              <option value="efectivo">Efectivo al entregar/retirar</option>
+              <option value="transferencia">Transferencia / Alias</option>
+            </select>
+          </div>
+
+          <div id="alerta-alias-copiado" class="hidden p-2.5 bg-green-50 border border-green-300 text-green-800 text-xs rounded-lg font-semibold flex items-center justify-between">
+            <span id="texto-alerta-alias">📋 Alias copiado</span>
+            <button type="button" onclick="copiarAlias()" class="bg-green-600 hover:bg-green-700 text-white font-bold px-2 py-1 rounded text-[10px] transition-colors">
+              Copiar de nuevo
+            </button>
+          </div>
+
+          <div>
+            <textarea id="cli-observaciones" rows="2" placeholder="Observaciones / Datos adicionales (ej. Timbre 2B, sin aderezo, paga con $10.000)" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-red-500"></textarea>
+          </div>
+
+          <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold text-sm py-2.5 rounded-lg transition-colors shadow">
+            🛵 Confirmar y Pedir
+          </button>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- VISTA: CLIENTES Y COMPRAS -->
+  <main id="vista-clientes-compras" class="max-w-6xl mx-auto p-4 md:p-6 flex-1 w-full hidden space-y-6">
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+      <div class="border-b pb-3 flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            👥 Registro de Clientes y Compras
+          </h2>
+          <p class="text-xs text-gray-500">Historial de consumo por cliente y envío directo de promociones por WhatsApp.</p>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-gray-600">
+          <thead class="bg-gray-100 text-gray-800 font-bold border-b">
+            <tr>
+              <th class="p-2.5 border-r">Cliente</th>
+              <th class="p-2.5 border-r">Teléfono</th>
+              <th class="p-2.5 border-r text-center">Cant. Pedidos</th>
+              <th class="p-2.5 border-r text-right">Total Consumido</th>
+              <th class="p-2.5 border-r text-center">Puntos Acumulados</th>
+              <th class="p-2.5 text-center">Acción Promocional</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-clientes-compras" class="divide-y divide-gray-100">
+            <tr>
+              <td colspan="6" class="p-4 text-center text-gray-400 italic">Cargando datos de clientes...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- VISTA: CONFIGURACIÓN DE PUNTOS -->
+  <main id="vista-puntos" class="max-w-4xl mx-auto p-4 md:p-6 flex-1 w-full hidden space-y-6">
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+      <div class="border-b pb-3">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+          ⭐ Configuración del Sistema de Puntos y Fidelización
+        </h2>
+        <p class="text-xs text-gray-500">Define las reglas para otorgar puntos por compras realizada y establece la caducidad del programa.</p>
+      </div>
+
+      <form onsubmit="guardarConfiguracionPuntos(event)" class="space-y-4">
+        <div class="flex items-center gap-3 bg-amber-50 p-3 rounded-lg border border-amber-200">
+          <input type="checkbox" id="puntos-activo" class="w-5 h-5 text-amber-600 rounded focus:ring-amber-500">
+          <label for="puntos-activo" class="text-sm font-bold text-gray-800 cursor-pointer">
+            Activar Sistema de Puntos
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Monto de Compra en Pesos ($)</label>
+            <input type="number" id="puntos-pesos" required min="1" placeholder="Ej: 1000" class="w-full text-xs p-2 border rounded">
+            <p class="text-[10px] text-gray-500 mt-0.5">Por cada esta cantidad de pesos gastados...</p>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Cantidad de Puntos Otorgados</label>
+            <input type="number" id="puntos-cantidad" required min="1" placeholder="Ej: 10" class="w-full text-xs p-2 border rounded">
+            <p class="text-[10px] text-gray-500 mt-0.5">...el cliente sumará esta cantidad de puntos.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t pt-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Fecha de Caducidad de Puntos (Opcional)</label>
+            <input type="date" id="puntos-fecha-expiracion" class="w-full text-xs p-2 border rounded bg-white">
+            <p class="text-[10px] text-gray-500 mt-0.5">Si se establece, los puntos dejarán de acumularse/usarse luego de esta fecha.</p>
+          </div>
+        </div>
+
+        <button type="submit" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-4 rounded shadow">
+          💾 Guardar Configuración de Puntos
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- VISTA 2: DELIVERY -->
+  <main id="vista-delivery" class="p-4 md:p-6 flex-1 w-full hidden">
+    <header class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+      <div>
+        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+          🛵 Módulo de Delivery & Cobranza
+        </h2>
+        <p class="text-xs text-gray-500">
+          Gestión de entregas y cambio de estados.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-audio" onclick="alternarSonido()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300 hover:bg-amber-200">
+          🔕 Alerta Sonora: Desactivada
+        </button>
+      </div>
+    </header>
+
+    <div class="flex gap-4 overflow-x-auto pb-4 items-start min-h-[480px]">
+      <div class="flex-shrink-0 w-72 bg-yellow-50/70 rounded-xl border border-yellow-200 flex flex-col shadow-sm">
+        <div class="p-3 bg-yellow-100/90 rounded-t-xl border-b border-yellow-200 flex justify-between items-center font-bold text-yellow-900 text-xs">
+          <span>🟡 Pendientes</span>
+          <span id="cant-pendiente" class="bg-white px-2 py-0.5 rounded-full text-[10px]">0</span>
+        </div>
+        <div id="col-pendiente" class="p-2 space-y-2 overflow-y-auto max-h-[70vh]"></div>
+      </div>
+
+      <div class="flex-shrink-0 w-72 bg-blue-50/70 rounded-xl border border-blue-200 flex flex-col shadow-sm">
+        <div class="p-3 bg-blue-100/90 rounded-t-xl border-b border-blue-200 flex justify-between items-center font-bold text-blue-900 text-xs">
+          <span>🔵 En Preparación</span>
+          <span id="cant-en_preparacion" class="bg-white px-2 py-0.5 rounded-full text-[10px]">0</span>
+        </div>
+        <div id="col-en_preparacion" class="p-2 space-y-2 overflow-y-auto max-h-[70vh]"></div>
+      </div>
+
+      <div class="flex-shrink-0 w-72 bg-purple-50/70 rounded-xl border border-purple-200 flex flex-col shadow-sm">
+        <div class="p-3 bg-purple-100/90 rounded-t-xl border-b border-purple-200 flex justify-between items-center font-bold text-purple-900 text-xs">
+          <span>🛵 En Camino</span>
+          <span id="cant-en_camino" class="bg-white px-2 py-0.5 rounded-full text-[10px]">0</span>
+        </div>
+        <div id="col-en_camino" class="p-2 space-y-2 overflow-y-auto max-h-[70vh]"></div>
+      </div>
+
+      <div class="flex-shrink-0 w-72 bg-green-50/70 rounded-xl border border-green-200 flex flex-col shadow-sm">
+        <div class="p-3 bg-green-100/90 rounded-t-xl border-b border-green-200 flex justify-between items-center font-bold text-green-900 text-xs">
+          <span>🟢 Entregados & Cobrados</span>
+          <span id="cant-entregado" class="bg-white px-2 py-0.5 rounded-full text-[10px]">0</span>
+        </div>
+        <div id="col-entregado" class="p-2 space-y-2 overflow-y-auto max-h-[70vh]"></div>
+      </div>
+
+      <div class="flex-shrink-0 w-72 bg-red-50/70 rounded-xl border border-red-200 flex flex-col shadow-sm">
+        <div class="p-3 bg-red-100/90 rounded-t-xl border-b border-red-200 flex justify-between items-center font-bold text-red-900 text-xs">
+          <span>🔴 Cancelados</span>
+          <span id="cant-cancelado" class="bg-white px-2 py-0.5 rounded-full text-[10px]">0</span>
+        </div>
+        <div id="col-cancelado" class="p-2 space-y-2 overflow-y-auto max-h-[70vh]"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- VISTA 3: DISEÑADOR -->
+  <main id="vista-disenador" class="max-w-5xl mx-auto p-4 md:p-6 flex-1 w-full hidden space-y-6">
+    
+    <!-- ACCIONES DE REINICIO DE SISTEMA (SOLO DISEÑADOR) -->
+    <div class="bg-red-50 p-5 rounded-xl border border-red-200 shadow-sm space-y-3">
+      <h3 class="text-sm font-bold text-red-900 flex items-center gap-2">
+        ⚠️ Herramientas de Mantenimiento y Reinicio
+      </h3>
+      <p class="text-xs text-red-700">
+        Usa estas funciones avanzadas para limpiar o restablecer colecciones completas en Firestore.
+      </p>
+      <div class="flex flex-wrap gap-3 pt-1">
+        <button onclick="reiniciarPedidosCompletos()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-3.5 py-2 rounded shadow transition-colors flex items-center gap-1.5">
+          🔄 Reiniciar TODOS los Pedidos
+        </button>
+        <button onclick="reiniciarPedidosFinalizados()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-3.5 py-2 rounded shadow transition-colors flex items-center gap-1.5">
+          🧹 Borrar Solo Entregados / Cancelados
+        </button>
+        <button onclick="reiniciarProductos()" class="bg-gray-800 hover:bg-black text-white font-bold text-xs px-3.5 py-2 rounded shadow transition-colors flex items-center gap-1.5">
+          📦 Restablecer Productos Iniciales
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      
+      <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 shadow-sm space-y-3">
+        <h3 class="text-sm font-bold text-emerald-900 flex items-center gap-2">
+          📱 Teléfono de WhatsApp de Pedidos
+        </h3>
+        <p class="text-[11px] text-emerald-800">
+          Número donde los clientes enviarán los pedidos por WhatsApp (con código de país sin + ni espacios).
+        </p>
+        
+        <form onsubmit="guardarTelefonoWhatsapp(event)" class="flex flex-col sm:flex-row gap-2 items-stretch">
+          <input type="tel" id="config-telefono-input" required placeholder="Ej: 5493564123456" class="flex-1 text-xs p-2 border border-emerald-300 rounded font-mono font-bold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          <button type="submit" id="btn-guardar-telefono" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded shadow transition-colors flex items-center justify-center gap-1">
+            💾 Guardar
+          </button>
+        </form>
+      </div>
+
+      <div class="bg-amber-50 p-5 rounded-xl border border-amber-200 shadow-sm space-y-3">
+        <h3 class="text-sm font-bold text-amber-900 flex items-center gap-2">
+          💳 Alias para Transferencias
+        </h3>
+        <p class="text-[11px] text-amber-800">
+          Se copiará automáticamente en el portapapeles del cliente al elegir transferencia.
+        </p>
+        
+        <form onsubmit="guardarAliasTransferencia(event)" class="flex flex-col sm:flex-row gap-2 items-stretch">
+          <input type="text" id="config-alias-input" required placeholder="Ej: POLLERIA.REY.MP" class="flex-1 text-xs p-2 border border-amber-300 rounded font-mono font-bold uppercase focus:ring-2 focus:ring-amber-500 focus:outline-none">
+          <button type="submit" id="btn-guardar-alias" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2 rounded shadow transition-colors flex items-center justify-center gap-1">
+            💾 Guardar
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- FORMULARIO DE CREACIÓN DE USUARIOS -->
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+      <div class="border-b pb-3">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+          👤 Gestión y Creación de Usuarios
+        </h2>
+        <p class="text-xs text-gray-500">Creación de accesos del sistema con asignación de roles.</p>
+      </div>
+
+      <form id="form-crear-usuario" onsubmit="crearUsuarioSistema(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Usuario / Email</label>
+          <input type="text" id="user-nombre" required placeholder="ej: juan.perez@correo.com" class="w-full text-xs p-2 border rounded">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Contraseña</label>
+          <input type="password" id="user-pass" required placeholder="••••••••" class="w-full text-xs p-2 border rounded">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Rol / Nivel de Permisos</label>
+          <select id="user-rol" class="w-full text-xs p-2 border rounded bg-white">
+            <option value="delivery_general">🛵 Delivery (General - Acceso Completo)</option>
+            <option value="delivery_reparto">🛵 Delivery (Reparto - Restringido)</option>
+            <option value="disenador">🎨 Diseñador</option>
+            <option value="administrador">👑 Administrador</option>
+            <option value="cliente">🛍️ Cliente</option>
+          </select>
+        </div>
+        <div class="md:col-span-3">
+          <button type="submit" class="bg-red-700 hover:bg-red-800 text-white text-xs font-bold py-2.5 px-4 rounded shadow">
+            👤 Crear Nuevo Usuario
+          </button>
+        </div>
+      </form>
+
+      <!-- LISTA DE USUARIOS CREADOS -->
+      <div class="border-t pt-4 space-y-3">
+        <h3 class="text-sm font-bold text-gray-800">Usuarios registrados en el sistema</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-gray-600">
+            <thead class="bg-gray-100 text-gray-800 font-bold border-b">
+              <tr>
+                <th class="p-2 border-r">Usuario</th>
+                <th class="p-2 border-r">Nombre</th>
+                <th class="p-2 border-r">Rol</th>
+                <th class="p-2">Creado Por</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-usuarios-creados" class="divide-y divide-gray-100">
+              <tr>
+                <td colspan="4" class="p-3 text-center text-gray-400 italic">Cargando usuarios...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULARIO DE PRODUCTOS -->
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+      <div class="border-b pb-3 flex justify-between items-center">
+        <div>
+          <h2 id="titulo-form-producto" class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            🎨 Panel del Diseñador - Crear Producto
+          </h2>
+          <p class="text-xs text-gray-500">Gestión de productos en la base de datos Firestore.</p>
+        </div>
+        <button id="btn-cancelar-edicion" onclick="cancelarEdicionProducto()" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold px-3 py-1.5 rounded transition-colors">
+          ✕ Cancelar Edición
+        </button>
+      </div>
+
+      <form id="form-nuevo-producto" onsubmit="guardarNuevoProducto(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="hidden" id="prod-id-editar" value="">
+
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Nombre del Producto</label>
+          <input type="text" id="prod-nombre" required placeholder="Ej: Pata y Muslo (1 kg)" class="w-full text-xs p-2 border rounded">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Categoría</label>
+          <select id="prod-categoria" class="select-categoria-dinamica w-full text-xs p-2 border rounded bg-white">
+            <option value="Ofertas">Ofertas</option>
+            <option value="Pollería">Pollería</option>
+            <option value="Despensa">Despensa</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Precio ($)</label>
+          <input type="number" id="prod-precio" required placeholder="3500" class="w-full text-xs p-2 border rounded">
+        </div>
+        
+        <div>
+          <label class="block text-xs font-bold text-gray-700 mb-1">Ícono o Emoji del Producto</label>
+          <div class="flex gap-2">
+            <input type="text" id="prod-icono" placeholder="Ej: 🍗, 🥩, 🍳, 📦" value="🍗" maxlength="5" class="w-24 text-center text-sm p-2 border rounded font-bold bg-amber-50">
+            <select onchange="document.getElementById('prod-icono').value = this.value" class="w-full text-xs p-2 border rounded bg-white text-gray-600">
+              <option value="">-- Seleccionar sugerido --</option>
+              <option value="🍗">🍗 Pollo / Pata</option>
+              <option value="🥩">🥩 Carne / Milanesa</option>
+              <option value="🍔">🍔 Hamburguesa / Medallón</option>
+              <option value="🍳">🍳 Huevos / Cocina</option>
+              <option value="🥓">🥓 Bacon / Fiambre</option>
+              <option value="🛒">🛒 Despensa / Acompañamiento</option>
+              <option value="🥤">🥤 Bebida</option>
+              <option value="🔥">🔥 Oferta Especial</option>
+              <option value="⭐">⭐ Destacado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-gray-700 mb-1">Descripción</label>
+          <input type="text" id="prod-desc" placeholder="Detalle del producto" class="w-full text-xs p-2 border rounded">
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" id="btn-guardar-producto" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded shadow flex items-center gap-2 transition-all">
+            ➕ Publicar Producto en Firebase
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+      <h3 class="text-base font-bold text-gray-800 border-b pb-2 flex justify-between items-center">
+        📋 Catálogo Actual en Base de Datos
+        <span id="cant-productos-disenador" class="text-xs bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full font-bold">0 productos</span>
+      </h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-gray-600">
+          <thead class="bg-gray-100 text-gray-800 font-bold border-b">
+            <tr>
+              <th class="p-2 border-r text-center">Ícono</th>
+              <th class="p-2 border-r">Nombre</th>
+              <th class="p-2 border-r">Categoría</th>
+              <th class="p-2 border-r">Precio</th>
+              <th class="p-2 text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-productos-disenador" class="divide-y divide-gray-100">
+            <tr>
+              <td colspan="5" class="p-4 text-center text-gray-400 italic">Cargando catálogo desde Firestore...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TABLA DE AUDITORÍA -->
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+      <div class="border-b pb-2 flex justify-between items-center">
+        <div>
+          <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+            📜 Registro de Auditoría y Modificaciones por Usuario
+          </h3>
+          <p class="text-xs text-gray-500">Historial de acciones registradas con firma de usuario y fecha (Exclusivo Diseñador).</p>
+        </div>
+        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2.5 py-1 rounded-full">
+          🟢 Tiempo Real
+        </span>
+      </div>
+
+      <div class="overflow-x-auto max-h-72 overflow-y-auto border rounded-lg">
+        <table class="w-full text-left text-xs text-gray-600">
+          <thead class="bg-gray-100 text-gray-800 font-bold sticky top-0 border-b">
+            <tr>
+              <th class="p-2.5 border-r">Fecha / Hora</th>
+              <th class="p-2.5 border-r">Usuario</th>
+              <th class="p-2.5 border-r">Rol</th>
+              <th class="p-2.5 border-r">Acción Realizada</th>
+              <th class="p-2.5">Detalles</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-auditoria" class="divide-y divide-gray-100">
+            <tr>
+              <td colspan="5" class="p-4 text-center text-gray-400 italic">Cargando historial de modificaciones...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- VISTA 4: ADMINISTRADOR (MENÚ RESUMEN DE VENTAS + GESTIÓN CATEGORÍAS + PLANTILLA WA) -->
+  <main id="vista-admin" class="max-w-5xl mx-auto p-4 md:p-6 flex-1 w-full hidden space-y-6">
+    
+    <!-- CONFIGURACIÓN DEL COSTO DE ENVÍO -->
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+      <div class="border-b pb-3">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+          🛵 Configuración del Costo de Envío
+        </h2>
+        <p class="text-xs text-gray-500">Establece el valor fijo que se sumará al carrito en pedidos con delivery a domicilio.</p>
+      </div>
+
+      <form onsubmit="guardarCostoEnvio(event)" class="flex flex-col sm:flex-row gap-3 items-end max-w-md">
+        <div class="flex-1 w-full">
+          <label class="block text-xs font-bold text-gray-700 mb-1">Precio de Envío ($)</label>
+          <input type="number" id="config-envio-input" required min="0" placeholder="Ej: 500" class="w-full text-xs p-2.5 border border-gray-300 rounded font-mono font-bold focus:ring-2 focus:ring-red-500 focus:outline-none">
+        </div>
+        <button type="submit" id="btn-guardar-costo-envio" class="bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-4 py-2.5 rounded shadow transition-colors flex items-center justify-center gap-1">
+          💾 Guardar Costo
+        </button>
+      </form>
+    </div>
+
+
+    <!-- MENÚ RESUMEN Y MÉTRICAS DE PEDIDOS (SOLO ADMIN) -->
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+      <div class="border-b pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <div>
+          <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            📊 Resumen General e Histórico de Pedidos
+          </h2>
+          <p class="text-xs text-gray-500">Estadísticas e ingresos desglosados por período, entrega, pagos y productos.</p>
+        </div>
+        <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full">
+          👑 Panel Administrador
+        </span>
+      </div>
+
+      <!-- MÉTRICAS TEMPORALES -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-red-50 p-3.5 rounded-xl border border-red-100 text-center">
+          <span class="text-[10px] font-bold uppercase text-red-600 tracking-wider">Hoy (Día)</span>
+          <div id="stat-dia-pedidos" class="text-xl font-black text-red-900 mt-1">0 ped.</div>
+          <div id="stat-dia-monto" class="text-xs font-bold text-red-700">$0</div>
+        </div>
+
+        <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-100 text-center">
+          <span class="text-[10px] font-bold uppercase text-amber-700 tracking-wider">Esta Semana</span>
+          <div id="stat-semana-pedidos" class="text-xl font-black text-amber-900 mt-1">0 ped.</div>
+          <div id="stat-semana-monto" class="text-xs font-bold text-amber-800">$0</div>
+        </div>
+
+        <div class="bg-blue-50 p-3.5 rounded-xl border border-blue-100 text-center">
+          <span class="text-[10px] font-bold uppercase text-blue-700 tracking-wider">Este Mes</span>
+          <div id="stat-mes-pedidos" class="text-xl font-black text-blue-900 mt-1">0 ped.</div>
+          <div id="stat-mes-monto" class="text-xs font-bold text-blue-800">$0</div>
+        </div>
+
+        <div class="bg-emerald-50 p-3.5 rounded-xl border border-emerald-100 text-center">
+          <span class="text-[10px] font-bold uppercase text-emerald-700 tracking-wider">Este Año</span>
+          <div id="stat-anio-pedidos" class="text-xl font-black text-emerald-900 mt-1">0 ped.</div>
+          <div id="stat-anio-monto" class="text-xs font-bold text-emerald-800">$0</div>
+        </div>
+      </div>
+
+      <!-- MÉTRICAS POR ENTREGA Y PAGO -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- FORMA DE ENTREGA -->
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
+          <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wide border-b pb-1 flex items-center gap-1.5">
+            🛵 Por Forma de Entrega
+          </h3>
+          <div class="flex justify-between items-center text-xs py-1 border-b border-gray-200/60">
+            <span class="text-gray-600">🏠 Delivery a Domicilio:</span>
+            <span id="stat-entrega-delivery" class="font-bold text-gray-900">0 ped. ($0)</span>
+          </div>
+          <div class="flex justify-between items-center text-xs py-1">
+            <span class="text-gray-600">🏪 Retiro en Local:</span>
+            <span id="stat-entrega-retiro" class="font-bold text-gray-900">0 ped. ($0)</span>
+          </div>
+        </div>
+
+        <!-- FORMA DE PAGO -->
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
+          <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wide border-b pb-1 flex items-center gap-1.5">
+            💳 Por Forma de Pago
+          </h3>
+          <div class="flex justify-between items-center text-xs py-1 border-b border-gray-200/60">
+            <span class="text-gray-600">💵 Efectivo:</span>
+            <span id="stat-pago-efectivo" class="font-bold text-gray-900">0 ped. ($0)</span>
+          </div>
+          <div class="flex justify-between items-center text-xs py-1">
+            <span class="text-gray-600">🏦 Transferencia / Alias:</span>
+            <span id="stat-pago-transferencia" class="font-bold text-gray-900">0 ped. ($0)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESGLOSE POR PRODUCTOS VENDIDOS -->
+      <div class="space-y-3">
+        <h3 class="text-xs font-bold text-gray-700 uppercase tracking-wide">
+          🍗 Resumen de Ventas por Producto
+        </h3>
+        <div class="overflow-x-auto border rounded-lg max-h-60 overflow-y-auto">
+          <table class="w-full text-left text-xs text-gray-600">
+            <thead class="bg-gray-100 text-gray-800 font-bold sticky top-0 border-b">
+              <tr>
+                <th class="p-2.5 border-r">Producto</th>
+                <th class="p-2.5 border-r text-center">Unidades Vendidas</th>
+                <th class="p-2.5 text-right">Recaudación Total</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-resumen-productos" class="divide-y divide-gray-100">
+              <tr>
+                <td colspan="3" class="p-3 text-center text-gray-400 italic">Cargando métricas de productos...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- GESTIÓN Y ADMINISTRACIÓN DE CATEGORÍAS (ADMIN) -->
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+      <div class="border-b pb-3 flex justify-between items-center">
+        <div>
+          <h2 id="titulo-form-categoria" class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            🏷️ Gestión de Categorías del Catálogo
+          </h2>
+          <p class="text-xs text-gray-500">Agrega, edita o elimina categorías para organizar los productos de la tienda.</p>
+        </div>
+        <button id="btn-cancelar-cat" onclick="cancelarEdicionCategoria()" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold px-3 py-1.5 rounded transition-colors">
+          ✕ Cancelar
+        </button>
+      </div>
+
+      <form id="form-categoria" onsubmit="guardarCategoria(event)" class="flex flex-col sm:flex-row gap-3 items-end">
+        <input type="hidden" id="cat-id-editar" value="">
+        <div class="flex-1 w-full">
+          <label class="block text-xs font-bold text-gray-700 mb-1">Nombre de la Categoría</label>
+          <input type="text" id="cat-nombre" required placeholder="Ej: Bebidas, Rotisería, Verdulería" class="w-full text-xs p-2.5 border rounded">
+        </div>
+        <button type="submit" id="btn-guardar-categoria" class="w-full sm:w-auto bg-red-700 hover:bg-red-800 text-white text-xs font-bold py-2.5 px-4 rounded shadow transition-colors">
+          ➕ Agregar Categoría
+        </button>
+      </form>
+
+      <div class="overflow-x-auto border rounded-lg max-h-52 overflow-y-auto">
+        <table class="w-full text-left text-xs text-gray-600">
+          <thead class="bg-gray-100 text-gray-800 font-bold sticky top-0 border-b">
+            <tr>
+              <th class="p-2.5 border-r">Categoría</th>
+              <th class="p-2.5 border-r text-center">Tipo</th>
+              <th class="p-2.5 text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-categorias-admin" class="divide-y divide-gray-100">
+            <tr>
+              <td colspan="3" class="p-3 text-center text-gray-400 italic">Cargando categorías...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CONFIGURACIÓN DE PLANTILLA DE WHATSAPP DESDE ADMIN -->
+    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+      <div class="border-b pb-3">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+          💬 Plantilla del Mensaje de WhatsApp
+        </h2>
+        <p class="text-xs text-gray-500">
+          Personaliza el formato del mensaje que recibe la tienda. Podés usar las siguientes variables dinámicas:
+        </p>
+        <div class="flex flex-wrap gap-2 mt-2">
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{ID}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{CLIENTE}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{USUARIO}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{MODO_ENTREGA}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{HORARIO}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{PAGO}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{RECORDATORIO_TRANSFERENCIA}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{OBSERVACIONES}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{DETALLE_PRODUCTOS}</span>
+          <span class="bg-amber-100 text-amber-900 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300">{TOTAL}</span>
+        </div>
+      </div>
+
+      <form onsubmit="guardarPlantillaWhatsapp(event)" class="space-y-3">
+        <div>
+          <textarea id="config-plantilla-wa" rows="10" required class="w-full text-xs font-mono p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:outline-none bg-gray-50"></textarea>
+        </div>
+        <div class="flex gap-2 justify-end">
+          <button type="button" onclick="restablecerPlantillaPorDefecto()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold py-2 px-3 rounded transition-colors">
+            🔄 Restablecer Texto por Defecto
+          </button>
+          <button type="submit" class="bg-red-700 hover:bg-red-800 text-white text-xs font-bold py-2 px-4 rounded shadow transition-colors">
+            💾 Guardar Plantilla de WhatsApp
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- SCRIPTS Y LÓGICA CON FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      deleteDoc,
+      serverTimestamp, 
+      query, 
+      orderBy, 
+      onSnapshot, 
+      doc, 
+      getDoc,
+      getDocs,
+      setDoc,
+      updateDoc 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBalo_rRUD2SAgzd1O1BNhm8jFN4Xz5w58",
+      authDomain: "polleria-645e7.firebaseapp.com",
+      projectId: "polleria-645e7",
+      storageBucket: "polleria-645e7.firebasestorage.app",
+      messagingSenderId: "78618397906",
+      appId: "1:78618397906:web:42a89925127ea2968e310b",
+      measurementId: "G-DG2M8ZRL20"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const PLANTILLA_WHATSAPP_DEFECTO = 
+`🍗 *NUEVO PEDIDO POLLERÍA REY #{ID}*
+👤 *Cliente:* {CLIENTE} ({USUARIO})
+{MODO_ENTREGA}
+{HORARIO}
+💳 *Pago:* {PAGO}
+{RECORDATORIO_TRANSFERENCIA}
+📝 *Observaciones:* {OBSERVACIONES}
+
+📋 *Detalle del Pedido:*
+{DETALLE_PRODUCTOS}
+
+💵 *Total:* {TOTAL}`;
+
+    const CATEGORIAS_INICIALES = ["Ofertas", "Pollería", "Despensa"];
+
+    const PRODUCTOS_INICIALES = [
+      {
+        nombre: "Pollo Entero Fresco (1 kg)",
+        categoria: "Pollería",
+        precio: 3800,
+        icono: "🍗",
+        descripcion: "Limpio, trozado o entero listo para cocinar."
+      },
+      {
+        nombre: "Milanesas de Pechuga (1 kg)",
+        categoria: "Ofertas",
+        precio: 5200,
+        icono: "🥩",
+        descripcion: "Preparadas artesanalmente con pan rallado y especias."
+      }
+    ];
+
+    const baseUsuarios = JSON.parse(localStorage.getItem("polleria_rey_usuarios")) || [
+      { username: "hjs", pass: "hermesjs", nombre: "Administrador", rol: "administrador", creadoPor: "sistema" },
+      { username: "Hermes", pass: "Hjs2154", nombre: "Diseñador", rol: "disenador", creadoPor: "sistema" },
+      { username: "delivery_general", pass: "1234", nombre: "Delivery General", rol: "delivery_general", creadoPor: "sistema" },
+      { username: "delivery_reparto", pass: "1234", nombre: "Repartidor", rol: "delivery_reparto", creadoPor: "sistema" }
+    ];
+
+    let productosCache = {};
+    let categoriasCache = [];
+    let usuarioActual = { username: "anonimo", nombre: "Anónimo", rol: "cliente" };
+    let carrito = [];
+    let sonidoHabilitado = false;
+    let esCargaInicial = true;
+    let pedidoPendiente = null;
+    let aliasActual = "POLLERIA.REY.MP";
+    let telefonoWhatsappActual = "5493564123456";
+    let plantillaWhatsappActual = PLANTILLA_WHATSAPP_DEFECTO;   
+    let costoEnvioActual = 0;
+    let categoriaSeleccionadaFiltro = "Todas";
+
+    // Configuración de Puntos por Defecto
+    let configPuntos = {
+      activo: false,
+      pesos: 1000,
+      puntos: 10,
+      fechaExpiracion: ""
+    };
+
+    actualizarBadgeUsuario();
+
+    // ESCUCHAR CATEGORÍAS EN TIEMPO REAL DESDE FIRESTORE
+    const qCategorias = query(collection(db, "categories"));
+    onSnapshot(qCategorias, async (snapshot) => {
+      if (snapshot.empty) {
+        for (const cat of CATEGORIAS_INICIALES) {
+          await addDoc(collection(db, "categories"), {
+            nombre: cat,
+            creadoEn: serverTimestamp()
+          });
+        }
+        return;
+      }
+
+      categoriasCache = [];
+      snapshot.docs.forEach(d => {
+        categoriasCache.push({ id: d.id, ...d.data() });
+      });
+
+      // Asegurar que Ofertas esté al inicio de la lista
+      categoriasCache.sort((a, b) => {
+        if (a.nombre.toLowerCase() === 'ofertas') return -1;
+        if (b.nombre.toLowerCase() === 'ofertas') return 1;
+        return a.nombre.localeCompare(b.nombre);
+      });
+
+      renderizarCategoriasUI();
+    });
+
+    function renderizarCategoriasUI() {
+      // 1. Renderizar en Filtros de la Tienda
+      const contFiltros = document.getElementById("contenedor-filtro-categorias");
+      if (contFiltros) {
+        let htmlFiltros = `
+          <button onclick="filtrarPorCategoria('Todas')" class="btn-filtro-cat ${categoriaSeleccionadaFiltro === 'Todas' ? 'bg-red-600 text-white font-bold' : 'bg-gray-200 text-gray-700 hover:bg-gray-300 font-semibold'} text-xs px-3.5 py-1.5 rounded-full shadow-sm transition-all">
+            🌟 Todas
+          </button>
+        `;
+
+        categoriasCache.forEach(cat => {
+          const esSel = categoriaSeleccionadaFiltro === cat.nombre;
+          const esOferta = cat.nombre.toLowerCase() === "ofertas";
+          const claseBtn = esSel 
+            ? (esOferta ? 'bg-amber-500 text-white font-black ring-2 ring-amber-300' : 'bg-red-600 text-white font-bold') 
+            : (esOferta ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 font-bold' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 font-semibold');
+
+          htmlFiltros += `
+            <button onclick="filtrarPorCategoria('${cat.nombre.replace(/'/g, "\\'")}')" class="btn-filtro-cat ${claseBtn} text-xs px-3.5 py-1.5 rounded-full shadow-sm transition-all flex items-center gap-1">
+              ${esOferta ? '🔥 ' : ''}${cat.nombre}
+            </button>
+          `;
+        });
+        contFiltros.innerHTML = htmlFiltros;
+      }
+
+      // 2. Renderizar en Select de Diseñador
+      const selectsCategoria = document.querySelectorAll(".select-categoria-dinamica");
+      selectsCategoria.forEach(selectEl => {
+        const valActual = selectEl.value;
+        selectEl.innerHTML = "";
+        categoriasCache.forEach(cat => {
+          selectEl.innerHTML += `<option value="${cat.nombre}">${cat.nombre}</option>`;
+        });
+        if (valActual && Array.from(selectEl.options).some(o => o.value === valActual)) {
+          selectEl.value = valActual;
+        }
+      });
+
+      // 3. Renderizar en Tabla del Admin
+      const tablaCatAdmin = document.getElementById("tabla-categorias-admin");
+      if (tablaCatAdmin) {
+        tablaCatAdmin.innerHTML = "";
+        categoriasCache.forEach(cat => {
+          const esOferta = cat.nombre.toLowerCase() === "ofertas";
+          tablaCatAdmin.innerHTML += `
+            <tr class="hover:bg-gray-50 text-xs">
+              <td class="p-2.5 border-r font-bold text-gray-900 flex items-center gap-1">
+                ${esOferta ? '🔥' : '🏷️'} ${cat.nombre}
+              </td>
+              <td class="p-2.5 border-r text-center">
+                <span class="${esOferta ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-700'} px-2 py-0.5 rounded text-[10px] font-bold">
+                  ${esOferta ? 'Sistema (Principal)' : 'Estándar'}
+                </span>
+              </td>
+              <td class="p-2.5 text-center space-x-1">
+                <button onclick="cargarCategoriaParaEditar('${cat.id}', '${cat.nombre.replace(/'/g, "\\'")}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-2 py-1 rounded transition-colors text-[10px]">
+                  ✏️ Editar
+                </button>
+                ${!esOferta ? `
+                  <button onclick="eliminarCategoria('${cat.id}', '${cat.nombre.replace(/'/g, "\\'")}')" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-2 py-1 rounded transition-colors text-[10px]">
+                    🗑️ Eliminar
+                  </button>
+                ` : '<span class="text-[10px] text-gray-400 italic">Fija</span>'}
+              </td>
+            </tr>
+          `;
+        });
+      }
+
+      // Re-renderizar productos al cambiar categorías para mantener filtros consistentes
+      renderizarProductosTienda();
+    }
+
+    window.filtrarPorCategoria = (catNombre) => {
+      categoriaSeleccionadaFiltro = catNombre;
+      renderizarCategoriasUI();
+    };
+
+    // FUNCIONES ADMINISTRACIÓN DE CATEGORÍAS
+    window.guardarCategoria = async (e) => {
+      e.preventDefault();
+      const idEditar = document.getElementById("cat-id-editar").value;
+      const nombreCat = document.getElementById("cat-nombre").value.trim();
+
+      if (!nombreCat) return;
+
+      try {
+        if (idEditar) {
+          await updateDoc(doc(db, "categories", idEditar), {
+            nombre: nombreCat,
+            modificadoPor: usuarioActual.username,
+            modificadoEn: serverTimestamp()
+          });
+          await registrarAuditoria("Modificación Categoría", `Categoría renombrada a "${nombreCat}" por ${usuarioActual.username}`);
+          alert("Categoría actualizada correctamente.");
+          cancelarEdicionCategoria();
+        } else {
+          // Verificar duplicado
+          const duplicado = categoriasCache.find(c => c.nombre.toLowerCase() === nombreCat.toLowerCase());
+          if (duplicado) return alert("Esa categoría ya existe.");
+
+          await addDoc(collection(db, "categories"), {
+            nombre: nombreCat,
+            creadoPor: usuarioActual.username,
+            creadoEn: serverTimestamp()
+          });
+          await registrarAuditoria("Creación Categoría", `Nueva categoría "${nombreCat}" agregada por ${usuarioActual.username}`);
+          alert("Categoría agregada correctamente.");
+          cancelarEdicionCategoria();
+        }
+      } catch (err) {
+        console.error("Error al guardar categoría:", err);
+        alert("Ocurrió un error al guardar la categoría.");
+      }
+    };
+
+    window.cargarCategoriaParaEditar = (id, nombre) => {
+      document.getElementById("cat-id-editar").value = id;
+      document.getElementById("cat-nombre").value = nombre;
+
+      document.getElementById("titulo-form-categoria").innerText = "✏️ Editar Categoría";
+      document.getElementById("btn-guardar-categoria").innerText = "💾 Guardar Cambios";
+      document.getElementById("btn-cancelar-cat").classList.remove("hidden");
+    };
+
+    window.cancelarEdicionCategoria = () => {
+      document.getElementById("form-categoria").reset();
+      document.getElementById("cat-id-editar").value = "";
+
+      document.getElementById("titulo-form-categoria").innerText = "🏷️ Gestión de Categorías del Catálogo";
+      document.getElementById("btn-guardar-categoria").innerText = "➕ Agregar Categoría";
+      document.getElementById("btn-cancelar-cat").classList.add("hidden");
+    };
+
+    window.eliminarCategoria = async (id, nombre) => {
+      if (!confirm(`¿Eliminar la categoría "${nombre}"? Los productos asignados a ella requerirán reasignación.`)) return;
+      try {
+        await deleteDoc(doc(db, "categories", id));
+        await registrarAuditoria("Eliminación Categoría", `Categoría "${nombre}" eliminada por ${usuarioActual.username}`);
+        alert("Categoría eliminada.");
+      } catch (err) {
+        console.error("Error al eliminar categoría:", err);
+        alert("Error al eliminar la categoría.");
+      }
+    };
+
+    // 1. ESCUCHAR EL ALIAS DESDE FIRESTORE
+    onSnapshot(doc(db, "config", "transferencia"), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().alias) {
+        aliasActual = docSnap.data().alias;
+      }
+      const inputAlias = document.getElementById("config-alias-input");
+      if (inputAlias) inputAlias.value = aliasActual;
+    });
+
+    // 2. ESCUCHAR EL TELÉFONO DE WHATSAPP DESDE FIRESTORE
+    onSnapshot(doc(db, "config", "whatsapp"), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().telefono) {
+        telefonoWhatsappActual = docSnap.data().telefono;
+      }
+      const inputTel = document.getElementById("config-telefono-input");
+      if (inputTel) inputTel.value = telefonoWhatsappActual;
+    });
+
+    // 3. ESCUCHAR PLANTILLA DE WHATSAPP DESDE FIRESTORE
+    onSnapshot(doc(db, "config", "whatsapp_template"), (docSnap) => {
+      if (docSnap.exists() && docSnap.data().plantilla) {
+        plantillaWhatsappActual = docSnap.data().plantilla;
+      } else {
+        plantillaWhatsappActual = PLANTILLA_WHATSAPP_DEFECTO;
+      }
+      const areaPlantilla = document.getElementById("config-plantilla-wa");
+      if (areaPlantilla) areaPlantilla.value = plantillaWhatsappActual;
+    });
+
+    // 4. ESCUCHAR CONFIGURACIÓN DE PUNTOS DESDE FIRESTORE
+    onSnapshot(doc(db, "config", "puntos"), (docSnap) => {
+      if (docSnap.exists()) {
+        configPuntos = { ...configPuntos, ...docSnap.data() };
+      }
+      const checkActivo = document.getElementById("puntos-activo");
+      const inputPesos = document.getElementById("puntos-pesos");
+      const inputPuntos = document.getElementById("puntos-cantidad");
+      const inputFecha = document.getElementById("puntos-fecha-expiracion");
+
+      if (checkActivo) checkActivo.checked = Boolean(configPuntos.activo);
+      if (inputPesos) inputPesos.value = configPuntos.pesos || 1000;
+      if (inputPuntos) inputPuntos.value = configPuntos.puntos || 10;
+      if (inputFecha) inputFecha.value = configPuntos.fechaExpiracion || "";
+    });
+
+    // 5. ESCUCHAR COSTO DE ENVÍO DESDE FIRESTORE
+    onSnapshot(doc(db, "config", "envio"), (docSnap) => {
+      if (docSnap.exists() && typeof docSnap.data().costo !== "undefined") {
+        costoEnvioActual = Number(docSnap.data().costo) || 0;
+      } else {
+        costoEnvioActual = 0;
+      }
+      const inputEnvio = document.getElementById("config-envio-input");
+      if (inputEnvio) inputEnvio.value = costoEnvioActual;
+      actualizarCarritoUI();
+    });
+
+    // AUXILIAR DE PERMISOS
+    function tienePermiso(permiso) {
+      if (usuarioActual.rol === "administrador" || usuarioActual.rol === "disenador") return true;
+      if (permiso === "mod_envio" && usuarioActual.rol === "administrador") return true;
+      return false;
+    }
+
+    // GUARDAR COSTO DE ENVÍO EN FIRESTORE
+    window.guardarCostoEnvio = async (e) => {
+      e.preventDefault();
+      if (!tienePermiso("mod_envio")) return alert("No tienes permisos para modificar el costo de envío.");
+
+      const nuevoCosto = Number(document.getElementById("config-envio-input").value) || 0;
+
+      try {
+        await setDoc(doc(db, "config", "envio"), {
+          costo: nuevoCosto,
+          actualizadoPor: usuarioActual.username,
+          actualizadoEn: serverTimestamp()
+        }, { merge: true });
+
+        await registrarAuditoria("Modificación Costo Envío", `Costo de envío actualizado a $${nuevoCosto} por ${usuarioActual.username}.`);
+        alert("¡Costo de envío actualizado con éxito!");
+      } catch (err) {
+        console.error("Error al guardar el costo de envío:", err);
+        alert("Ocurrió un error al intentar actualizar el costo de envío.");
+      }
+    };
+
+    // FUNCIONALIDADES EXCLUSIVAS DEL MODO DISEÑADOR
+    window.reiniciarPedidosCompletos = async () => {
+      if (!confirm("⚠️ ¿Estás seguro de que deseas ELIMINAR TODOS los pedidos registradas en la base de datos? Esta acción no se puede deshacer.")) return;
+      try {
+        const querySnapshot = await getDocs(collection(db, "orders"));
+        const deletePromises = querySnapshot.docs.map(d => deleteDoc(doc(db, "orders", d.id)));
+        await Promise.all(deletePromises);
+
+        await registrarAuditoria("Reinicio Total Pedidos", `Todos los pedidos (${querySnapshot.docs.length}) fueron reiniciados por el Diseñador ${usuarioActual.username}.`);
+        alert("¡Todos los pedidos han sido eliminados correctamente!");
+      } catch (err) {
+        console.error("Error al reiniciar pedidos:", err);
+        alert("Ocurrió un error al intentar eliminar los pedidos.");
+      }
+    };
+
+    window.reiniciarPedidosFinalizados = async () => {
+      if (!confirm("🧹 ¿Deseas eliminar únicamente los pedidos con estado Entregado o Cancelado?")) return;
+      try {
+        const querySnapshot = await getDocs(collection(db, "orders"));
+        let count = 0;
+        const deletePromises = [];
+
+        querySnapshot.docs.forEach(docSnap => {
+          const st = docSnap.data().estado;
+          if (st === "entregado" || st === "cancelado") {
+            deletePromises.push(deleteDoc(doc(db, "orders", docSnap.id)));
+            count++;
+          }
+        });
+
+        await Promise.all(deletePromises);
+        await registrarAuditoria("Limpieza Pedidos Finalizados", `Se eliminaron ${count} pedidos entregados/cancelados por ${usuarioActual.username}.`);
+        alert(`Se han eliminado ${count} pedidos finalizados.`);
+      } catch (err) {
+        console.error("Error al limpiar pedidos:", err);
+        alert("Ocurrió un error al limpiar los pedidos finalizados.");
+      }
+    };
+
+    window.reiniciarProductos = async () => {
+      if (!confirm("📦 ¿Deseas borrar el catálogo actual y restaurar los productos iniciales por defecto?")) return;
+      try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        const deletePromises = querySnapshot.docs.map(d => deleteDoc(doc(db, "products", d.id)));
+        await Promise.all(deletePromises);
+
+        for (const prod of PRODUCTOS_INICIALES) {
+          await addDoc(collection(db, "products"), {
+            ...prod,
+            creadoPor: usuarioActual.username,
+            creadoEn: serverTimestamp()
+          });
+        }
+
+        await registrarAuditoria("Reinicio Catálogo Productos", `Catálogo reseteado a productos por defecto por ${usuarioActual.username}.`);
+        alert("¡El catálogo de productos ha sido restablecido a su estado inicial!");
+      } catch (err) {
+        console.error("Error al reiniciar productos:", err);
+        alert("Error al restablecer los productos.");
+      }
+    };
+
+    // GUARDAR CONFIGURACIÓN DE PUNTOS EN FIRESTORE
+    window.guardarConfiguracionPuntos = async (e) => {
+      e.preventDefault();
+      const activo = document.getElementById("puntos-activo").checked;
+      const pesos = Number(document.getElementById("puntos-pesos").value);
+      const puntos = Number(document.getElementById("puntos-cantidad").value);
+      const fechaExpiracion = document.getElementById("puntos-fecha-expiracion").value;
+
+      try {
+        await setDoc(doc(db, "config", "puntos"), {
+          activo: activo,
+          pesos: pesos,
+          puntos: puntos,
+          fechaExpiracion: fechaExpiracion,
+          actualizadoPor: usuarioActual.username,
+          actualizadoEn: serverTimestamp()
+        }, { merge: true });
+
+        await registrarAuditoria("Modificación Sistema de Puntos", `Puntos ${activo ? 'Activados' : 'Desactivados'}: ${puntos} pts por $${pesos}. Expiración: ${fechaExpiracion || 'Sin caducidad'}.`);
+        alert("¡Configuración del sistema de puntos guardada correctamente!");
+      } catch (err) {
+        console.error("Error al guardar puntos:", err);
+        alert("Ocurrió un error al guardar la configuración de puntos.");
+      }
+    };
+
+    // GUARDAR PLANTILLA DE WHATSAPP EN FIRESTORE (ADMIN)
+    window.guardarPlantillaWhatsapp = async (e) => {
+      e.preventDefault();
+      const nuevaPlantilla = document.getElementById("config-plantilla-wa").value.trim();
+      if (!nuevaPlantilla) return alert("La plantilla no puede estar vacía.");
+
+      try {
+        await setDoc(doc(db, "config", "whatsapp_template"), {
+          plantilla: nuevaPlantilla,
+          actualizadoPor: usuarioActual.username,
+          actualizadoEn: serverTimestamp()
+        }, { merge: true });
+
+        await registrarAuditoria("Modificación Plantilla WhatsApp", `Plantilla de resumen actualizada por ${usuarioActual.username}.`);
+        alert("¡Plantilla de WhatsApp guardada con éxito!");
+      } catch (err) {
+        console.error("Error al guardar la plantilla:", err);
+        alert("Ocurrió un error al guardar la plantilla.");
+      }
+    };
+
+    window.restablecerPlantillaPorDefecto = () => {
+      if (confirm("¿Deseas restablecer la plantilla al formato original?")) {
+        document.getElementById("config-plantilla-wa").value = PLANTILLA_WHATSAPP_DEFECTO;
+      }
+    };
+
+    // GUARDAR ALIAS EN FIRESTORE
+    window.guardarAliasTransferencia = async (e) => {
+      e.preventDefault();
+      const nuevoAlias = document.getElementById("config-alias-input").value.trim().toUpperCase();
+      if (!nuevoAlias) return;
+
+      try {
+        await setDoc(doc(db, "config", "transferencia"), {
+          alias: nuevoAlias,
+          actualizadoPor: usuarioActual.username,
+          actualizadoEn: serverTimestamp()
+        }, { merge: true });
+
+        await registrarAuditoria("Modificación de Alias", `Alias cambiado a "${nuevoAlias}" por ${usuarioActual.username}.`);
+        alert("¡Alias de transferencia guardado con éxito!");
+      } catch (err) {
+        console.error("Error al guardar alias:", err);
+        alert("Ocurrió un error al intentar actualizar el Alias.");
+      }
+    };
+
+    // GUARDAR TELÉFONO DE WHATSAPP EN FIRESTORE
+    window.guardarTelefonoWhatsapp = async (e) => {
+      e.preventDefault();
+      let nuevoTel = document.getElementById("config-telefono-input").value.trim().replace(/[^0-9]/g, "");
+      if (!nuevoTel) return alert("Por favor ingresa un número válido (sólo dígitos, ej: 5493564123456).");
+
+      try {
+        await setDoc(doc(db, "config", "whatsapp"), {
+          telefono: nuevoTel,
+          actualizadoPor: usuarioActual.username,
+          actualizadoEn: serverTimestamp()
+        }, { merge: true });
+
+        await registrarAuditoria("Modificación Teléfono WhatsApp", `Teléfono cambiado a "${nuevoTel}" por ${usuarioActual.username}.`);
+        alert("¡Número de WhatsApp de pedidos actualizado con éxito!");
+      } catch (err) {
+        console.error("Error al guardar teléfono:", err);
+        alert("Ocurrió un error al intentar actualizar el número de WhatsApp.");
+      }
+    };
+
+    // ALTERNAR MODO ENTREGA
+    window.alternarModoEntrega = (esRetiro) => {
+      const contDireccion = document.getElementById("contenedor-direccion");
+      const inputDireccion = document.getElementById("cli-direccion");
+      const lblHorario = document.getElementById("lbl-horario-preferente");
+      const subtexto = document.getElementById("subtexto-horario");
+
+      if (esRetiro) {
+        contDireccion.classList.add("hidden");
+        inputDireccion.removeAttribute("required");
+        lblHorario.innerText = "🏪 Horario preferente de retiro en local (Aproximado)";
+        subtexto.innerText = "Dentro del horario de atención del local (Ej: 11:30 a 12:30 hs).";
+      } else {
+        contDireccion.classList.remove("hidden");
+        inputDireccion.setAttribute("required", "true");
+        lblHorario.innerText = "🕒 Horario preferente de entrega (Aproximado)";
+        subtexto.innerText = "Ej: de 12:00 a 13:00 hs.";
+      }
+      actualizarCarritoUI();
+    };
+
+    window.gestionarSeleccionPago = (metodo) => {
+      if (metodo === "transferencia") {
+        copiarAlias();
+      } else {
+        document.getElementById("alerta-alias-copiado").classList.add("hidden");
+      }
+    };
+
+    window.copiarAlias = () => {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(aliasActual);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = aliasActual;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      const alertaEl = document.getElementById("alerta-alias-copiado");
+      const textoEl = document.getElementById("texto-alerta-alias");
+      if (alertaEl && textoEl) {
+        textoEl.innerHTML = `📋 Alias copiado: <strong>${aliasActual}</strong>`;
+        alertaEl.classList.remove("hidden");
+      }
+    };
+
+    window.irAlCarrito = () => {
+      mostrarVista('cliente');
+      const seccion = document.getElementById("seccion-carrito");
+      if (seccion) {
+        seccion.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    window.abrirModalLogin = () => {
+      document.getElementById("modal-login").classList.remove("hidden");
+    };
+
+    window.cerrarModalLogin = () => {
+      document.getElementById("modal-login").classList.add("hidden");
+    };
+
+    window.abrirLoginDesdePremio = () => {
+      document.getElementById("modal-premio").classList.add("hidden");
+      document.getElementById("modal-login").classList.remove("hidden");
+    };
+
+    window.confirmarPedidoAnonimo = () => {
+      document.getElementById("modal-premio").classList.add("hidden");
+      if (pedidoPendiente) {
+        const tempPedido = pedidoPendiente;
+        pedidoPendiente = null;
+        procesarEnvioPedido(tempPedido);
+      }
+    };
+
+    window.crearUsuarioSistema = (e) => {
+      e.preventDefault();
+      const username = document.getElementById("user-nombre").value.trim();
+      const pass = document.getElementById("user-pass").value.trim();
+      const rol = document.getElementById("user-rol").value;
+
+      if (!username || !pass) return alert("Completa los datos del usuario.");
+
+      const existe = baseUsuarios.find(u => u.username.toLowerCase() === username.toLowerCase());
+      if (existe) return alert("El nombre de usuario ya está registrado.");
+
+      const nuevoU = {
+        username: username,
+        pass: pass,
+        nombre: username,
+        rol: rol,
+        creadoPor: usuarioActual.username
+      };
+
+      baseUsuarios.push(nuevoU);
+      localStorage.setItem("polleria_rey_usuarios", JSON.stringify(baseUsuarios));
+      registrarAuditoria("Creación de Usuario", `Usuario ${username} con rol ${rol} creado por ${usuarioActual.username}.`);
+      alert(`Usuario ${username} creado con éxito.`);
+      document.getElementById("form-crear-usuario").reset();
+      renderizarUsuariosCreados();
+    };
+
+    function renderizarUsuariosCreados() {
+      const tbody = document.getElementById("tabla-usuarios-creados");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      baseUsuarios.forEach(u => {
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-50 text-xs">
+            <td class="p-2 border-r font-bold text-gray-900">${u.username}</td>
+            <td class="p-2 border-r">${u.nombre || u.username}</td>
+            <td class="p-2 border-r"><span class="bg-red-50 text-red-700 px-1.5 py-0.5 rounded font-bold uppercase text-[10px]">${u.rol}</span></td>
+            <td class="p-2 text-gray-500">${u.creadoPor || "sistema"}</td>
+          </tr>
+        `;
+      });
+    }
+
+    window.ejecutarLogin = (e) => {
+      e.preventDefault();
+      const userIngresado = document.getElementById("login-usuario").value.trim();
+      const passIngresado = document.getElementById("login-pass").value.trim();
+      const errorEl = document.getElementById("login-error");
+
+      let encontrado = baseUsuarios.find(u => u.username.toLowerCase() === userIngresado.toLowerCase() && u.pass === passIngresado);
+
+      if (!encontrado && userIngresado.includes("@")) {
+        encontrado = { username: userIngresado, pass: passIngresado, nombre: userIngresado, rol: "cliente", creadoPor: "registro_directo" };
+        baseUsuarios.push(encontrado);
+        localStorage.setItem("polleria_rey_usuarios", JSON.stringify(baseUsuarios));
+      }
+
+      if (encontrado) {
+        usuarioActual = encontrado;
+        errorEl.classList.add("hidden");
+        document.getElementById("modal-login").classList.add("hidden");
+
+        actualizarBadgeUsuario();
+        registrarAuditoria("Inicio de Sesión", `El usuario ${usuarioActual.username} ingresó al sistema.`);
+        configurarNavegacionSegunRol();
+
+        if (pedidoPendiente) {
+          const tempPedido = pedidoPendiente;
+          pedidoPendiente = null;
+          procesarEnvioPedido(tempPedido);
+        }
+      } else {
+        errorEl.classList.remove("hidden");
+      }
+    };
+
+    window.cerrarSesion = () => {
+      if (usuarioActual) {
+        registrarAuditoria("Cierre de Sesión", `El usuario ${usuarioActual.username} salió del sistema.`);
+      }
+      usuarioActual = { username: "anonimo", nombre: "Anónimo", rol: "cliente" };
+      actualizarBadgeUsuario();
+      configurarNavegacionSegunRol();
+    };
+
+    function actualizarBadgeUsuario() {
+      document.getElementById("user-nombre-display").innerText = usuarioActual.username;
+      document.getElementById("user-rol-display").innerText = usuarioActual.rol;
+
+      const btnLogin = document.getElementById("btn-login-header");
+      const btnLogout = document.getElementById("btn-logout-header");
+
+      if (usuarioActual.username === "anonimo") {
+        btnLogin.classList.remove("hidden");
+        btnLogout.classList.add("hidden");
+      } else {
+        btnLogin.classList.add("hidden");
+        btnLogout.classList.remove("hidden");
+      }
+    }
+
+    function configurarNavegacionSegunRol() {
+      const btnCli = document.getElementById("btn-tab-cliente");
+      const btnDel = document.getElementById("btn-tab-delivery");
+      const btnDis = document.getElementById("btn-tab-disenador");
+      const btnAdm = document.getElementById("btn-tab-admin");
+      const btnClientesCompras = document.getElementById("btn-tab-clientes-compras");
+      const btnPuntos = document.getElementById("btn-tab-puntos");
+
+      const esDelivery = usuarioActual.rol === "delivery_general" || 
+                         usuarioActual.rol === "delivery_reparto" || 
+                         usuarioActual.rol === "delivery";
+
+      btnCli.style.display = "block";
+      btnDel.style.display = (esDelivery || usuarioActual.rol === "administrador") ? "block" : "none";
+      btnDis.style.display = (usuarioActual.rol === "disenador") ? "block" : "none";
+      btnAdm.style.display = (usuarioActual.rol === "administrador") ? "block" : "none";
+      btnClientesCompras.style.display = (usuarioActual.rol === "administrador" || usuarioActual.rol === "disenador") ? "block" : "none";
+      btnPuntos.style.display = (usuarioActual.rol === "administrador" || usuarioActual.rol === "disenador") ? "block" : "none";
+
+      if (usuarioActual.rol === "administrador") {
+        mostrarVista("admin");
+      }
+      else if (usuarioActual.rol === "disenador") {
+        mostrarVista("disenador");
+        renderizarUsuariosCreados();
+      }
+      else if (esDelivery) mostrarVista("delivery");
+      else mostrarVista("cliente");
+    }
+
+    window.mostrarVista = (vista) => {
+      document.getElementById("vista-cliente").classList.add("hidden");
+      document.getElementById("vista-delivery").classList.add("hidden");
+      document.getElementById("vista-disenador").classList.add("hidden");
+      document.getElementById("vista-admin").classList.add("hidden");
+      document.getElementById("vista-clientes-compras").classList.add("hidden");
+      document.getElementById("vista-puntos").classList.add("hidden");
+
+      if (vista === "cliente") document.getElementById("vista-cliente").classList.remove("hidden");
+      if (vista === "delivery") document.getElementById("vista-delivery").classList.remove("hidden");
+      if (vista === "disenador") document.getElementById("vista-disenador").classList.remove("hidden");
+      if (vista === "admin") document.getElementById("vista-admin").classList.remove("hidden");
+      if (vista === "clientes-compras") document.getElementById("vista-clientes-compras").classList.remove("hidden");
+      if (vista === "puntos") document.getElementById("vista-puntos").classList.remove("hidden");
+    };
+
+    async function registrarAuditoria(accion, detalle) {
+      if (!usuarioActual) return;
+      try {
+        await addDoc(collection(db, "audit_logs"), {
+          usuario: usuarioActual.username,
+          rol: usuarioActual.rol,
+          accion: accion,
+          detalle: detalle,
+          fecha: serverTimestamp()
+        });
+      } catch (err) {
+        console.error("Error al registrar auditoría:", err);
+      }
+    }
+
+    const qAudit = query(collection(db, "audit_logs"), orderBy("fecha", "desc"));
+    onSnapshot(qAudit, (snapshot) => {
+      const tbody = document.getElementById("tabla-auditoria");
+      if (!tbody) return;
+
+      tbody.innerHTML = "";
+      if (snapshot.empty) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400 italic">No hay registros de cambios aún.</td></tr>`;
+        return;
+      }
+
+      snapshot.docs.forEach(docSnap => {
+        const log = docSnap.data();
+        const fechaFormat = log.fecha ? new Date(log.fecha.seconds * 1000).toLocaleString("es-AR") : "Reciente";
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-50 text-[11px]">
+            <td class="p-2 border-r text-gray-500 font-mono">${fechaFormat}</td>
+            <td class="p-2 border-r font-bold text-gray-900">${log.usuario || "Anónimo"}</td>
+            <td class="p-2 border-r"><span class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded font-semibold">${log.rol || "N/A"}</span></td>
+            <td class="p-2 border-r font-semibold text-red-700">${log.accion}</td>
+            <td class="p-2 text-gray-600">${log.detalle}</td>
+          </tr>
+        `;
+      });
+    });
+
+    // ESCUCHAR Y RENDERIZAR PRODUCTOS
+    const qProducts = query(collection(db, "products"));
+
+    onSnapshot(qProducts, async (snapshot) => {
+      if (snapshot.empty) {
+        for (const prod of PRODUCTOS_INICIALES) {
+          await addDoc(collection(db, "products"), {
+            ...prod,
+            creadoEn: serverTimestamp()
+          });
+        }
+        return;
+      }
+
+      productosCache = {};
+      snapshot.docs.forEach(docSnap => {
+        const p = { id: docSnap.id, ...docSnap.data() };
+        productosCache[p.id] = p;
+      });
+
+      renderizarProductosTienda();
+    });
+
+    function renderizarProductosTienda() {
+      const contenedorTienda = document.getElementById("lista-productos");
+      const tablaDisenador = document.getElementById("tabla-productos-disenador");
+      const cantProdBadge = document.getElementById("cant-productos-disenador");
+
+      if (contenedorTienda) contenedorTienda.innerHTML = "";
+      if (tablaDisenador) tablaDisenador.innerHTML = "";
+
+      let listaProductos = Object.values(productosCache);
+      if (cantProdBadge) cantProdBadge.innerText = `${listaProductos.length} productos`;
+
+      // ORDENAR: Primero Ofertas, luego resto de productos
+      listaProductos.sort((a, b) => {
+        const aOferta = (a.categoria || '').toLowerCase() === 'ofertas';
+        const bOferta = (b.categoria || '').toLowerCase() === 'ofertas';
+
+        if (aOferta && !bOferta) return -1;
+        if (!aOferta && bOferta) return 1;
+        return (a.nombre || '').localeCompare(b.nombre || '');
+      });
+
+      // FILTRAR SI CORRESPONDE
+      let productosFiltrados = listaProductos;
+      if (categoriaSeleccionadaFiltro !== "Todas") {
+        productosFiltrados = listaProductos.filter(p => (p.categoria || '').toLowerCase() === categoriaSeleccionadaFiltro.toLowerCase());
+      }
+
+      if (contenedorTienda) {
+        if (productosFiltrados.length === 0) {
+          contenedorTienda.innerHTML = `<div class="col-span-full text-center py-8 text-gray-400 text-xs italic">No hay productos en esta categoría.</div>`;
+        } else {
+          productosFiltrados.forEach(p => {
+            const precioFormateado = Number(p.precio || 0).toLocaleString("es-AR");
+            const esOferta = (p.categoria || '').toLowerCase() === 'ofertas';
+
+            contenedorTienda.innerHTML += `
+              <div class="bg-white rounded-xl border ${esOferta ? 'border-amber-300 ring-1 ring-amber-200' : 'border-gray-200'} shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <span class="text-[10px] uppercase font-bold ${esOferta ? 'bg-amber-500' : 'bg-red-600'} text-white px-2 py-0.5 rounded shadow inline-block mb-2">
+                        ${esOferta ? '🔥 ' : ''}${p.categoria || 'Pollería'}
+                      </span>
+                      <h3 class="font-bold text-gray-900 text-base flex items-center gap-1.5">
+                        <span>${p.icono || '🍗'}</span> ${p.nombre}
+                      </h3>
+                      <p class="text-xs text-gray-500 mt-1">${p.descripcion || 'Producto fresco de calidad superior.'}</p>
+                    </div>
+                    <span class="text-2xl" title="Ícono del Producto">${p.icono || '🍗'}</span>
+                  </div>
+                  <div class="pt-2 flex justify-between items-center border-t border-gray-100">
+                    <span class="font-extrabold text-red-700 text-xl">$${precioFormateado}</span>
+                    <button onclick="agregarAlCarrito('${p.id}', '${p.nombre.replace(/'/g, "\\'")}', ${p.precio}, '${p.icono || '🍗'}')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition-colors shadow-sm flex items-center gap-1">
+                      🛒 + Agregar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+        }
+      }
+
+      if (tablaDisenador) {
+        listaProductos.forEach(p => {
+          const precioFormateado = Number(p.precio || 0).toLocaleString("es-AR");
+          tablaDisenador.innerHTML += `
+            <tr class="hover:bg-gray-50 text-[11px]">
+              <td class="p-2 border-r text-center text-lg">${p.icono || '🍗'}</td>
+              <td class="p-2 border-r font-bold text-gray-900">${p.nombre}</td>
+              <td class="p-2 border-r"><span class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded font-semibold">${p.categoria || 'Pollería'}</span></td>
+              <td class="p-2 border-r font-extrabold text-red-700">$${precioFormateado}</td>
+              <td class="p-2 text-center space-x-1">
+                <button onclick="cargarProductoParaEditar('${p.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-2 py-1 rounded transition-colors text-[10px]">
+                  ✏️ Editar
+                </button>
+                <button onclick="eliminarProducto('${p.id}', '${p.nombre.replace(/'/g, "\\'")}')" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-2 py-1 rounded transition-colors text-[10px]">
+                  🗑️ Eliminar
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+      }
+    }
+
+    window.cargarProductoParaEditar = (id) => {
+      const prod = productosCache[id];
+      if (!prod) return alert("No se encontraron los datos del producto.");
+
+      document.getElementById("prod-id-editar").value = prod.id;
+      document.getElementById("prod-nombre").value = prod.nombre || "";
+      document.getElementById("prod-categoria").value = prod.categoria || "Pollería";
+      document.getElementById("prod-precio").value = prod.precio || 0;
+      document.getElementById("prod-desc").value = prod.descripcion || "";
+      document.getElementById("prod-icono").value = prod.icono || "🍗";
+
+      document.getElementById("titulo-form-producto").innerHTML = "✏️ Editar Producto Cargado";
+      document.getElementById("btn-cancelar-edicion").classList.remove("hidden");
+
+      const btnSubmit = document.getElementById("btn-guardar-producto");
+      btnSubmit.innerHTML = "💾 Guardar Cambios en Producto";
+      btnSubmit.className = "bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold py-2.5 px-4 rounded shadow flex items-center gap-2 transition-all";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.cancelarEdicionProducto = () => {
+      document.getElementById("form-nuevo-producto").reset();
+      document.getElementById("prod-id-editar").value = "";
+      document.getElementById("prod-icono").value = "🍗";
+
+      document.getElementById("titulo-form-producto").innerHTML = "🎨 Panel del Diseñador - Crear Producto";
+      document.getElementById("btn-cancelar-edicion").classList.add("hidden");
+
+      const btnSubmit = document.getElementById("btn-guardar-producto");
+      btnSubmit.innerHTML = "➕ Publicar Producto en Firebase";
+      btnSubmit.className = "bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded shadow flex items-center gap-2 transition-all";
+    };
+
+    window.guardarNuevoProducto = async (e) => {
+      e.preventDefault();
+      
+      const idEditar = document.getElementById("prod-id-editar").value;
+      const esEdicion = Boolean(idEditar);
+
+      const btnSubmit = document.getElementById("btn-guardar-producto");
+      const textoOriginal = btnSubmit.innerHTML;
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = esEdicion ? "⏳ Actualizando producto..." : "⏳ Guardando...";
+
+      try {
+        const nombre = document.getElementById("prod-nombre").value.trim();
+        const categoria = document.getElementById("prod-categoria").value;
+        const precio = Number(document.getElementById("prod-precio").value);
+        const desc = document.getElementById("prod-desc").value.trim();
+        const icono = document.getElementById("prod-icono").value.trim() || "🍗";
+
+        if (esEdicion) {
+          await updateDoc(doc(db, "products", idEditar), {
+            nombre: nombre,
+            categoria: categoria,
+            precio: precio,
+            descripcion: desc,
+            icono: icono,
+            modificadoPor: usuarioActual.username,
+            modificadoEn: serverTimestamp()
+          });
+
+          await registrarAuditoria("Producto Modificado", `Producto "${nombre}" (#${idEditar}) modificado por ${usuarioActual.username}. Nuevo precio: $${precio}`);
+          alert("¡Producto actualizado exitosamente!");
+          cancelarEdicionProducto();
+        } else {
+          await addDoc(collection(db, "products"), {
+            nombre: nombre,
+            categoria: categoria,
+            precio: precio,
+            descripcion: desc,
+            icono: icono,
+            creadoPor: usuarioActual.username,
+            creadoEn: serverTimestamp()
+          });
+
+          await registrarAuditoria("Producto Creado", `Producto: ${nombre} (${icono}) por $${precio} guardado en Firestore por ${usuarioActual.username}.`);
+          alert("¡Producto publicado correctamente!");
+          cancelarEdicionProducto();
+        }
+
+      } catch (err) {
+        console.error("Error al procesar el producto:", err);
+        alert("Ocurrió un error al procesar el producto en Firebase.");
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = textoOriginal;
+      }
+    };
+
+    window.eliminarProducto = async (id, nombre) => {
+      if (!confirm(`¿Estás seguro de eliminar el producto "${nombre}" del catálogo global?`)) return;
+      try {
+        await deleteDoc(doc(db, "products", id));
+        await registrarAuditoria("Producto Eliminado", `El producto "${nombre}" (#${id}) fue eliminado por ${usuarioActual.username}.`);
+        
+        if (document.getElementById("prod-id-editar").value === id) {
+          cancelarEdicionProducto();
+        }
+        
+        alert(`Producto "${nombre}" eliminado con éxito.`);
+      } catch (err) {
+        console.error("Error al eliminar producto:", err);
+        alert("Error al eliminar el producto.");
+      }
+    };
+
+    window.agregarAlCarrito = (id, nombre, precio, icono = '🍗') => {
+      const existe = carrito.find(i => i.id === id);
+      if (existe) {
+        existe.cantidad += 1;
+      } else {
+        carrito.push({ id, nombre, precio, icono, cantidad: 1 });
+      }
+      actualizarCarritoUI();
+    };
+
+    function actualizarCarritoUI() {
+      const lista = document.getElementById("items-carrito");
+      const totalEl = document.getElementById("total-carrito");
+      const cantItemsEl = document.getElementById("cant-items");
+      const montoEnvioEl = document.getElementById("monto-envio-display");
+
+      const resumenCant = document.getElementById("resumen-cant-items");
+      const resumenTotal = document.getElementById("resumen-total-importe");
+
+      const esRetiro = document.getElementById("cli-retiro-local") ? document.getElementById("cli-retiro-local").checked : false;
+
+      if (carrito.length === 0) {
+        lista.innerHTML = `<li class="text-xs text-gray-400 italic py-2 text-center">El carrito está vacío.</li>`;
+        totalEl.innerText = "$0";
+        cantItemsEl.innerText = "0 items";
+        if (montoEnvioEl) montoEnvioEl.innerText = "$0";
+
+        if (resumenCant) resumenCant.innerText = "0 productos";
+        if (resumenTotal) resumenTotal.innerText = "$0";
+        return;
+      }
+
+      let subtotal = 0;
+      let totalCant = 0;
+      lista.innerHTML = "";
+
+      carrito.forEach((item, idx) => {
+        subtotal += item.precio * item.cantidad;
+        totalCant += item.cantidad;
+        lista.innerHTML += `
+          <li class="py-1.5 flex justify-between items-center text-xs">
+            <div><span class="font-bold text-gray-800">${item.cantidad}x</span> ${item.icono || '🍗'} ${item.nombre}</div>
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-gray-700">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
+              <button onclick="eliminarDelCarrito(${idx})" class="text-red-500 font-bold px-1 hover:bg-red-50 rounded">✕</button>
+            </div>
+          </li>`;
+      });
+
+      const costoEnvioAplicado = esRetiro ? 0 : costoEnvioActual;
+      const totalConEnvio = subtotal + costoEnvioAplicado;
+
+      if (montoEnvioEl) {
+        montoEnvioEl.innerText = esRetiro ? "Gratis (Retiro)" : `$${costoEnvioAplicado.toLocaleString('es-AR')}`;
+      }
+
+      const totalFormateado = `$${totalConEnvio.toLocaleString('es-AR')}`;
+      totalEl.innerText = totalFormateado;
+      cantItemsEl.innerText = `${totalCant} items`;
+
+      if (resumenCant) resumenCant.innerText = `${totalCant} ${totalCant === 1 ? 'producto' : 'productos'}`;
+      if (resumenTotal) resumenTotal.innerText = totalFormateado;
+    }
+
+    window.eliminarDelCarrito = (index) => {
+      carrito.splice(index, 1);
+      actualizarCarritoUI();
+    };
+
+    window.realizarPedido = (e) => {
+      e.preventDefault();
+      if (carrito.length === 0) return alert("Agrega al menos un producto al carrito.");
+
+      const esRetiro = document.getElementById("cli-retiro-local").checked;
+      const horaDesde = document.getElementById("cli-horario-desde").value;
+      const horaHasta = document.getElementById("cli-horario-hasta").value;
+
+      let horarioPreferente = "";
+      if (horaDesde || horaHasta) {
+        horarioPreferente = `De ${horaDesde || '--:--'} a ${horaHasta || '--:--'} hs`;
+      }
+
+      const subtotal = carrito.reduce((acc, i) => acc + (i.precio * i.cantidad), 0);
+      const costoEnvioFinal = esRetiro ? 0 : costoEnvioActual;
+
+      pedidoPendiente = {
+        nombreCliente: document.getElementById("cli-nombre").value.trim(),
+        telefonoCliente: document.getElementById("cli-telefono").value.trim(),
+        esRetiroLocal: esRetiro,
+        direccionEnvio: esRetiro ? "Retiro en local" : document.getElementById("cli-direccion").value.trim(),
+        horarioPreferente: horarioPreferente || "Sin preferencia especificada",
+        metodoPago: document.getElementById("cli-pago").value,
+        observaciones: document.getElementById("cli-observaciones").value.trim() || "Sin observaciones",
+        items: carrito.map(i => ({ productId: i.id, nombre: i.nombre, icono: i.icono, cantidad: i.cantidad, precioUnitario: i.precio })),
+        costoEnvio: costoEnvioFinal,
+        subtotal: subtotal,
+        total: subtotal + costoEnvioFinal
+      };
+
+      if (usuarioActual.username === "anonimo") {
+        document.getElementById("modal-premio").classList.remove("hidden");
+      } else {
+        procesarEnvioPedido(pedidoPendiente);
+      }
+    };
+
+    async function procesarEnvioPedido(dataPedido) {
+      const clienteData = {
+        ...dataPedido,
+        estado: "pendiente",
+        creadoPorUsuario: usuarioActual.username,
+        creadoEn: serverTimestamp()
+      };
+
+      try {
+        const docRef = await addDoc(collection(db, "orders"), clienteData);
+
+        await registrarAuditoria("Creación de Pedido", `Pedido #${docRef.id.slice(-5).toUpperCase()} registrado por "${usuarioActual.username}" por $${clienteData.total}`);
+
+        const idPedidoShort = docRef.id.slice(-5).toUpperCase();
+        const resumenItems = clienteData.items.map(i => `• ${i.icono || '🍗'} ${i.cantidad}x ${i.nombre} ($${(i.precioUnitario * i.cantidad).toLocaleString('es-AR')})`).join("\n");
+        const modoTexto = clienteData.esRetiroLocal ? "🏪 *RETIRO EN LOCAL*" : `📍 *Dirección:* ${clienteData.direccionEnvio}`;
+        const horarioTexto = clienteData.esRetiroLocal ? `🕒 *Horario estimado de retiro:* ${clienteData.horarioPreferente}` : `🕒 *Horario preferente de entrega:* ${clienteData.horarioPreferente}`;
+        const pagoTexto = clienteData.metodoPago === 'transferencia' ? `Transferencia (Alias: ${aliasActual})` : 'Efectivo';
+        
+        const recordatorioTransferencia = clienteData.metodoPago === 'transferencia' 
+          ? "⚠️ *RECORDATORIO:* Por favor no olvides enviar el comprobante de transferencia por este medio para confirmar el pedido." 
+          : "";
+
+        let mensajeFinal = plantillaWhatsappActual
+          .replace(/{ID}/g, idPedidoShort)
+          .replace(/{CLIENTE}/g, clienteData.nombreCliente)
+          .replace(/{USUARIO}/g, usuarioActual.username)
+          .replace(/{MODO_ENTREGA}/g, modoTexto)
+          .replace(/{HORARIO}/g, horarioTexto)
+          .replace(/{PAGO}/g, pagoTexto)
+          .replace(/{RECORDATORIO_TRANSFERENCIA}/g, recordatorioTransferencia)
+          .replace(/{OBSERVACIONES}/g, clienteData.observaciones)
+          .replace(/{DETALLE_PRODUCTOS}/g, resumenItems)
+          .replace(/{TOTAL}/g, `$${clienteData.total.toLocaleString('es-AR')}`);
+
+        mensajeFinal = mensajeFinal.replace(/\n\s*\n\s*\n/g, '\n\n').trim();
+
+        carrito = [];
+        actualizarCarritoUI();
+        document.getElementById("form-checkout").reset();
+        alternarModoEntrega(false);
+        document.getElementById("alerta-alias-copiado").classList.add("hidden");
+
+        window.location.href = `https://wa.me/${telefonoWhatsappActual}?text=${encodeURIComponent(mensajeFinal)}`;
+
+      } catch (err) {
+        console.error("Error al registrar pedido:", err);
+      }
+    }
+
+    function emitirSonidoAlerta() {
+      if (!sonidoHabilitado) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.setValueAtTime(900, ctx.currentTime + 0.15);
+
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    window.alternarSonido = () => {
+      sonidoHabilitado = !sonidoHabilitado;
+      const btn = document.getElementById("btn-audio");
+      btn.innerText = sonidoHabilitado ? "🔔 Alertas: Activadas" : "🔕 Alerta Sonora: Desactivada";
+    };
+
+    window.cambiarEstadoPedido = async (idPedido, nuevoEstado) => {
+      try {
+        await updateDoc(doc(db, "orders", idPedido), {
+          estado: nuevoEstado,
+          actualizadoPor: usuarioActual.username,
+          actualizadoEn: serverTimestamp()
+        });
+
+        await registrarAuditoria("Cambio Estado Pedido", `Pedido #${idPedido.slice(-5).toUpperCase()} cambiado a "${nuevoEstado}" por ${usuarioActual.username}`);
+      } catch (err) {
+        console.error("Error al cambiar estado:", err);
+        alert("Error al actualizar el estado del pedido.");
+      }
+    };
+
+    function crearTarjetaDelivery(pedido) {
+      const card = document.createElement("div");
+      card.className = "bg-white p-3 rounded-lg border border-gray-200 shadow-sm space-y-2 text-xs";
+
+      const idShort = pedido.id.slice(-5).toUpperCase();
+      const fechaFormat = pedido.creadoEn ? new Date(pedido.creadoEn.seconds * 1000).toLocaleTimeString("es-AR", { hour: '2-digit', minute: '2-digit' }) : "--:--";
+
+      const detalleItems = (pedido.items || []).map(i => `<div class="flex justify-between"><span>${i.cantidad}x ${i.icono || '🍗'} ${i.nombre}</span><span class="font-bold">$${(i.precioUnitario * i.cantidad).toLocaleString('es-AR')}</span></div>`).join("");
+
+      const modoEntregaBadge = pedido.esRetiroLocal 
+        ? `<span class="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded font-bold text-[10px]">🏪 Retiro</span>`
+        : `<span class="bg-blue-100 text-blue-900 px-1.5 py-0.5 rounded font-bold text-[10px]">🛵 Envío</span>`;
+
+      const pagoBadge = pedido.metodoPago === 'transferencia'
+        ? `<span class="bg-purple-100 text-purple-900 px-1.5 py-0.5 rounded font-bold text-[10px]">💳 Transf.</span>`
+        : `<span class="bg-emerald-100 text-emerald-900 px-1.5 py-0.5 rounded font-bold text-[10px]">💵 Efectivo</span>`;
+
+      card.innerHTML = `
+        <div class="flex justify-between items-center border-b pb-1">
+          <span class="font-black text-red-700">#${idShort}</span>
+          <span class="text-[10px] text-gray-400 font-mono">${fechaFormat} hs</span>
+        </div>
+        <div>
+          <div class="font-bold text-gray-900">${pedido.nombreCliente || "Cliente"}</div>
+          <div class="text-[11px] text-gray-500">📱 ${pedido.telefonoCliente || "N/A"}</div>
+          <div class="text-[11px] text-gray-700 font-semibold mt-0.5">${pedido.direccionEnvio || "Retiro en local"}</div>
+        </div>
+        <div class="flex gap-1 pt-1 border-t">
+          ${modoEntregaBadge}
+          ${pagoBadge}
+        </div>
+        <div class="bg-gray-50 p-1.5 rounded space-y-0.5 border border-gray-100 max-h-24 overflow-y-auto">
+          ${detalleItems}
+        </div>
+        ${pedido.costoEnvio ? `<div class="flex justify-between text-[11px] text-gray-500"><span>Coste Envío:</span><span>$${pedido.costoEnvio.toLocaleString('es-AR')}</span></div>` : ''}
+        <div class="flex justify-between items-center pt-1 border-t font-black text-sm text-gray-900">
+          <span>Total:</span>
+          <span class="text-red-700">$${(pedido.total || 0).toLocaleString('es-AR')}</span>
+        </div>
+        ${pedido.observaciones && pedido.observaciones !== 'Sin observaciones' ? `<div class="text-[10px] bg-yellow-50 p-1 rounded border border-yellow-200 text-yellow-800">📝 ${pedido.observaciones}</div>` : ''}
+        
+        <div class="pt-2 flex flex-wrap gap-1">
+          ${pedido.estado !== 'pendiente' ? `<button onclick="cambiarEstadoPedido('${pedido.id}', 'pendiente')" class="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 text-[10px] font-bold py-1 rounded">🟡 Pendiente</button>` : ''}
+          ${pedido.estado !== 'en_preparacion' ? `<button onclick="cambiarEstadoPedido('${pedido.id}', 'en_preparacion')" class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-800 text-[10px] font-bold py-1 rounded">🔵 Preparar</button>` : ''}
+          ${pedido.estado !== 'en_camino' ? `<button onclick="cambiarEstadoPedido('${pedido.id}', 'en_camino')" class="flex-1 bg-purple-100 hover:bg-purple-200 text-purple-800 text-[10px] font-bold py-1 rounded">🛵 En Camino</button>` : ''}
+          ${pedido.estado !== 'entregado' ? `<button onclick="cambiarEstadoPedido('${pedido.id}', 'entregado')" class="flex-1 bg-green-600 hover:bg-green-700 text-white text-[10px] font-bold py-1 rounded">🟢 Entregar</button>` : ''}
+          ${pedido.estado !== 'cancelado' ? `<button onclick="cambiarEstadoPedido('${pedido.id}', 'cancelado')" class="bg-red-100 hover:bg-red-200 text-red-700 text-[10px] font-bold px-2 py-1 rounded">🔴</button>` : ''}
+        </div>
+      `;
+
+      return card;
+    }
+
+    function renderizarClientesCompras(clientesMap) {
+      const tbody = document.getElementById("tabla-clientes-compras");
+      if (!tbody) return;
+
+      tbody.innerHTML = "";
+      const lista = Object.values(clientesMap);
+
+      if (lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400 italic">No hay clientes ni ventas registradas.</td></tr>`;
+        return;
+      }
+
+      lista.forEach(c => {
+        let puntosAcumulados = 0;
+        if (configPuntos.activo && configPuntos.pesos > 0) {
+          puntosAcumulados = Math.floor((c.totalConsumido / configPuntos.pesos) * configPuntos.puntos);
+        }
+
+        const msjPromo = `¡Hola ${c.nombre}! 🍗 Vimos que tenés acumulados ${puntosAcumulados} puntos en Pollería REY. ¡Aprovechá nuestras ofertas exclusivas de hoy!`;
+        const linkWa = `https://wa.me/${c.telefono.replace(/[^0-9]/g, "")}?text=${encodeURIComponent(msjPromo)}`;
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-gray-50 text-xs">
+            <td class="p-2.5 border-r font-bold text-gray-900">${c.nombre}</td>
+            <td class="p-2.5 border-r font-mono">${c.telefono}</td>
+            <td class="p-2.5 border-r text-center font-bold">${c.cantPedidos}</td>
+            <td class="p-2.5 border-r text-right font-extrabold text-red-700">$${c.totalConsumido.toLocaleString('es-AR')}</td>
+            <td class="p-2.5 border-r text-center"><span class="bg-amber-100 text-amber-900 font-black px-2 py-0.5 rounded-full text-[10px]">⭐ ${puntosAcumulados} pts</span></td>
+            <td class="p-2.5 text-center">
+              <a href="${linkWa}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded text-[10px] transition-colors inline-flex items-center gap-1">
+                💬 Enviar Promo
+              </a>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    const qOrdersRealtime = query(collection(db, "orders"), orderBy("creadoEn", "desc"));
+
+    onSnapshot(qOrdersRealtime, (snapshot) => {
+      const columnas = {
+        pendiente: document.getElementById("col-pendiente"),
+        en_preparacion: document.getElementById("col-en_preparacion"),
+        en_camino: document.getElementById("col-en_camino"),
+        entregado: document.getElementById("col-entregado"),
+        cancelado: document.getElementById("col-cancelado"),
+      };
+
+      const contadores = { pendiente: 0, en_preparacion: 0, en_camino: 0, entregado: 0, cancelado: 0 };
+      Object.values(columnas).forEach(col => { if(col) col.innerHTML = ""; });
+
+      if (!esCargaInicial) {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === "added" && change.doc.data().estado === "pendiente") {
+            emitirSonidoAlerta();
+          }
+        });
+      } else {
+        esCargaInicial = false;
+      }
+
+      const clientesMap = {};
+      const listaPedidos = [];
+
+      snapshot.docs.forEach(docSnap => {
+        const order = { id: docSnap.id, ...docSnap.data() };
+        listaPedidos.push(order);
+        const colKey = order.estado || "pendiente";
+
+        if (columnas[colKey]) {
+          contadores[colKey]++;
+          columnas[colKey].appendChild(crearTarjetaDelivery(order));
+        }
+
+        // Agrupar datos para la sección de Registro de Clientes y Compras
+        const telKey = order.telefonoCliente || "sin_telefono";
+        if (!clientesMap[telKey]) {
+          clientesMap[telKey] = {
+            nombre: order.nombreCliente || "Cliente",
+            telefono: order.telefonoCliente || "N/A",
+            cantPedidos: 0,
+            totalConsumido: 0
+          };
+        }
+        clientesMap[telKey].cantPedidos += 1;
+        clientesMap[telKey].totalConsumido += (order.total || 0);
+      });
+
+      Object.keys(contadores).forEach(key => {
+        const badge = document.getElementById(`cant-${key}`);
+        if (badge) badge.innerText = contadores[key];
+      });
+
+      renderizarClientesCompras(clientesMap);
+      actualizarResumenEstadisticosAdmin(listaPedidos);
+    });
+
+    // LÓGICA DE CALCULO DE MÉTRICAS Y RESUMEN PARA MODO ADMINISTRADOR
+    function actualizarResumenEstadisticosAdmin(pedidos) {
+      const ahora = new Date();
+      
+      const inicioDia = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+      
+      const diaSemana = ahora.getDay(); 
+      const diffPistas = ahora.getDate() - diaSemana + (diaSemana === 0 ? -6 : 1);
+      const inicioSemana = new Date(ahora);
+      inicioSemana.setDate(diffPistas);
+      inicioSemana.setHours(0,0,0,0);
+      
+      const inicioMes = new Date(ahora.getFullYear(), ahora.getMonth(), 1);
+      const inicioAnio = new Date(ahora.getFullYear(), 0, 1);
+
+      let statDia = { count: 0, total: 0 };
+      let statSemana = { count: 0, total: 0 };
+      let statMes = { count: 0, total: 0 };
+      let statAnio = { count: 0, total: 0 };
+
+      let statEntrega = {
+        delivery: { count: 0, total: 0 },
+        retiro: { count: 0, total: 0 }
+      };
+
+      let statPago = {
+        efectivo: { count: 0, total: 0 },
+        transferencia: { count: 0, total: 0 }
+      };
+
+      const productosMap = {};
+
+      pedidos.forEach(p => {
+        if (p.estado === "cancelado") return;
+
+        const totalP = p.total || 0;
+        const fechaP = p.creadoEn ? new Date(p.creadoEn.seconds * 1000) : new Date();
+
+        if (fechaP >= inicioDia) { statDia.count++; statDia.total += totalP; }
+        if (fechaP >= inicioSemana) { statSemana.count++; statSemana.total += totalP; }
+        if (fechaP >= inicioMes) { statMes.count++; statMes.total += totalP; }
+        if (fechaP >= inicioAnio) { statAnio.count++; statAnio.total += totalP; }
+
+        if (p.esRetiroLocal) {
+          statEntrega.retiro.count++;
+          statEntrega.retiro.total += totalP;
+        } else {
+          statEntrega.delivery.count++;
+          statEntrega.delivery.total += totalP;
+        }
+
+        if (p.metodoPago === 'transferencia') {
+          statPago.transferencia.count++;
+          statPago.transferencia.total += totalP;
+        } else {
+          statPago.efectivo.count++;
+          statPago.efectivo.total += totalP;
+        }
+
+        (p.items || []).forEach(item => {
+          const keyProd = item.nombre || "Producto Desconocido";
+          if (!productosMap[keyProd]) {
+            productosMap[keyProd] = {
+              nombre: keyProd,
+              cant: 0,
+              recaudacion: 0
+            };
+          }
+          productosMap[keyProd].cant += item.cantidad;
+          productosMap[keyProd].recaudacion += (item.precioUnitario * item.cantidad);
+        });
+      });
+
+      const elDiaP = document.getElementById("stat-dia-pedidos");
+      const elDiaM = document.getElementById("stat-dia-monto");
+      if (elDiaP && elDiaM) {
+        elDiaP.innerText = `${statDia.count} ped.`;
+        elDiaM.innerText = `$${statDia.total.toLocaleString('es-AR')}`;
+      }
+
+      const elSemP = document.getElementById("stat-semana-pedidos");
+      const elSemM = document.getElementById("stat-semana-monto");
+      if (elSemP && elSemM) {
+        elSemP.innerText = `${statSemana.count} ped.`;
+        elSemM.innerText = `$${statSemana.total.toLocaleString('es-AR')}`;
+      }
+
+      const elMesP = document.getElementById("stat-mes-pedidos");
+      const elMesM = document.getElementById("stat-mes-monto");
+      if (elMesP && elMesM) {
+        elMesP.innerText = `${statMes.count} ped.`;
+        elMesM.innerText = `$${statMes.total.toLocaleString('es-AR')}`;
+      }
+
+      const elAnioP = document.getElementById("stat-anio-pedidos");
+      const elAnioM = document.getElementById("stat-anio-monto");
+      if (elAnioP && elAnioM) {
+        elAnioP.innerText = `${statAnio.count} ped.`;
+        elAnioM.innerText = `$${statAnio.total.toLocaleString('es-AR')}`;
+      }
+
+      const elEntDel = document.getElementById("stat-entrega-delivery");
+      const elEntRet = document.getElementById("stat-entrega-retiro");
+      if (elEntDel) elEntDel.innerText = `${statEntrega.delivery.count} ped. ($${statEntrega.delivery.total.toLocaleString('es-AR')})`;
+      if (elEntRet) elEntRet.innerText = `${statEntrega.retiro.count} ped. ($${statEntrega.retiro.total.toLocaleString('es-AR')})`;
+
+      const elPagEfe = document.getElementById("stat-pago-efectivo");
+      const elPagTra = document.getElementById("stat-pago-transferencia");
+      if (elPagEfe) elPagEfe.innerText = `${statPago.efectivo.count} ped. ($${statPago.efectivo.total.toLocaleString('es-AR')})`;
+      if (elPagTra) elPagTra.innerText = `${statPago.transferencia.count} ped. ($${statPago.transferencia.total.toLocaleString('es-AR')})`;
+
+      const tbodyProds = document.getElementById("tabla-resumen-productos");
+      if (tbodyProds) {
+        tbodyProds.innerHTML = "";
+        const listaProdStats = Object.values(productosMap);
+
+        if (listaProdStats.length === 0) {
+          tbodyProds.innerHTML = `<tr><td colspan="3" class="p-3 text-center text-gray-400 italic">No hay registros de ventas por producto.</td></tr>`;
+        } else {
+          listaProdStats.sort((a, b) => b.recaudacion - a.recaudacion);
+          listaProdStats.forEach(pr => {
+            tbodyProds.innerHTML += `
+              <tr class="hover:bg-gray-50 text-xs">
+                <td class="p-2.5 border-r font-bold text-gray-900">${pr.nombre}</td>
+                <td class="p-2.5 border-r text-center font-bold">${pr.cant} u.</td>
+                <td class="p-2.5 text-right font-extrabold text-red-700">$${pr.recaudacion.toLocaleString('es-AR')}</td>
+              </tr>
+            `;
+          });
+        }
+      }
+    }
+  </script>
+</body>
+</html>
