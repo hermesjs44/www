@@ -223,7 +223,7 @@
 
                         <div class="text-center pt-2">
                             <button type="submit" class="bg-white text-blue-900 font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition-all w-full sm:w-auto">
-                                <i class="fa-solid fa-paper-plane mr-2"></i> Enviar 
+                                <i class="fa-solid fa-paper-plane mr-2"></i> Enviar mi Solicitud de poner mi Negocio al Directorio
                             </button>
                         </div>
                     </form>
@@ -1171,39 +1171,38 @@
             document.getElementById('admin-cat-submit-btn').textContent = "Guardar Categoría";
         }
 
-        // Public Form Submit Handler (Firebase)
-        window.handleFormSubmit = async function(e) {
+        // Public Form Submit Handler modificado para WhatsApp
+        window.handleFormSubmit = function(e) {
             e.preventDefault();
 
-            const name = document.getElementById('form-name').value;
+            const name = document.getElementById('form-name').value.trim();
             const category = document.getElementById('form-category').value;
             const locality = document.getElementById('form-locality').value;
-            const phone = document.getElementById('form-phone').value;
-            const website = document.getElementById('form-website').value;
-            const image = document.getElementById('form-image').value || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80';
-            const description = document.getElementById('form-desc').value;
+            const phone = document.getElementById('form-phone').value.trim();
+            const website = document.getElementById('form-website').value.trim();
+            const image = document.getElementById('form-image').value.trim();
+            const description = document.getElementById('form-desc').value.trim();
 
-            const newService = {
-                name,
-                category,
-                locality,
-                description,
-                image,
-                website,
-                whatsapp: phone.replace(/\D/g,''),
-                featured: false
-            };
+            // Construir el mensaje formateado para WhatsApp
+            let mensaje = `*¡Hola! Quiero sumar mi negocio al Directorio Regional:*%0A%0A`;
+            mensaje += `🏪 *Nombre:* ${name}%0A`;
+            mensaje += `📂 *Categoría:* ${category}%0A`;
+            mensaje += `📍 *Localidad:* ${locality}%0A`;
+            mensaje += `📱 *WhatsApp / Teléfono:* ${phone}%0A`;
+            if (website) mensaje += `🌐 *Sitio Web/App:* ${website}%0A`;
+            if (image) mensaje += `🖼️ *Imagen:* ${image}%0A`;
+            mensaje += `📝 *Descripción:* ${description}`;
 
-            try {
-                const docRef = await addDoc(collection(db, "negocios"), newService);
-                servicesData.unshift({ id: docRef.id, ...newService });
-                renderServices();
-                document.getElementById('business-form').reset();
-                showToast("¡Negocio agregado con éxito!", `${name} ya se encuentra publicado en la nube.`);
-            } catch (error) {
-                console.error("Error al enviar solicitud:", error);
-                showToast("Error", "No se pudo registrar el negocio.");
-            }
+            // Número de destino solicitado
+            const numeroDestino = "5493564687954";
+
+            // Abrir WhatsApp con el mensaje codificado
+            const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${mensaje}`;
+            window.open(urlWhatsApp, '_blank');
+
+            // Limpiar formulario y mostrar notificación
+            document.getElementById('business-form').reset();
+            showToast("¡Solicitud preparada!", "Se está abriendo WhatsApp para enviar tus datos.");
         }
 
         window.showToast = function(title, desc) {
