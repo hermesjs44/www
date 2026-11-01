@@ -1,0 +1,34 @@
+Paso 3: Vincula todo en tu archivo index.html
+
+**************************
+
+Abre tu index.html y pega las siguientes líneas dentro de la etiqueta <head> para conectar el manifiesto y registrar el Service Worker:
+html
+
+**************************
+
+<!-- Enlace al archivo Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- Configuración de color para la barra del celular -->
+<meta name="theme-color" content="#d32f2f">
+
+<!-- Registro del Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker registrado con éxito', reg))
+        .catch(err => console.error('Error al registrar el Service Worker', err));
+    });
+  }
+</script>
+
+*******************************************
+
+CREAR ICONOS
+https://www.iloveimg.com/es/descarga/9j6tvhgk27q730t7vxn1r8d9r9v3p0gmkdsl9v32hr4tl50hhqv1pz8f5vrhkhp6gzf4270mxA62838q0mbblwl42pn3pzxvkcjbkfbrc225gfcA7684AvdsspA02qyqwkmd1dns6km4mwp9sy2gllp8fh7kmvhkyyg7f6bpk7104xzhyn1q/6
+
+
+*******************************************
+
