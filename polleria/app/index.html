@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<nav class="bg-slate-900 text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-6 py-2.5 flex justify-between items-center">
-        <div class="flex items-center space-x-4">
-            <!-- Botón Volver al Hub Central -->
-            <a href="https://hermesjs44.github.io/www/" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center transition-colors shadow-sm">
-                <i class="fa-solid fa-arrow-left mr-2"></i> Volver a Directorio
-            </a>
-        </div>
-    </div>
-</nav>
-  <head>
+<head>
 <!-- Enlace al archivo Manifest -->
 <link rel="manifest" href="manifest.json">
 
@@ -418,7 +408,7 @@
   <main id="vista-disenador" class="max-w-5xl mx-auto p-4 md:p-6 flex-1 w-full hidden space-y-6">
     
     <!-- ACCIONES DE REINICIO DE SISTEMA (SOLO DISEÑADOR) -->
-    <div class="bg-red-50 p-5 rounded-xl border border-red-200 shadow-sm space-y-3">
+    <div id="bloque-mantenimiento-disenador" class="bg-red-50 p-5 rounded-xl border border-red-200 shadow-sm space-y-3">
       <h3 class="text-sm font-bold text-red-900 flex items-center gap-2">
         ⚠️ Herramientas de Mantenimiento y Reinicio
       </h3>
@@ -475,7 +465,7 @@
     </div>
 
     <!-- FORMULARIO DE CREACIÓN DE USUARIOS -->
-    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
+    <div id="bloque-usuarios-disenador" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-6">
       <div class="border-b pb-3">
         <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
           👤 Gestión y Creación de Usuarios
@@ -577,6 +567,22 @@
           <input type="text" id="prod-desc" placeholder="Detalle del producto" class="w-full text-xs p-2 border rounded">
         </div>
         <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-gray-700 mb-1">Opciones seleccionables (se pueden elegir varias)</label>
+          <textarea id="prod-opciones" rows="3" placeholder="Ej: Trozado
+Sin menudos
+Con menudos
+Para horno" class="w-full text-xs p-2 border rounded"></textarea>
+          <p class="text-[10px] text-gray-500 mt-1">Escribí una opción por línea o separalas con coma.</p>
+          <div class="mt-3">
+            <label class="block text-xs font-bold text-gray-700 mb-1">¿Cómo podrá elegir el cliente?</label>
+            <select id="prod-tipo-opciones" class="w-full text-xs p-2 border rounded bg-white">
+              <option value="multiple">Puede seleccionar varias opciones</option>
+              <option value="una">Debe seleccionar una sola opción</option>
+            </select>
+            <p class="text-[10px] text-gray-500 mt-1">Esta configuración se aplica únicamente a las opciones de este producto.</p>
+          </div>
+        </div>
+        <div class="md:col-span-2">
           <button type="submit" id="btn-guardar-producto" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded shadow flex items-center gap-2 transition-all">
             ➕ Publicar Producto en Firebase
           </button>
@@ -597,12 +603,13 @@
               <th class="p-2 border-r">Nombre</th>
               <th class="p-2 border-r">Categoría</th>
               <th class="p-2 border-r">Precio</th>
+              <th class="p-2 border-r text-center">Estado</th>
               <th class="p-2 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody id="tabla-productos-disenador" class="divide-y divide-gray-100">
             <tr>
-              <td colspan="5" class="p-4 text-center text-gray-400 italic">Cargando catálogo desde Firestore...</td>
+              <td colspan="6" class="p-4 text-center text-gray-400 italic">Cargando catálogo desde Firestore...</td>
             </tr>
           </tbody>
         </table>
@@ -610,7 +617,7 @@
     </div>
 
     <!-- TABLA DE AUDITORÍA -->
-    <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+    <div id="bloque-auditoria-disenador" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
       <div class="border-b pb-2 flex justify-between items-center">
         <div>
           <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
@@ -1531,14 +1538,23 @@
 
       btnCli.style.display = "block";
       btnDel.style.display = (esDelivery || usuarioActual.rol === "administrador") ? "block" : "none";
-      btnDis.style.display = (usuarioActual.rol === "disenador") ? "block" : "none";
+      btnDis.style.display = (usuarioActual.rol === "disenador" || usuarioActual.rol === "administrador") ? "block" : "none";
+      btnDis.innerHTML = usuarioActual.rol === "administrador" ? "📦 Productos" : "🎨 Diseñador";
       btnAdm.style.display = (usuarioActual.rol === "administrador") ? "block" : "none";
       btnClientesCompras.style.display = (usuarioActual.rol === "administrador" || usuarioActual.rol === "disenador") ? "block" : "none";
       btnPuntos.style.display = (usuarioActual.rol === "administrador" || usuarioActual.rol === "disenador") ? "block" : "none";
 
       if (usuarioActual.rol === "administrador") {
         mostrarVista("admin");
+        ["bloque-mantenimiento-disenador", "bloque-usuarios-disenador", "bloque-auditoria-disenador"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.add("hidden");
+        });
       } else if (usuarioActual.rol === "disenador") {
+        ["bloque-mantenimiento-disenador", "bloque-usuarios-disenador", "bloque-auditoria-disenador"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove("hidden");
+        });
         mostrarVista("disenador");
         renderizarUsuariosCreados();
       } else if (esDelivery) {
@@ -1549,6 +1565,10 @@
     }
 
     window.mostrarVista = (vista) => {
+      if (vista === "disenador" && !["administrador", "disenador"].includes(usuarioActual.rol)) {
+        alert("No tenés permisos para acceder a la gestión de productos.");
+        return;
+      }
       document.getElementById("vista-cliente").classList.add("hidden");
       document.getElementById("vista-delivery").classList.add("hidden");
       document.getElementById("vista-disenador").classList.add("hidden");
@@ -1614,6 +1634,7 @@
         for (const prod of PRODUCTOS_INICIALES) {
           await addDoc(collection(db, "products"), {
             ...prod,
+            habilitado: true,
             creadoEn: serverTimestamp()
           });
         }
@@ -1638,6 +1659,7 @@
       if (tablaDisenador) tablaDisenador.innerHTML = "";
 
       let listaProductos = Object.values(productosCache);
+      const productosHabilitados = listaProductos.filter(p => p.habilitado !== false);
       if (cantProdBadge) cantProdBadge.innerText = `${listaProductos.length} productos`;
 
       listaProductos.sort((a, b) => {
@@ -1649,9 +1671,9 @@
         return (a.nombre || '').localeCompare(b.nombre || '');
       });
 
-      let productosFiltrados = listaProductos;
+      let productosFiltrados = productosHabilitados;
       if (categoriaSeleccionadaFiltro !== "Todas") {
-        productosFiltrados = listaProductos.filter(p => (p.categoria || '').toLowerCase() === categoriaSeleccionadaFiltro.toLowerCase());
+        productosFiltrados = productosHabilitados.filter(p => (p.categoria || '').toLowerCase() === categoriaSeleccionadaFiltro.toLowerCase());
       }
 
       const imagenPorDefecto = "https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=600&q=80";
@@ -1678,6 +1700,17 @@
                     <h3 class="font-bold text-gray-900 text-base">${p.nombre}</h3>
                     <p class="text-xs text-gray-500 mt-1 line-clamp-2">${p.descripcion || 'Producto fresco de calidad superior.'}</p>
                   </div>
+                  ${(p.opciones || []).length ? `
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-2 space-y-1">
+                      <p class="text-[11px] font-bold text-gray-700">${p.tipoOpciones === 'una' ? 'Elegí una opción:' : 'Elegí una o varias opciones:'}</p>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                        ${(p.opciones || []).map((op, oi) => `
+                          <label class="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
+                            <input type="${p.tipoOpciones === 'una' ? 'radio' : 'checkbox'}" name="opciones-producto-${p.id}" class="opcion-producto ${p.tipoOpciones === 'una' ? '' : 'rounded'} text-red-600" data-producto="${p.id}" value="${op.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}">
+                            ${op.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+                          </label>`).join('')}
+                      </div>
+                    </div>` : ''}
                   <div class="pt-2 flex justify-between items-center border-t border-gray-100">
                     <span class="font-extrabold text-red-700 text-lg">$${precioFormateado}</span>
                     <button onclick="agregarAlCarrito('${p.id}', '${p.nombre.replace(/'/g, "\\'")}', ${p.precio}, '${imgProd}')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3.5 py-2 rounded-lg transition-colors shadow-sm flex items-center gap-1">
@@ -1703,6 +1736,12 @@
               <td class="p-2 border-r font-bold text-gray-900">${p.nombre}</td>
               <td class="p-2 border-r"><span class="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded font-semibold">${p.categoria || 'Pollería'}</span></td>
               <td class="p-2 border-r font-extrabold text-red-700">$${precioFormateado}</td>
+              <td class="p-2 border-r text-center">
+                <button onclick="alternarHabilitacionProducto('${p.id}', ${p.habilitado !== false})"
+                  class="${p.habilitado !== false ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'} font-bold px-2 py-1 rounded text-[10px]">
+                  ${p.habilitado !== false ? '✓ Habilitado' : '⏸ Deshabilitado'}
+                </button>
+              </td>
               <td class="p-2 text-center space-x-1">
                 <button onclick="cargarProductoParaEditar('${p.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold px-2 py-1 rounded transition-colors text-[10px]">
                   ✏️ Editar
@@ -1718,6 +1757,7 @@
     }
 
     window.cargarProductoParaEditar = (id) => {
+      if (!["administrador", "disenador"].includes(usuarioActual.rol)) return alert("No tenés permisos para modificar productos.");
       const prod = productosCache[id];
       if (!prod) return alert("No se encontraron los datos del producto.");
 
@@ -1727,6 +1767,8 @@
       document.getElementById("prod-precio").value = prod.precio || 0;
       document.getElementById("prod-desc").value = prod.descripcion || "";
       document.getElementById("prod-imagen").value = prod.imagen || "";
+      document.getElementById("prod-opciones").value = (prod.opciones || []).join("\n");
+      document.getElementById("prod-tipo-opciones").value = prod.tipoOpciones === "una" ? "una" : "multiple";
 
       document.getElementById("titulo-form-producto").innerHTML = "✏️ Editar Producto Cargado";
       document.getElementById("btn-cancelar-edicion").classList.remove("hidden");
@@ -1752,6 +1794,7 @@
 
     window.guardarNuevoProducto = async (e) => {
       e.preventDefault();
+      if (!["administrador", "disenador"].includes(usuarioActual.rol)) return alert("No tenés permisos para crear o modificar productos.");
       
       const idEditar = document.getElementById("prod-id-editar").value;
       const esEdicion = Boolean(idEditar);
@@ -1767,6 +1810,10 @@
         const precio = Number(document.getElementById("prod-precio").value);
         const desc = document.getElementById("prod-desc").value.trim();
         const imagen = document.getElementById("prod-imagen").value.trim();
+        const opciones = document.getElementById("prod-opciones").value
+          .split(/[\n,]+/).map(op => op.trim()).filter(Boolean)
+          .filter((op, index, arr) => arr.findIndex(x => x.toLowerCase() === op.toLowerCase()) === index);
+        const tipoOpciones = document.getElementById("prod-tipo-opciones").value;
 
         if (esEdicion) {
           await updateDoc(doc(db, "products", idEditar), {
@@ -1775,6 +1822,9 @@
             precio,
             descripcion: desc,
             imagen,
+            opciones,
+            tipoOpciones,
+            habilitado: productosCache[idEditar]?.habilitado !== false,
             modificadoPor: usuarioActual.username,
             modificadoEn: serverTimestamp()
           });
@@ -1789,6 +1839,9 @@
             precio,
             descripcion: desc,
             imagen,
+            opciones,
+            tipoOpciones,
+            habilitado: true,
             creadoPor: usuarioActual.username,
             creadoEn: serverTimestamp()
           });
@@ -1807,7 +1860,25 @@
       }
     };
 
+    window.alternarHabilitacionProducto = async (id, estadoActual) => {
+      if (!["administrador", "disenador"].includes(usuarioActual.rol)) return alert("No tenés permisos para habilitar o deshabilitar productos.");
+      const nuevoEstado = !estadoActual;
+      try {
+        await updateDoc(doc(db, "products", id), {
+          habilitado: nuevoEstado,
+          modificadoPor: usuarioActual.username,
+          modificadoEn: serverTimestamp()
+        });
+        await registrarAuditoria(nuevoEstado ? "Producto Habilitado" : "Producto Deshabilitado",
+          `Producto "${productosCache[id]?.nombre || id}" ${nuevoEstado ? "habilitado" : "deshabilitado"} por ${usuarioActual.username}.`);
+      } catch (err) {
+        console.error("Error al cambiar el estado del producto:", err);
+        alert("No se pudo actualizar el estado del producto en Firebase.");
+      }
+    };
+
     window.eliminarProducto = async (id, nombre) => {
+      if (!["administrador", "disenador"].includes(usuarioActual.rol)) return alert("No tenés permisos para eliminar productos.");
       if (!confirm(`¿Estás seguro de eliminar el producto "${nombre}" del catálogo global?`)) return;
       try {
         await deleteDoc(doc(db, "products", id));
@@ -1824,11 +1895,19 @@
     };
 
     window.agregarAlCarrito = (id, nombre, precio, imagen = '') => {
-      const existe = carrito.find(i => i.id === id);
+      const controlesOpciones = Array.from(document.querySelectorAll(`.opcion-producto[data-producto="${id}"]`));
+      const opciones = controlesOpciones.filter(el => el.checked).map(el => el.value);
+      const producto = productosCache[id];
+      if (producto && producto.tipoOpciones === "una" && controlesOpciones.length && opciones.length !== 1) {
+        alert("Seleccioná una opción para este producto antes de agregarlo al carrito.");
+        return;
+      }
+      const claveOpciones = JSON.stringify(opciones.slice().sort());
+      const existe = carrito.find(i => i.id === id && JSON.stringify((i.opciones || []).slice().sort()) === claveOpciones);
       if (existe) {
         existe.cantidad += 1;
       } else {
-        carrito.push({ id, nombre, precio, imagen, cantidad: 1 });
+        carrito.push({ id, nombre, precio, imagen, opciones, cantidad: 1 });
       }
       actualizarCarritoUI();
     };
@@ -1864,7 +1943,7 @@
         totalCant += item.cantidad;
         lista.innerHTML += `
           <li class="py-1.5 flex justify-between items-center text-xs">
-            <div><span class="font-bold text-gray-800">${item.cantidad}x</span> ${item.nombre}</div>
+            <div><span class="font-bold text-gray-800">${item.cantidad}x</span> ${item.nombre}${(item.opciones || []).length ? `<div class="text-[10px] text-gray-500 ml-5">Opciones: ${item.opciones.join(', ')}</div>` : ''}</div>
             <div class="flex items-center gap-2">
               <span class="font-semibold text-gray-700">$${(item.precio * item.cantidad).toLocaleString('es-AR')}</span>
               <button onclick="eliminarDelCarrito(${idx})" class="text-red-500 font-bold px-1 hover:bg-red-50 rounded">✕</button>
@@ -1916,7 +1995,7 @@
         horarioPreferente: horarioPreferente || "Sin preferencia especificada",
         metodoPago: document.getElementById("cli-pago").value,
         observaciones: document.getElementById("cli-observaciones").value.trim() || "Sin observaciones",
-        items: carrito.map(i => ({ productId: i.id, nombre: i.nombre, cantidad: i.cantidad, precioUnitario: i.precio })),
+        items: carrito.map(i => ({ productId: i.id, nombre: i.nombre, opciones: i.opciones || [], cantidad: i.cantidad, precioUnitario: i.precio })),
         costoEnvio: costoEnvioFinal,
         subtotal: subtotal,
         total: subtotal + costoEnvioFinal
@@ -1943,7 +2022,7 @@
         await registrarAuditoria("Creación de Pedido", `Pedido #${docRef.id.slice(-5).toUpperCase()} registrado.`);
 
         const idPedidoShort = docRef.id.slice(-5).toUpperCase();
-        const resumenItems = clienteData.items.map(i => `• ${i.cantidad}x ${i.nombre} ($${(i.precioUnitario * i.cantidad).toLocaleString('es-AR')})`).join("\n");
+        const resumenItems = clienteData.items.map(i => `• ${i.cantidad}x ${i.nombre}${(i.opciones || []).length ? `\n   Opciones: ${i.opciones.join(', ')}` : ''} ($${(i.precioUnitario * i.cantidad).toLocaleString('es-AR')})`).join("\n");
         const modoTexto = clienteData.esRetiroLocal ? "🏪 *RETIRO EN LOCAL*" : `📍 *Dirección:* ${clienteData.direccionEnvio}`;
         const horarioTexto = clienteData.esRetiroLocal ? `🕒 *Horario estimado de retiro:* ${clienteData.horarioPreferente}` : `🕒 *Horario preferente de entrega:* ${clienteData.horarioPreferente}`;
         const pagoTexto = clienteData.metodoPago === 'transferencia' ? `Transferencia (Alias: ${aliasActual})` : 'Efectivo';
