@@ -359,6 +359,19 @@
           </div>
         </section>
 
+        <!-- Gestión de usuarios: exclusiva del diseñador -->
+        <section id="designer-users-section" class="bg-stone-900 border border-stone-800 rounded-2xl p-5 mb-7">
+          <h3 class="text-xl font-bold text-white mb-2"><i class="fa-solid fa-users text-orange-400 mr-2"></i>Crear usuarios</h3>
+          <p class="text-sm text-stone-400 mb-4">Solo el diseñador puede crear cuentas. El administrador puede gestionar el local y los pedidos, pero no crear usuarios.</p>
+          <form onsubmit="createAppUser(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-2 mb-4">
+            <input id="new-app-username" autocomplete="off" placeholder="Nombre de usuario" class="bg-stone-950 border border-stone-700 rounded-xl p-3 text-white" required>
+            <input id="new-app-password" type="password" autocomplete="new-password" placeholder="Contraseña" class="bg-stone-950 border border-stone-700 rounded-xl p-3 text-white" required minlength="6">
+            <select id="new-app-role" class="bg-stone-950 border border-stone-700 rounded-xl p-3 text-white"><option value="admin">Administrador</option><option value="user">Usuario</option></select>
+            <button class="bg-orange-600 hover:bg-orange-500 rounded-xl p-3 font-bold text-white">Crear usuario</button>
+          </form>
+          <div id="designer-users-list" class="space-y-2"><p class="text-stone-500 text-sm">Cargando usuarios...</p></div>
+        </section>
+
         <!-- Sección de Pedidos Realizados (Dashboard Administrador) -->
         <section class="bg-stone-900 border border-stone-800 rounded-2xl p-5 mb-7">
           <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
@@ -366,7 +379,12 @@
               <h3 class="text-xl font-bold text-white"><i class="fa-solid fa-clipboard-list text-orange-400 mr-2"></i>Pedidos Realizados (Dashboard Admin)</h3>
               <p class="text-sm text-stone-400">Visualizá los pedidos recibidos, códigos únicos, cantidades totales de productos y controlá si fueron pagados.</p>
             </div>
-            <button onclick="loadAdminOrders()" class="bg-stone-800 hover:bg-stone-700 px-4 py-2 rounded-xl text-white text-sm"><i class="fa-solid fa-rotate mr-1"></i>Actualizar pedidos</button>
+            <div class="flex flex-wrap gap-2 items-center">
+              <label class="text-xs text-stone-400">Pedidos de la fecha:
+                <input id="admin-orders-date" type="date" onchange="loadAdminOrders()" class="ml-1 bg-stone-950 border border-stone-700 rounded-lg p-2 text-white">
+              </label>
+              <button onclick="loadAdminOrders()" class="bg-stone-800 hover:bg-stone-700 px-4 py-2 rounded-xl text-white text-sm"><i class="fa-solid fa-rotate mr-1"></i>Actualizar pedidos</button>
+            </div>
           </div>
 
           <!-- Resumen de cantidades totales de productos pedidos -->
@@ -374,6 +392,21 @@
             <h4 class="text-sm font-bold text-orange-400 uppercase tracking-wide mb-3"><i class="fa-solid fa-chart-pie mr-2"></i>Cantidades Totales de Productos Pedidos</h4>
             <div id="admin-product-totals" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
               <!-- Se inyecta por JS -->
+            </div>
+          </div>
+
+          <!-- Producción y stock disponible por fecha -->
+          <div class="mb-6 bg-stone-950 border border-orange-900/50 rounded-xl p-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div>
+                <h4 class="text-sm font-bold text-orange-400 uppercase tracking-wide"><i class="fa-solid fa-boxes-stacked mr-2"></i>Producción del día y stock disponible</h4>
+                <p class="text-xs text-stone-400 mt-1">Ingresá las cantidades preparadas. El stock se descuenta automáticamente al marcar cada producto como entregado.</p>
+              </div>
+              <span id="production-date-label" class="text-xs text-stone-300"></span>
+            </div>
+            <div id="daily-production-fields" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            <div class="flex justify-end mt-3">
+              <button id="save-production-btn" onclick="saveDailyProduction()" class="bg-orange-600 hover:bg-orange-500 px-4 py-2 rounded-xl text-white text-sm font-bold"><i class="fa-solid fa-floppy-disk mr-1"></i>Guardar producción</button>
             </div>
           </div>
 
@@ -385,8 +418,33 @@
 
         <!-- Productos y Precios -->
         <section class="bg-stone-900 border border-stone-800 rounded-2xl p-5 mb-7">
-          <div class="flex items-center justify-between gap-3 mb-4"><h3 class="text-xl font-bold text-white">Productos y precios</h3>
-          <button onclick="newProduct()" class="bg-emerald-700 hover:bg-emerald-600 px-3 py-2 rounded-lg text-white text-sm font-bold"><i class="fa-solid fa-plus mr-1"></i>Agregar producto</button></div>
+          <div class="flex items-center justify-between gap-3 mb-4">
+            <h3 class="text-xl font-bold text-white">Productos y precios</h3>
+            <span class="text-xs text-stone-400">Diseñador y administrador</span>
+          </div>
+          <form onsubmit="createNewProduct(event)" class="bg-stone-950 border border-stone-700 rounded-xl p-4 mb-5">
+            <h4 class="text-sm font-bold text-orange-400 mb-3"><i class="fa-solid fa-circle-plus mr-1"></i>Agregar un nuevo producto</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="text-xs text-stone-400">Nombre del producto *
+                <input id="new-product-name" required maxlength="100" placeholder="Ej. Empanadas (docena)" class="mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2.5 text-white">
+              </label>
+              <label class="text-xs text-stone-400">Precio ($) *
+                <input id="new-product-price" type="number" min="0" step="1" required placeholder="Ej. 12000" class="mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2.5 text-white">
+              </label>
+              <label class="text-xs text-stone-400 sm:col-span-2">Descripción
+                <textarea id="new-product-description" rows="2" maxlength="500" placeholder="Descripción del producto" class="mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2.5 text-white"></textarea>
+              </label>
+              <label class="text-xs text-stone-400">Imagen (URL)
+                <input id="new-product-image" type="url" placeholder="https://..." class="mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2.5 text-white">
+              </label>
+              <label class="text-xs text-stone-400">Etiqueta
+                <input id="new-product-badge" maxlength="40" placeholder="Ej. Nuevo" class="mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2.5 text-white">
+              </label>
+            </div>
+            <div class="flex justify-end mt-3">
+              <button type="submit" class="bg-emerald-700 hover:bg-emerald-600 px-5 py-2.5 rounded-lg text-white text-sm font-bold"><i class="fa-solid fa-plus mr-1"></i>Crear producto</button>
+            </div>
+          </form>
           <div id="designer-products" class="space-y-4"></div>
         </section>
 
@@ -492,6 +550,8 @@
 
         // Fechas disponibles
         let orderDates = [];
+        // Producción disponible por fecha: { fecha: { productId: cantidad } }
+        let dailyProduction = {};
         // Horarios administrables
         let deliveryTimes = [
             { id: 'time_1200', start: '12:00', end: '12:30', label: 'Mediodía', enabled: true },
@@ -658,7 +718,7 @@
             const container = document.getElementById('products-grid');
             container.innerHTML = '';
 
-            products.forEach(product => {
+            products.filter(product => product.enabled !== false).forEach(product => {
                 const card = document.createElement('div');
                 card.className = 'bg-stone-950 border border-stone-800 hover:border-orange-500/50 rounded-3xl overflow-hidden shadow-xl flex flex-col justify-between transition group';
                 card.innerHTML = `
@@ -686,6 +746,11 @@
         }
 
         function updateQuantity(productId, change) {
+            const selectedProduct = products.find(p => p.id === productId);
+            if (change > 0 && (!selectedProduct || selectedProduct.enabled === false)) {
+                showToast('Producto no disponible', 'Este producto está deshabilitado para nuevos pedidos.', 'error');
+                return;
+            }
             if (!cart[productId]) {
                 cart[productId] = 0;
             }
@@ -944,6 +1009,8 @@
           measurementId: "G-0WK1QN3WHK"
         };
         let firestore = null;
+        let currentRole = null;
+        let currentUsername = null;
         async function initFirebase() {
           const status = document.getElementById('firebase-status');
           try {
@@ -954,14 +1021,15 @@
             const snap = await configRef.get();
             if (snap.exists) {
               const data = snap.data() || {};
-              if (Array.isArray(data.products)) products = data.products;
+              if (Array.isArray(data.products)) products = data.products.map(p => ({ ...p, enabled: p.enabled !== false }));
               if (Array.isArray(data.orderDates)) orderDates = data.orderDates;
+              if (data.dailyProduction && typeof data.dailyProduction === 'object') dailyProduction = data.dailyProduction;
               if (Array.isArray(data.deliveryTimes)) deliveryTimes = data.deliveryTimes;
               if (typeof data.mpAlias === 'string' && data.mpAlias.trim()) mpAlias = data.mpAlias.trim();
               if (typeof data.sellerPhoneNumber === 'string' && data.sellerPhoneNumber.trim()) sellerPhoneNumber = data.sellerPhoneNumber.trim();
               status.textContent = 'Firebase conectado • configuración descargada';
             } else {
-              await configRef.set({ products, orderDates, deliveryTimes, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() });
+              await configRef.set({ products, orderDates, deliveryTimes, dailyProduction, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() });
               status.textContent = 'Firebase conectado • configuración inicial creada';
             }
           } catch (err) {
@@ -971,8 +1039,9 @@
             try {
               const saved = JSON.parse(localStorage.getItem('polloAsadoConfig') || 'null');
               if (saved) {
-                if (Array.isArray(saved.products)) products = saved.products;
+                if (Array.isArray(saved.products)) products = saved.products.map(p => ({ ...p, enabled: p.enabled !== false }));
                 if (Array.isArray(saved.orderDates)) orderDates = saved.orderDates;
+                if (saved.dailyProduction && typeof saved.dailyProduction === 'object') dailyProduction = saved.dailyProduction;
                 if (Array.isArray(saved.deliveryTimes)) deliveryTimes = saved.deliveryTimes;
                 if (typeof saved.mpAlias === 'string' && saved.mpAlias.trim()) mpAlias = saved.mpAlias.trim();
                 if (typeof saved.sellerPhoneNumber === 'string' && saved.sellerPhoneNumber.trim()) sellerPhoneNumber = saved.sellerPhoneNumber.trim();
@@ -992,28 +1061,109 @@
           const m = document.getElementById('designer-login'); m.classList.add('hidden'); m.classList.remove('flex');
         }
 
-        function designerLogin(event) {
+        async function designerLogin(event) {
           event.preventDefault();
           const u = document.getElementById('designer-user').value.trim();
           const p = document.getElementById('designer-pass').value;
-          // Diseñador: hermes / Hjs2154  |  Administrador: administrador / martin2027
-          const isDesigner = (u === 'hermes' && p === 'Hjs2154');
-          const isAdmin = (u === 'administrador' && p === 'martin2027');
-
-          if (isDesigner || isAdmin) {
-            closeDesignerLogin();
-            document.getElementById('designer-login-error').classList.add('hidden');
-            document.getElementById('designer-panel').classList.remove('hidden');
-            renderDesignerProducts(); renderDesignerDates(); renderDesignerTimes();
-            loadAdminOrders();
-          } else {
-            document.getElementById('designer-login-error').classList.remove('hidden');
+          let role = null;
+          // Cuenta principal de diseñador preexistente.
+          if (u === 'hermes' && p === 'Hjs2154') role = 'designer';
+          // Compatibilidad con la cuenta de administrador anterior.
+          else if (u === 'administrador' && p === 'martin2027') role = 'admin';
+          else if (firestore) {
+            try {
+              const doc = await firestore.collection('appUsers').doc(userDocId(u)).get();
+              if (doc.exists) {
+                const data = doc.data() || {};
+                const hash = await hashPassword(p);
+                if (data.passwordHash === hash && ['admin','user'].includes(data.role)) role = data.role;
+              }
+            } catch (err) { console.error('Error validando usuario:', err); }
           }
+          if (!role) {
+            document.getElementById('designer-login-error').classList.remove('hidden');
+            return;
+          }
+          currentRole = role; currentUsername = u;
+          closeDesignerLogin();
+          document.getElementById('designer-login-error').classList.add('hidden');
+          document.getElementById('designer-panel').classList.remove('hidden');
+          applyRolePermissions();
+          renderDesignerProducts(); renderDesignerDates(); renderDesignerTimes();
+          applyRolePermissions();
+          const dateInput = document.getElementById('admin-orders-date');
+          if (dateInput && !dateInput.value) dateInput.value = todayISO();
+          loadAdminOrders();
+          if (role === 'designer') loadAppUsers();
+        }
+
+        function applyRolePermissions() {
+          const designer = currentRole === 'designer';
+          const admin = currentRole === 'admin';
+          const user = currentRole === 'user';
+          document.getElementById('designer-users-section').classList.toggle('hidden', !designer);
+          // El diseñador y el administrador pueden editar; el usuario solo consulta y marca entregas.
+          document.querySelectorAll('#designer-panel input, #designer-panel select, #designer-panel textarea, #designer-panel section button').forEach(el => {
+            if (el.closest('#admin-orders-list') || el.id === 'admin-orders-date') return;
+            if (el.closest('#designer-users-section')) return;
+            if (user) el.disabled = true;
+          });
+          document.querySelectorAll('#designer-panel section').forEach(section => {
+            if (section.id === 'designer-users-section') return;
+            if (user) section.querySelectorAll('button').forEach(b => {
+              if (!b.closest('#admin-orders-list')) b.classList.add('hidden');
+            });
+          });
+          document.querySelectorAll('#designer-panel section').forEach(section => {
+            if (section.id === 'designer-users-section') return;
+            if (user) section.querySelectorAll('input,select,textarea').forEach(el => { if (!el.closest('#admin-orders-list') && el.id !== 'admin-orders-date') el.disabled = true; });
+          });
+          // Administrador no puede acceder a creación de usuarios.
+          const heading = document.querySelector('#designer-panel h2');
+          if (heading) heading.textContent = designer ? 'Gestión de Administrador & Diseñador' : admin ? 'Panel de Administrador' : 'Panel de Usuario';
         }
 
         function exitDesigner() {
           document.getElementById('designer-panel').classList.add('hidden');
           document.getElementById('designer-user').value = ''; document.getElementById('designer-pass').value = '';
+          currentRole = null; currentUsername = null;
+        }
+
+        function todayISO() {
+          const d = new Date();
+          return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+        function userDocId(username) { return String(username).trim().toLowerCase().replace(/[^a-z0-9_-]/g, '_'); }
+        async function hashPassword(password) {
+          const bytes = new TextEncoder().encode(String(password));
+          const digest = await crypto.subtle.digest('SHA-256', bytes);
+          return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2,'0')).join('');
+        }
+        async function createAppUser(event) {
+          event.preventDefault();
+          if (currentRole !== 'designer') { showToast('Acceso denegado','Solo el diseñador puede crear usuarios.','error'); return; }
+          if (!firestore) { showToast('Sin conexión','Conectá Firebase para crear usuarios compartidos.','error'); return; }
+          const username = document.getElementById('new-app-username').value.trim();
+          const password = document.getElementById('new-app-password').value;
+          const role = document.getElementById('new-app-role').value;
+          if (!username || password.length < 6 || !['admin','user'].includes(role)) { showToast('Datos inválidos','Ingresá usuario y contraseña de al menos 6 caracteres.','error'); return; }
+          const ref = firestore.collection('appUsers').doc(userDocId(username));
+          try {
+            if ((await ref.get()).exists) { showToast('Usuario existente','Elegí otro nombre de usuario.','error'); return; }
+            await ref.set({ username, passwordHash: await hashPassword(password), role, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+            document.getElementById('new-app-username').value = '';
+            document.getElementById('new-app-password').value = '';
+            showToast('Usuario creado', `Se creó ${username} con rol ${role === 'admin' ? 'administrador' : 'usuario'}.`);
+            loadAppUsers();
+          } catch (err) { console.error(err); showToast('Error','No se pudo crear el usuario en Firebase.','error'); }
+        }
+        async function loadAppUsers() {
+          const host = document.getElementById('designer-users-list');
+          if (!host || currentRole !== 'designer') return;
+          try {
+            const snap = await firestore.collection('appUsers').orderBy('username').get();
+            host.innerHTML = snap.docs.map(doc => { const u=doc.data(); return `<div class="flex items-center justify-between gap-3 bg-stone-950 border border-stone-800 rounded-lg p-3"><span class="text-white text-sm">${escapeHtml(u.username)}</span><span class="text-xs text-orange-400">${u.role === 'admin' ? 'Administrador' : 'Usuario'}</span></div>`; }).join('') || '<p class="text-stone-500 text-sm">Todavía no hay usuarios creados.</p>';
+          } catch (err) { host.innerHTML = '<p class="text-red-400 text-sm">No se pudo cargar el listado de usuarios.</p>'; }
         }
 
         function escapeHtml(value) {
@@ -1037,15 +1187,18 @@
             } catch (err) {
                 console.warn('Leyendo pedidos desde localStorage:', err);
                 try {
-                    orders = JSON.parse(localStorage.getItem('polloAsadoOrders') || '[]');
+                    orders = JSON.parse(localStorage.getItem('polloAsadoOrders') || '[]').map((o,i) => ({ ...o, id: o.id || 'local_' + i }));
                 } catch (e) { orders = []; }
             }
 
-            // Calcular totales de cada producto pedido
+            const selectedDay = document.getElementById('admin-orders-date')?.value || todayISO();
+            const dayOrders = orders.filter(o => (o.orderDate || '') === selectedDay);
+
+            // Calcular totales de cada producto pedido (para la fecha elegida)
             let productTotals = {};
             products.forEach(p => { productTotals[p.id] = { name: p.name, qty: 0, revenue: 0 }; });
 
-            orders.forEach(o => {
+            dayOrders.forEach(o => {
                 if (Array.isArray(o.items)) {
                     o.items.forEach(item => {
                         const pid = item.productId || item.id;
@@ -1057,6 +1210,16 @@
                     });
                 }
             });
+
+            // Cantidades entregadas por producto para descontar del stock producido.
+            const deliveredTotals = {};
+            dayOrders.forEach(o => (o.items || []).forEach((it, itemIndex) => {
+                const done = Array.isArray(o.deliveredItems) ? o.deliveredItems[itemIndex] === true : o.delivered === true;
+                if (done) {
+                    const pid = it.productId || it.id || it.name;
+                    deliveredTotals[pid] = (deliveredTotals[pid] || 0) + (Number(it.quantity) || 0);
+                }
+            }));
 
             // Renderizar totales de productos
             totalsEl.innerHTML = Object.keys(productTotals).map(pid => {
@@ -1072,16 +1235,22 @@
                 `;
             }).join('') || '<p class="text-stone-500 text-xs">Sin productos registrados aún.</p>';
 
+            renderDailyProduction(selectedDay, productTotals, deliveredTotals);
+
             // Renderizar listado de pedidos
-            if (!orders.length) {
-                listEl.innerHTML = '<p class="text-stone-400 text-sm">No hay pedidos registrados todavía.</p>';
+            if (!dayOrders.length) {
+                listEl.innerHTML = `<p class="text-stone-400 text-sm">No hay pedidos para ${escapeHtml(selectedDay)}.</p>`;
                 return;
             }
 
-            listEl.innerHTML = orders.map((o, idx) => {
+            listEl.innerHTML = dayOrders.map((o, idx) => {
                 const orderId = o.id || 'local_' + idx;
                 const isPaid = o.paid === true;
-                const itemsList = Array.isArray(o.items) ? o.items.map(it => `• ${it.quantity}x ${it.name} ($${(it.subtotal || (it.unitPrice*it.quantity)).toLocaleString('es-AR')})`).join('<br>') : '';
+                const isDelivered = o.delivered === true;
+                const itemsList = Array.isArray(o.items) ? o.items.map((it, itemIndex) => {
+                    const itemDone = Array.isArray(o.deliveredItems) ? o.deliveredItems[itemIndex] === true : o.delivered === true;
+                    return `<label class="flex items-center justify-between gap-2 py-1 border-b border-stone-800/70 last:border-0 cursor-pointer"><span class="${itemDone ? 'text-stone-500 line-through' : 'text-stone-300'}">${Number(it.quantity)||0} × ${escapeHtml(it.name)} <span class="text-stone-500">($${(Number(it.subtotal) || (Number(it.unitPrice)*Number(it.quantity)) || 0).toLocaleString('es-AR')})</span></span><span class="flex items-center gap-1 text-xs ${itemDone ? 'text-emerald-400' : 'text-stone-400'}"><input type="checkbox" ${itemDone ? 'checked' : ''} onchange="toggleOrderItemDelivered('${orderId}',${itemIndex},this.checked,${o.items.length})" class="accent-emerald-500 w-4 h-4">${itemDone ? 'Entregado' : 'Entregar'}</span></label>`;
+                }).join('') : '';
                 return `
                     <div class="bg-stone-950 border ${isPaid ? 'border-emerald-600/50' : 'border-stone-800'} rounded-xl p-4 space-y-3" data-order-id="${orderId}">
                         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-stone-800 pb-2">
@@ -1092,12 +1261,11 @@
                             </div>
                             <div class="flex items-center gap-3">
                                 <span class="text-xs text-stone-300">📅 ${escapeHtml(o.orderDateLabel || o.orderDate || '')} • ${escapeHtml(o.orderTime || '')}</span>
-                                <label class="inline-flex items-center gap-1.5 cursor-pointer bg-stone-900 px-3 py-1 rounded-lg border border-stone-800 text-xs">
-                                    <input type="checkbox" ${isPaid ? 'checked' : ''} onchange="toggleOrderPaid('${orderId}', this.checked)" class="accent-emerald-500 w-4 h-4">
-                                    <span class="${isPaid ? 'text-emerald-400 font-bold' : 'text-stone-400'}">${isPaid ? 'Pagado' : 'Pendiente de Pago'}</span>
-                                </label>
+                                ${currentRole !== 'user' ? `<label class="inline-flex items-center gap-1.5 cursor-pointer bg-stone-900 px-3 py-1 rounded-lg border border-stone-800 text-xs"><input type="checkbox" ${isPaid ? 'checked' : ''} onchange="toggleOrderPaid('${orderId}', this.checked)" class="accent-emerald-500 w-4 h-4"><span class="${isPaid ? 'text-emerald-400 font-bold' : 'text-stone-400'}">${isPaid ? 'Pagado' : 'Pendiente de Pago'}</span></label>` : ''}
+                                <span class="inline-flex items-center gap-1.5 bg-stone-900 px-3 py-1 rounded-lg border border-stone-800 text-xs ${isDelivered ? 'text-sky-400 font-bold' : 'text-stone-400'}"><i class="fa-solid ${isDelivered ? 'fa-check-circle' : 'fa-clock'}"></i>${isDelivered ? 'Pedido completo' : 'Entrega parcial / pendiente'}</span>
                             </div>
                         </div>
+                        ${currentRole !== 'user' ? `<div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs"><label class="text-stone-400">Fecha de pago<input type="date" value="${escapeHtml(o.paymentDate || '')}" onchange="updateOrderPayment('${orderId}','paymentDate',this.value)" class="block mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2 text-white"></label><label class="text-stone-400">Forma de pago<select onchange="updateOrderPayment('${orderId}','paymentMethod',this.value)" class="block mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2 text-white"><option value="" ${!o.paymentMethod?'selected':''}>Sin especificar</option><option value="Efectivo" ${o.paymentMethod==='Efectivo'?'selected':''}>Efectivo</option><option value="Transferencia" ${o.paymentMethod==='Transferencia'?'selected':''}>Transferencia</option><option value="Mercado Pago" ${o.paymentMethod==='Mercado Pago'?'selected':''}>Mercado Pago</option><option value="Otro" ${o.paymentMethod==='Otro'?'selected':''}>Otro</option></select></label><div class="text-stone-400">Estado de entrega<p class="mt-2 ${isDelivered?'text-sky-400':'text-stone-500'}">${isDelivered?'Entregado':'Pendiente'}</p></div></div>` : ''}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-stone-300">
                             <div>
                                 <p><strong class="text-stone-400">Modalidad:</strong> ${escapeHtml(o.deliveryType || '')} ${o.address ? ' - 🏠 ' + escapeHtml(o.address) : ''}</p>
@@ -1114,8 +1282,108 @@
             }).join('');
         }
 
+        function renderDailyProduction(day, productTotals = {}, deliveredTotals = {}) {
+          const host = document.getElementById('daily-production-fields');
+          const label = document.getElementById('production-date-label');
+          if (!host) return;
+          label.textContent = 'Fecha: ' + day;
+          const dayStock = dailyProduction[day] || {};
+          const allIds = new Set([...products.map(p => p.id), ...Object.keys(productTotals || {})]);
+          host.innerHTML = [...allIds].map(pid => {
+            const product = products.find(p => p.id === pid);
+            const name = product?.name || productTotals?.[pid]?.name || pid;
+            const produced = Math.max(0, Number(dayStock[pid]) || 0);
+            const delivered = Math.max(0, Number(deliveredTotals[pid]) || 0);
+            const remaining = produced - delivered;
+            return `<div class="bg-stone-900 border border-stone-800 rounded-lg p-3"><label class="block text-xs text-stone-300 mb-2">${escapeHtml(name)}</label><div class="grid grid-cols-3 gap-2 text-center text-xs mb-2"><div><span class="block text-stone-500">Preparados</span><strong class="text-white text-base">${produced}</strong></div><div><span class="block text-stone-500">Entregados</span><strong class="text-emerald-400 text-base">${delivered}</strong></div><div><span class="block text-stone-500">Disponibles</span><strong class="${remaining < 0 ? 'text-red-400' : 'text-orange-400'} text-base">${remaining}</strong></div></div><input type="number" min="0" step="1" data-production-product="${escapeHtml(pid)}" value="${produced}" ${['designer','admin'].includes(currentRole) ? '' : 'disabled'} class="w-full bg-stone-950 border border-stone-700 rounded-lg p-2 text-white text-sm" placeholder="Cantidad preparada"></div>`;
+          }).join('') || '<p class="text-stone-500 text-xs">No hay productos cargados.</p>';
+          const btn = document.getElementById('save-production-btn');
+          if (btn) btn.classList.toggle('hidden', !['designer','admin'].includes(currentRole));
+        }
+
+        async function saveDailyProduction() {
+          if (!['designer','admin'].includes(currentRole)) return;
+          const day = document.getElementById('admin-orders-date')?.value || todayISO();
+          const quantities = {};
+          const inputs = [...document.querySelectorAll('[data-production-product]')];
+          for (const input of inputs) {
+            const value = Number(input.value);
+            if (input.value.trim() === '' || !Number.isInteger(value) || value < 0) {
+              input.focus();
+              showToast('Cantidad inválida', 'Ingresá cantidades enteras iguales o mayores a cero.', 'error');
+              return;
+            }
+            quantities[input.dataset.productionProduct] = value;
+          }
+          dailyProduction[day] = quantities;
+          const config = { products, orderDates, deliveryTimes, dailyProduction, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() };
+          localStorage.setItem('polloAsadoConfig', JSON.stringify(config));
+          try {
+            if (!firestore) throw new Error('Firestore no conectado');
+            await firestore.collection('appConfig').doc('main').set({ dailyProduction, updatedAt: config.updatedAt }, { merge: true });
+            showToast('Producción guardada', 'Las cantidades preparadas y el stock disponible se actualizaron.');
+          } catch (err) {
+            console.error(err);
+            showToast('Guardado local', 'La producción quedó guardada en este dispositivo; verificá Firebase para compartirla.', 'error');
+          }
+          loadAdminOrders();
+        }
+
+        async function toggleOrderItemDelivered(orderId, itemIndex, delivered, itemCount) {
+          if (!['designer','admin','user'].includes(currentRole)) return;
+          try {
+            let order = null;
+            if (firestore && !String(orderId).startsWith('local_')) {
+              const ref = firestore.collection('orders').doc(orderId);
+              const snap = await ref.get();
+              if (!snap.exists) throw new Error('Pedido inexistente');
+              order = snap.data() || {};
+              const flags = Array.isArray(order.deliveredItems) ? order.deliveredItems.slice() : (order.items || []).map(() => order.delivered === true);
+              flags[itemIndex] = Boolean(delivered);
+              const allDone = flags.length > 0 && flags.every(Boolean);
+              await ref.update({ deliveredItems: flags, delivered: allDone, deliveredAt: allDone ? new Date().toISOString() : null, deliveredBy: currentUsername || '' });
+            } else {
+              const localOrders = JSON.parse(localStorage.getItem('polloAsadoOrders') || '[]');
+              const idx = localOrders.findIndex((o,i) => (o.id || 'local_'+i) === orderId);
+              if (idx < 0) throw new Error('Pedido local inexistente');
+              order = localOrders[idx];
+              const flags = Array.isArray(order.deliveredItems) ? order.deliveredItems.slice() : (order.items || []).map(() => order.delivered === true);
+              flags[itemIndex] = Boolean(delivered);
+              order.deliveredItems = flags;
+              order.delivered = flags.length > 0 && flags.every(Boolean);
+              order.deliveredAt = order.delivered ? new Date().toISOString() : null;
+              order.deliveredBy = currentUsername || '';
+              localStorage.setItem('polloAsadoOrders', JSON.stringify(localOrders));
+            }
+            showToast('Entrega actualizada', delivered ? 'Producto marcado como entregado.' : 'Producto marcado como pendiente.');
+            loadAdminOrders();
+          } catch (err) { console.error(err); showToast('Error', 'No se pudo actualizar la entrega.', 'error'); loadAdminOrders(); }
+        }
+
+        async function persistOrderFields(orderId, fields) {
+          try {
+            if (firestore && !String(orderId).startsWith('local_')) await firestore.collection('orders').doc(orderId).update(fields);
+            else {
+              const localOrders = JSON.parse(localStorage.getItem('polloAsadoOrders') || '[]');
+              const idx = localOrders.findIndex((o,i) => (o.id || 'local_'+i) === orderId);
+              if (idx >= 0) { Object.assign(localOrders[idx], fields); localStorage.setItem('polloAsadoOrders', JSON.stringify(localOrders)); }
+            }
+            showToast('Pedido actualizado','Los datos del pedido se guardaron.');
+            loadAdminOrders();
+          } catch(err) { console.error(err); showToast('Error','No se pudo actualizar el pedido.','error'); }
+        }
+        async function updateOrderPayment(orderId, field, value) {
+          if (!['paymentDate','paymentMethod'].includes(field) || !['designer','admin'].includes(currentRole)) return;
+          await persistOrderFields(orderId, { [field]: value });
+        }
+        async function toggleOrderDelivered(orderId, delivered) {
+          if (!['designer','admin','user'].includes(currentRole)) return;
+          await persistOrderFields(orderId, { delivered: Boolean(delivered), deliveredAt: delivered ? new Date().toISOString() : null, deliveredBy: currentUsername || '' });
+        }
+
         // Marcar pedido como pagado / no pagado
         async function toggleOrderPaid(orderId, isPaid) {
+          if (!['designer','admin'].includes(currentRole)) return;
             try {
                 if (firestore && !orderId.startsWith('local_')) {
                     await firestore.collection('orders').doc(orderId).update({ paid: isPaid });
@@ -1137,13 +1405,14 @@
         }
 
         async function saveAliasConfig() {
+            if (!['designer','admin'].includes(currentRole)) return;
             const aliasInput = document.getElementById('config-alias');
             const val = aliasInput.value.trim();
             if (!val) { showToast('Alias inválido', 'El alias no puede estar vacío.', 'error'); return; }
             mpAlias = val;
             updateAliasUI();
             
-            const config = { products, orderDates, deliveryTimes, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() };
+            const config = { products, orderDates, deliveryTimes, dailyProduction, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() };
             localStorage.setItem('polloAsadoConfig', JSON.stringify(config));
             try {
                 if (firestore) {
@@ -1156,13 +1425,14 @@
         }
 
         async function saveWhatsAppConfig() {
+            if (!['designer','admin'].includes(currentRole)) return;
             const waInput = document.getElementById('config-whatsapp');
             const val = waInput.value.trim();
             if (!val) { showToast('Número inválido', 'El número de WhatsApp no puede estar vacío.', 'error'); return; }
             sellerPhoneNumber = val;
             updateAliasUI();
             
-            const config = { products, orderDates, deliveryTimes, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() };
+            const config = { products, orderDates, deliveryTimes, dailyProduction, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() };
             localStorage.setItem('polloAsadoConfig', JSON.stringify(config));
             try {
                 if (firestore) {
@@ -1183,7 +1453,13 @@
               <label class="text-xs text-stone-400 md:col-span-2">Descripción<textarea data-field="description" rows="2" class="mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2 text-white">${escapeHtml(p.description)}</textarea></label>
               <label class="text-xs text-stone-400">Imagen (URL)<input data-field="image" value="${escapeHtml(p.image||'')}" class="mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2 text-white"></label>
               <label class="text-xs text-stone-400">Etiqueta<input data-field="badge" value="${escapeHtml(p.badge||'')}" class="mt-1 w-full bg-stone-900 border border-stone-700 rounded-lg p-2 text-white"></label>
-              <div class="md:col-span-2 flex justify-end"><button onclick="deleteProduct(${i})" class="text-red-400 hover:text-red-300 text-sm font-bold"><i class="fa-solid fa-trash mr-1"></i>Eliminar producto</button></div>
+              <div class="md:col-span-2 flex flex-wrap items-center justify-between gap-3 border-t border-stone-800 pt-3">
+                <label class="flex items-center gap-2 text-sm ${p.enabled !== false ? 'text-emerald-400' : 'text-stone-500'}">
+                  <input data-field="enabled" type="checkbox" ${p.enabled !== false ? 'checked' : ''} onchange="toggleProductEnabled(${i}, this.checked)" class="accent-emerald-500 w-4 h-4">
+                  <span>${p.enabled !== false ? 'Producto habilitado (visible para clientes)' : 'Producto deshabilitado (oculto para clientes)'}</span>
+                </label>
+                <button onclick="deleteProduct(${i})" class="text-red-400 hover:text-red-300 text-sm font-bold"><i class="fa-solid fa-trash mr-1"></i>Eliminar producto</button>
+              </div>
             </div>`).join('') || '<p class="text-stone-400 text-sm">No hay productos. Agregá uno nuevo.</p>';
         }
 
@@ -1194,20 +1470,112 @@
             products[i].name = get('name'); products[i].description = get('description');
             products[i].price = Math.max(0, Number(get('price')) || 0);
             products[i].image = get('image'); products[i].badge = get('badge');
+            const enabledInput = card.querySelector('[data-field="enabled"]');
+            products[i].enabled = enabledInput ? enabledInput.checked : products[i].enabled !== false;
           });
         }
 
-        function newProduct() {
+        async function toggleProductEnabled(index, enabled) {
+          if (!products[index]) return;
+          // Captura primero cualquier edición pendiente en los demás campos.
           collectDesignerProducts();
-          products.push({ id:'producto_'+Date.now(), name:'Nuevo producto', description:'Descripción del producto', price:0, image:'https://placehold.co/400x300/292524/f5f5f4?text=Producto', badge:'Nuevo' });
+          products[index].enabled = Boolean(enabled);
+          const config = {
+            products, orderDates, deliveryTimes, dailyProduction, mpAlias, sellerPhoneNumber,
+            updatedAt: new Date().toISOString()
+          };
+          localStorage.setItem('polloAsadoConfig', JSON.stringify(config));
           renderDesignerProducts();
+          renderProducts();
+          updateCartSummary();
+          try {
+            if (!firestore) throw new Error('Firestore no conectado');
+            await firestore.collection('appConfig').doc('main').set({
+              products, updatedAt: config.updatedAt
+            }, { merge: true });
+            showToast(
+              enabled ? 'Producto habilitado' : 'Producto deshabilitado',
+              enabled ? 'El producto ya aparece en el menú de clientes.' : 'El producto ya no aparece en el menú de clientes.'
+            );
+          } catch (err) {
+            console.error('No se pudo sincronizar el estado del producto:', err);
+            showToast(
+              enabled ? 'Habilitado en este dispositivo' : 'Deshabilitado en este dispositivo',
+              'Se guardó localmente. Revisá la conexión con Firebase para sincronizarlo.'
+            );
+          }
+        }
+
+        async function createNewProduct(event) {
+          if (event) event.preventDefault();
+          if (!['designer','admin'].includes(currentRole)) {
+            showToast('Acceso denegado','Tu rol no permite crear productos.','error');
+            return;
+          }
+
+          collectDesignerProducts();
+          const name = document.getElementById('new-product-name').value.trim();
+          const priceRaw = document.getElementById('new-product-price').value;
+          const price = Number(priceRaw);
+          const description = document.getElementById('new-product-description').value.trim();
+          const imageUrl = document.getElementById('new-product-image').value.trim();
+          const badge = document.getElementById('new-product-badge').value.trim() || 'Nuevo';
+
+          if (!name || priceRaw === '' || !Number.isFinite(price) || price < 0) {
+            showToast('Datos incompletos','Ingresá un nombre y un precio válido para el producto.','error');
+            return;
+          }
+
+          const product = {
+            id: 'producto_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+            name,
+            description: description || 'Producto disponible para reservar.',
+            price,
+            image: imageUrl || 'https://placehold.co/400x300/292524/f5f5f4?text=Producto',
+            badge,
+            enabled: true
+          };
+
+          products.push(product);
+          const config = {
+            products, orderDates, deliveryTimes, dailyProduction, mpAlias, sellerPhoneNumber,
+            updatedAt: new Date().toISOString()
+          };
+          localStorage.setItem('polloAsadoConfig', JSON.stringify(config));
+
+          try {
+            if (!firestore) throw new Error('Firestore no conectado');
+            await firestore.collection('appConfig').doc('main').set({
+              products,
+              updatedAt: config.updatedAt
+            }, { merge: true });
+            document.getElementById('firebase-status').textContent = 'Firebase conectado • producto nuevo guardado en la nube';
+            showToast('Producto creado','El producto ya está guardado y visible en el menú.');
+          } catch (err) {
+            console.error('No se pudo sincronizar el producto:', err);
+            showToast('Producto creado localmente','Se guardó en este dispositivo. Revisá Firebase para compartirlo con los demás.');
+          }
+
+          document.getElementById('new-product-name').value = '';
+          document.getElementById('new-product-price').value = '';
+          document.getElementById('new-product-description').value = '';
+          document.getElementById('new-product-image').value = '';
+          document.getElementById('new-product-badge').value = '';
+          renderDesignerProducts();
+          renderProducts();
+          updateCartSummary();
         }
 
         function deleteProduct(index) {
+          if (!['designer','admin'].includes(currentRole)) return;
           collectDesignerProducts();
           const removed = products.splice(index,1)[0];
           if (removed) delete cart[removed.id];
           renderDesignerProducts(); renderProducts(); updateCartSummary();
+          const config = { products, orderDates, deliveryTimes, dailyProduction, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() };
+          localStorage.setItem('polloAsadoConfig', JSON.stringify(config));
+          if (firestore) firestore.collection('appConfig').doc('main').set({ products, updatedAt: config.updatedAt }, { merge: true })
+            .catch(err => console.error('No se pudo sincronizar la eliminación del producto:', err));
         }
 
         function renderDesignerDates() {
@@ -1242,6 +1610,7 @@
         }
 
         async function saveDesignerConfig() {
+          if (!['designer','admin'].includes(currentRole)) { showToast('Solo lectura','Tu rol no permite modificar la configuración.','error'); return; }
           collectDesignerProducts();
           collectDesignerTimes();
           const aliasInput = document.getElementById('config-alias');
@@ -1253,7 +1622,7 @@
           if (products.some(p=>!p.name || !Number.isFinite(Number(p.price)) || Number(p.price)<0)) {
             showToast('Revisá los productos','Cada producto debe tener nombre y precio válido.','error'); return;
           }
-          const config = { products, orderDates, deliveryTimes, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() };
+          const config = { products, orderDates, deliveryTimes, dailyProduction, mpAlias, sellerPhoneNumber, updatedAt: new Date().toISOString() };
           localStorage.setItem('polloAsadoConfig', JSON.stringify(config));
           try {
             if (!firestore) throw new Error('Firestore no conectado');
