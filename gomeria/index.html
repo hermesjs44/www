@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gomería Gral. Paz | Tu Solución Confiable en Neumáticos</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Oswald (robusta para títulos) e Inter (legible para textos) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pizarra: '#2c353d',
+                        'pizarra-oscuro': '#1f262c',
+                        arena: '#d9b97e',
+                        'arena-claro': '#e8d2a6',
+                        naranja: '#f26522',
+                        'naranja-hover': '#d95314',
+                        salvia: '#9cb096',
+                    },
+                    fontFamily: {
+                        titulo: ['Oswald', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-pizarra font-sans antialiased selection:bg-naranja selection:text-white">
+
+    <!-- Barra superior de estado rápido -->
+    <div class="bg-pizarra-oscuro text-white text-xs sm:text-sm py-2 px-4 border-b border-gray-700">
+        <div class="max-w-5xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4 text-arena"></i>
+                <span>General Paz 153</span>
+            </div>
+            <div id="status-badge-top" class="flex items-center gap-2 font-medium">
+                <!-- Se actualiza dinámicamente con JS -->
+                <span class="w-2.5 h-2.5 rounded-full bg-gray-400 animate-pulse"></span>
+                <span>Verificando horario...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO / ENCABEZADO -->
+    <header class="bg-gradient-to-b from-pizarra to-pizarra-oscuro text-white relative overflow-hidden">
+        <!-- Patrón decorativo sutil de banda de rodadura -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #ffffff 0, #ffffff 2px, transparent 0, transparent 16px);"></div>
+        
+        <div class="max-w-5xl mx-auto px-4 py-10 sm:py-14 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                
+                <!-- Identidad de Marca -->
+                <div class="text-center md:text-left flex-1">
+                    <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/15 px-3 py-1 rounded-full text-arena text-xs sm:text-sm font-semibold tracking-wider uppercase mb-4">
+                        <i data-lucide="wrench" class="w-4 h-4 text-naranja"></i>
+                        <span>Taller y Auxilio Móvil</span>
+                    </div>
+
+                    <h1 class="font-titulo text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight uppercase leading-none">
+                        <span class="block text-white drop-shadow">GOMERÍA</span>
+                        <span class="block text-arena drop-shadow mt-1">GRAL. PAZ</span>
+                    </h1>
+
+                    <p class="mt-4 text-base sm:text-lg font-semibold tracking-wide text-gray-200 uppercase">
+                        Tu solución confiable en neumáticos
+                    </p>
+
+                    <!-- Botones de Acción Rápida -->
+                    <div class="mt-7 flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3">
+                        <a href="https://wa.me/5493564631714?text=Hola%20Gomer%C3%ADa%20Gral.%20Paz%2C%20necesito%20hacer%20una%20consulta." target="_blank" rel="noopener noreferrer" 
+                           class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-green-600 hover:bg-green-500 text-white font-bold px-6 py-3.5 rounded-xl shadow-lg transition transform active:scale-95">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            <span>WhatsApp: 3564 631714</span>
+                        </a>
+                        <a href="#cotizador" 
+                           class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-naranja hover:bg-naranja-hover text-white font-bold px-6 py-3.5 rounded-xl shadow-lg transition transform active:scale-95">
+                            <i data-lucide="truck" class="w-5 h-5"></i>
+                            <span>Pedir Auxilio / Turno</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Insignia Destacada de Auxilios -->
+                <div class="w-full md:w-80 bg-pizarra-oscuro/90 border-2 border-arena/60 rounded-2xl p-5 shadow-2xl text-center relative">
+                    <div class="w-14 h-14 bg-naranja text-white rounded-2xl flex items-center justify-center mx-auto -mt-10 mb-3 shadow-lg border-4 border-pizarra-oscuro">
+                        <i data-lucide="truck" class="w-7 h-7"></i>
+                    </div>
+                    <span class="inline-block bg-naranja/20 text-naranja border border-naranja/40 text-xs font-bold uppercase px-2.5 py-0.5 rounded-full mb-2">
+                        Servicio Móvil
+                    </span>
+                    <h2 class="font-titulo text-2xl sm:text-3xl font-bold text-white uppercase tracking-wide">
+                        AUXILIOS A DOMICILIO
+                    </h2>
+                    <p class="text-arena font-semibold text-sm mt-1">
+                        De Lunes a Viernes
+                    </p>
+                    <div class="my-3 border-t border-gray-700"></div>
+                    <div class="bg-white/5 rounded-xl p-2.5 border border-white/10">
+                        <p class="text-xs text-gray-300 uppercase font-medium">Urgencias en ruta o ciudad</p>
+                        <p class="font-titulo text-xl text-naranja font-bold tracking-wider mt-0.5">EMERGENCIAS Lunes a Viernes </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="max-w-5xl mx-auto px-4 py-10 space-y-14">
+
+        <!-- SECCIÓN 1: VEHÍCULOS QUE ATENDEMOS (Interactivo) -->
+        <section id="vehiculos" class="scroll-mt-6">
+            <div class="text-center max-w-2xl mx-auto mb-7">
+                <span class="text-naranja font-bold text-xs uppercase tracking-widest">Atención Integral</span>
+                <h2 class="font-titulo text-3xl sm:text-4xl font-bold text-pizarra uppercase mt-1">
+                    Vehículos que atendemos
+                </h2>
+                <p class="text-gray-600 text-sm sm:text-base mt-2">
+                    Tocá tu tipo de vehículo para ver cómo podemos ayudarte y preseleccionarlo en tu consulta.
+                </p>
+            </div>
+
+            <!-- Grid de 4 Tarjetas de Vehículos -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4" id="vehicle-cards">
+                <!-- Camionetas -->
+                <button type="button" onclick="selectVehicle('Camioneta')" data-vehicle="Camioneta"
+                    class="vehicle-btn group bg-white border-2 border-gray-200 hover:border-naranja rounded-2xl p-4 sm:p-5 text-center transition-all shadow-sm hover:shadow-md focus:outline-none">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-orange-50 text-naranja group-hover:bg-naranja group-hover:text-white flex items-center justify-center transition-colors mb-3">
+                        <i data-lucide="truck" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-titulo text-xl font-bold uppercase text-pizarra">Camionetas</h3>
+                    <p class="text-xs text-gray-500 mt-1">Pick-ups, 4x4 y utilitarios</p>
+                </button>
+
+                <!-- Autos -->
+                <button type="button" onclick="selectVehicle('Auto')" data-vehicle="Auto"
+                    class="vehicle-btn group bg-white border-2 border-gray-200 hover:border-naranja rounded-2xl p-4 sm:p-5 text-center transition-all shadow-sm hover:shadow-md focus:outline-none">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-cyan-50 text-cyan-700 group-hover:bg-naranja group-hover:text-white flex items-center justify-center transition-colors mb-3">
+                        <i data-lucide="car" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-titulo text-xl font-bold uppercase text-pizarra">Autos</h3>
+                    <p class="text-xs text-gray-500 mt-1">Particulares, sedán y compactos</p>
+                </button>
+
+                <!-- Motos -->
+                <button type="button" onclick="selectVehicle('Moto')" data-vehicle="Moto"
+                    class="vehicle-btn group bg-white border-2 border-gray-200 hover:border-naranja rounded-2xl p-4 sm:p-5 text-center transition-all shadow-sm hover:shadow-md focus:outline-none">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 text-blue-700 group-hover:bg-naranja group-hover:text-white flex items-center justify-center transition-colors mb-3">
+                        <i data-lucide="gauge" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-titulo text-xl font-bold uppercase text-pizarra">Motos</h3>
+                    <p class="text-xs text-gray-500 mt-1">Urbanas, enduro y alta cilindrada</p>
+                </button>
+
+                <!-- Bicicleta -->
+                <button type="button" onclick="selectVehicle('Bicicleta')" data-vehicle="Bicicleta"
+                    class="vehicle-btn group bg-white border-2 border-gray-200 hover:border-naranja rounded-2xl p-4 sm:p-5 text-center transition-all shadow-sm hover:shadow-md focus:outline-none">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-gray-100 text-pizarra group-hover:bg-naranja group-hover:text-white flex items-center justify-center transition-colors mb-3">
+                        <i data-lucide="bike" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="font-titulo text-xl font-bold uppercase text-pizarra">Bicicleta</h3>
+                    <p class="text-xs text-gray-500 mt-1">MTB, ruta y paseo</p>
+                </button>
+            </div>
+
+            <!-- Panel dinámico de información del vehículo seleccionado -->
+            <div id="vehicle-info-panel" class="hidden mt-4 bg-pizarra text-white rounded-2xl p-4 sm:p-5 border-l-4 border-arena shadow-md transition-all">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="bg-arena text-pizarra-oscuro text-xs font-bold uppercase px-2 py-0.5 rounded">Seleccionado</span>
+                            <h4 id="vehicle-info-title" class="font-titulo text-xl font-bold uppercase text-arena"></h4>
+                        </div>
+                        <p id="vehicle-info-desc" class="text-sm text-gray-200 mt-1.5"></p>
+                    </div>
+                    <a href="#cotizador" class="shrink-0 inline-flex items-center justify-center gap-2 bg-naranja hover:bg-naranja-hover text-white text-sm font-bold px-4 py-2.5 rounded-xl transition">
+                        <span>Cotizar para este vehículo</span>
+                        <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: SERVICIOS COMPLETOS (Interactivo con detalles desplegables) -->
+        <section id="servicios" class="scroll-mt-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-6 gap-2">
+                <div>
+                    <span class="text-naranja font-bold text-xs uppercase tracking-widest">Equipamiento y experiencia</span>
+                    <h2 class="font-titulo text-3xl sm:text-4xl font-bold text-pizarra uppercase mt-1">
+                        Servicios Completos
+                    </h2>
+                </div>
+                <p class="text-xs sm:text-sm text-gray-500">
+                    Tocá cada servicio para ver detalles o seleccionarlo
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="services-list">
+                <!-- Los servicios se renderizan e interactúan mediante JavaScript para máxima claridad -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: COTIZADOR / SOLICITUD RÁPIDA INTERACTIVA -->
+        <section id="cotizador" class="scroll-mt-6 bg-white rounded-3xl border border-gray-200 shadow-lg overflow-hidden">
+            <div class="bg-pizarra text-white px-6 py-5 border-b-4 border-naranja">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-naranja flex items-center justify-center shrink-0">
+                        <i data-lucide="send" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-titulo text-2xl sm:text-3xl font-bold uppercase tracking-wide">
+                            Solicitud Rápida por WhatsApp
+                        </h2>
+                        <p class="text-xs sm:text-sm text-gray-300">
+                            Elegí tu vehículo y servicio para generar el mensaje listo para enviar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <!-- Controles del formulario -->
+                <div class="lg:col-span-7 space-y-5">
+                    <!-- Paso 1: Vehículo -->
+                    <div>
+                        <label class="block text-sm font-bold text-pizarra uppercase tracking-wide mb-2">
+                            1. ¿Qué vehículo tenés?
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="form-vehicle-group">
+                            <button type="button" onclick="setFormVehicle('Camioneta')" class="form-v-btn py-2.5 px-3 rounded-xl border-2 border-gray-200 text-sm font-semibold text-pizarra hover:border-naranja transition">Camioneta</button>
+                            <button type="button" onclick="setFormVehicle('Auto')" class="form-v-btn py-2.5 px-3 rounded-xl border-2 border-naranja bg-orange-50 text-sm font-bold text-naranja transition">Auto</button>
+                            <button type="button" onclick="setFormVehicle('Moto')" class="form-v-btn py-2.5 px-3 rounded-xl border-2 border-gray-200 text-sm font-semibold text-pizarra hover:border-naranja transition">Moto</button>
+                            <button type="button" onclick="setFormVehicle('Bicicleta')" class="form-v-btn py-2.5 px-3 rounded-xl border-2 border-gray-200 text-sm font-semibold text-pizarra hover:border-naranja transition">Bicicleta</button>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2: Servicio -->
+                    <div>
+                        <label for="service-select" class="block text-sm font-bold text-pizarra uppercase tracking-wide mb-2">
+                            2. ¿Qué servicio necesitás?
+                        </label>
+                        <select id="service-select" onchange="updateWhatsappPreview()" 
+                            class="w-full bg-gray-50 border-2 border-gray-200 focus:border-naranja focus:bg-white rounded-xl px-4 py-3 text-pizarra font-medium outline-none transition">
+                            <option value="Auxilio a domicilio (Urgencia)">🚨 Auxilio a domicilio</option>
+                            <option value="Reparaciones de neumáticos" selected>🔧 Reparaciones de neumáticos</option>
+                            <option value="Balanceado">⚖️ Balanceado</option>
+                            <option value="Montaje">🛞 Montaje</option>
+                            <option value="Inflado">💨 Inflado</option>
+                            <option value="Vulcanizado">🔥 Vulcanizado</option>
+                            <option value="Todo mecanizado">⚙️ Todo mecanizado</option>
+                            <option value="Consulta general / Presupuesto">📋 Consulta general / Presupuesto</option>
+                        </select>
+                    </div>
+
+                    <!-- Paso 3: Detalle opcional -->
+                    <div>
+                        <label for="extra-note" class="block text-sm font-bold text-pizarra uppercase tracking-wide mb-2">
+                            3. Detalle o ubicación (opcional)
+                        </label>
+                        <input type="text" id="extra-note" oninput="updateWhatsappPreview()" 
+                            placeholder="Ej: Pinchadura rueda delantera / Estoy en barrio Centro..."
+                            class="w-full bg-gray-50 border-2 border-gray-200 focus:border-naranja focus:bg-white rounded-xl px-4 py-3 text-sm text-pizarra outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Vista previa del mensaje y botón WhatsApp -->
+                <div class="lg:col-span-5 bg-gray-100 rounded-2xl p-5 border border-gray-200 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Vista previa del mensaje</span>
+                            <span class="text-xs font-semibold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">WhatsApp Directo</span>
+                        </div>
+                        <div class="bg-white rounded-xl p-4 border border-gray-200 shadow-inner text-sm text-gray-700 leading-relaxed min-h-[105px]" id="whatsapp-preview-text">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                    </div>
+
+                    <div class="mt-5 space-y-2.5">
+                        <a id="whatsapp-send-btn" href="#" target="_blank" rel="noopener noreferrer"
+                           class="w-full flex items-center justify-center gap-2.5 bg-green-600 hover:bg-green-500 text-white font-bold py-3.5 px-5 rounded-xl shadow-md transition transform active:scale-95">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            <span>Enviar al 3564 631714</span>
+                        </a>
+                        <button type="button" onclick="copyMessage()" 
+                           class="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-pizarra border border-gray-300 font-semibold py-2.5 px-4 rounded-xl text-xs transition">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                            <span id="copy-btn-text">Copiar texto del mensaje</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: HORARIOS, CONTACTO, UBICACIÓN Y MEDIOS DE PAGO -->
+        <section id="contacto" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            
+            <!-- Tarjeta 1: Horarios + Indicador Dinámico -->
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-10 h-10 rounded-xl bg-pizarra text-arena flex items-center justify-center">
+                                <i data-lucide="clock" class="w-5 h-5"></i>
+                            </div>
+                            <h3 class="font-titulo text-2xl font-bold uppercase text-pizarra">Horarios</h3>
+                        </div>
+                    </div>
+
+                    <!-- Indicador dinámico Abierto / Cerrado -->
+                    <div id="store-status-card" class="mb-4 p-3 rounded-xl border text-sm font-semibold flex items-center gap-2.5">
+                        <!-- Actualizado por JS -->
+                    </div>
+
+                    <ul class="space-y-2.5 text-sm text-gray-700">
+                        <li class="flex justify-between items-start border-b border-gray-100 pb-2">
+                            <span class="font-semibold text-pizarra">Lunes a Viernes:</span>
+                            <span class="text-right">8:00 a 13:00 hs<br>15:30 a 20:00 hs</span>
+                        </li>
+                        <li class="flex justify-between items-center border-b border-gray-100 pb-2">
+                            <span class="font-semibold text-pizarra">Sábados:</span>
+                            <span>9:00 a 13:00 hs</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-4 bg-pizarra text-white rounded-xl p-3 text-center">
+                    <p class="text-xs uppercase tracking-wider text-arena font-bold">Guardia Móvil</p>
+                    <p class="font-titulo text-lg font-bold tracking-wide">AUXILIOS A DOMICILIO <span class="text-naranja">Lunes a Viernes</span></p>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2: Contacto y Ubicación -->
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between space-y-5">
+                <div>
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-naranja text-white flex items-center justify-center">
+                            <i data-lucide="phone-call" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-titulo text-2xl font-bold uppercase text-pizarra">Contacto</h3>
+                    </div>
+
+                    <p class="text-xs text-gray-500 uppercase font-semibold">Teléfono / WhatsApp</p>
+                    <p class="font-titulo text-3xl font-bold text-pizarra tracking-wide mt-0.5">3564 631714</p>
+
+                    <div class="mt-3 grid grid-cols-2 gap-2">
+                        <a href="tel:+5493564631714" 
+                           class="flex items-center justify-center gap-1.5 bg-pizarra hover:bg-pizarra-oscuro text-white font-semibold py-2.5 px-3 rounded-xl text-sm transition">
+                            <i data-lucide="phone" class="w-4 h-4 text-arena"></i>
+                            <span>Llamar</span>
+                        </a>
+                        <a href="https://wa.me/5493564631714" target="_blank" rel="noopener noreferrer"
+                           class="flex items-center justify-center gap-1.5 bg-green-600 hover:bg-green-500 text-white font-semibold py-2.5 px-3 rounded-xl text-sm transition">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <span>WhatsApp</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-100">
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-naranja"></i>
+                        <h4 class="font-titulo text-xl font-bold uppercase text-pizarra">Ubicación</h4>
+                    </div>
+                    <p class="text-base font-semibold text-gray-800 mb-3">General Paz 153</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=General+Paz+153" target="_blank" rel="noopener noreferrer"
+                       class="w-full flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-pizarra font-bold py-2.5 px-4 rounded-xl text-sm transition">
+                        <i data-lucide="navigation" class="w-4 h-4 text-naranja"></i>
+                        <span>Abrir en Google Maps</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3: Medios de Pago -->
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-arena text-pizarra-oscuro flex items-center justify-center">
+                            <i data-lucide="wallet" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-titulo text-2xl font-bold uppercase text-pizarra">Medios de Pago</h3>
+                    </div>
+
+                    <p class="text-sm text-gray-600 mb-4">
+                        Aboná de manera rápida y cómoda tanto en nuestro taller como en el servicio de auxilio a domicilio:
+                    </p>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-3.5 rounded-xl bg-amber-50/70 border border-arena/50">
+                            <div class="w-10 h-10 rounded-lg bg-arena/30 text-pizarra flex items-center justify-center shrink-0">
+                                <i data-lucide="banknote" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-pizarra text-sm uppercase">Efectivo</p>
+                                <p class="text-xs text-gray-600">Pago en el local o al móvil</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                                <i data-lucide="qr-code" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-pizarra text-sm uppercase">Transferencia</p>
+                                <p class="text-xs text-gray-600">Transferencia bancaria o billeteras virtuales</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-3 border-t border-gray-100 text-center">
+                    <span class="text-xs text-gray-500">Consultá por presupuestos sin cargo</span>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-pizarra-oscuro text-gray-400 py-8 px-4 mt-12 border-t border-gray-800">
+        <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+                <p class="font-titulo text-xl font-bold text-white uppercase tracking-wide">
+                    GOMERÍA <span class="text-arena">GRAL. PAZ</span>
+                </p>
+                <p class="text-xs text-gray-400 mt-0.5">General Paz 153 • Tel: 3564 631714</p>
+            </div>
+            <p class="text-xs text-gray-500">
+                © <span id="current-year"></span> Gomería Gral. Paz. Tu solución confiable en neumáticos.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Botón flotante de WhatsApp para móviles -->
+    <a href="https://wa.me/5493564631714?text=Hola%20Gomer%C3%ADa%20Gral.%20Paz%2C%20necesito%20asistencia." target="_blank" rel="noopener noreferrer"
+       aria-label="Contactar por WhatsApp"
+       class="fixed bottom-5 right-5 z-50 sm:hidden bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition transform active:scale-90">
+        <i data-lucide="message-circle" class="w-7 h-7"></i>
+    </a>
+
+    <!-- LÓGICA INTERACTIVA -->
+    <script>
+        // Datos de los 6 servicios del folleto
+        const servicesData = [
+            {
+                id: 'reparaciones',
+                title: 'Reparaciones de neumáticos',
+                icon: 'wrench',
+                summary: 'Solución rápida y segura para pinchaduras, cortes leves y pérdidas de aire.',
+                detail: 'Inspección interna y externa de la cubierta, colocación de parches profesionales de alta resistencia y control de hermeticidad en válvula y talón.'
+            },
+            {
+                id: 'balanceado',
+                title: 'Balanceado',
+                icon: 'scale',
+                summary: 'Eliminá vibraciones en el volante y prolongá la vida útil de tus cubiertas.',
+                detail: 'Equilibrado preciso de ruedas mediante equipamiento especializado para garantizar un andar suave, estable y evitar el desgaste irregular.'
+            },
+            {
+                id: 'montaje',
+                title: 'Montaje',
+                icon: 'disc',
+                summary: 'Desmontaje y armado cuidadoso sin dañar la llanta ni el talón.',
+                detail: 'Cambio de neumáticos nuevos o usados, rotación de cubiertas y asentamiento seguro con lubricación adecuada para proteger llantas de chapa o aleación.'
+            },
+            {
+                id: 'inflado',
+                title: 'Inflado',
+                icon: 'wind',
+                summary: 'Calibración exacta de presión según las especificaciones de tu vehículo.',
+                detail: 'Control de presión en frío y ajuste recomendado para ciudad, ruta o carga, mejorando el agarre y reduciendo el consumo de combustible.'
+            },
+            {
+                id: 'vulcanizado',
+                title: 'Vulcanizado',
+                icon: 'flame',
+                summary: 'Reparación térmica estructural para daños complejos en neumáticos.',
+                detail: 'Proceso de vulcanizado en caliente que fusiona el caucho para recuperar la resistencia y seguridad en cortes o daños laterales recuperables.'
+            },
+            {
+                id: 'mecanizado',
+                title: 'Todo mecanizado',
+                icon: 'settings',
+                summary: 'Trabajos de precisión y ajustes mecánicos relacionados al rodado.',
+                detail: 'Atención integral en componentes vinculados a la rueda y el ajuste para asegurar un funcionamiento confiable en todo tipo de vehículos.'
+            }
+        ];
+
+        // Notas específicas por vehículo
+        const vehicleNotes = {
+            'Camioneta': 'Atendemos pick-ups, 4x4 y utilitarios de trabajo. Contamos con auxilio móvil para asistencia en ciudad o zona.',
+            'Auto': 'Servicio completo para autos particulares y flotas: reparación, montaje, balanceado y control de presión al instante.',
+            'Moto': 'Cuidado especial para llantas de moto, cámaras y cubiertas tubeless (sin cámara) de todas las cilindradas.',
+            'Bicicleta': 'Reparación de pinchaduras, cambio de cámaras, cubiertas e inflado preciso para bicicletas urbanas, MTB y de ruta.'
+        };
+
+        let selectedFormVehicle = 'Auto';
+
+        // 1. Renderizar la lista interactiva de Servicios
+        function renderServices() {
+            const container = document.getElementById('services-list');
+            container.innerHTML = servicesData.map((srv, index) => `
+                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:border-naranja/60 transition-all">
+                    <button type="button" onclick="toggleService('${srv.id}')" 
+                        class="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left focus:outline-none">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-11 h-11 rounded-xl bg-naranja text-white flex items-center justify-center shrink-0 shadow-sm">
+                                <i data-lucide="${srv.icon}" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-titulo text-xl font-bold uppercase text-pizarra leading-tight">${srv.title}</h3>
+                                <p class="text-xs sm:text-sm text-gray-500 mt-0.5">${srv.summary}</p>
+                            </div>
+                        </div>
+                        <i id="chevron-${srv.id}" data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform duration-200 shrink-0"></i>
+                    </button>
+                    
+                    <div id="detail-${srv.id}" class="hidden px-5 pb-5 pt-1 border-t border-gray-100 bg-gray-50/70">
+                        <p class="text-sm text-gray-700 leading-relaxed mb-3">${srv.detail}</p>
+                        <button type="button" onclick="chooseServiceForQuote('${srv.title}')"
+                            class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-naranja hover:text-naranja-hover">
+                            <span>Solicitar este servicio</span>
+                            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Abrir/cerrar detalles de un servicio
+        function toggleService(id) {
+            const detailEl = document.getElementById(`detail-${id}`);
+            const chevronEl = document.getElementById(`chevron-${id}`);
+            const isHidden = detailEl.classList.contains('hidden');
+
+            // Cerrar todos primero para mantenerlo limpio
+            servicesData.forEach(s => {
+                document.getElementById(`detail-${s.id}`).classList.add('hidden');
+                document.getElementById(`chevron-${s.id}`).classList.remove('rotate-180');
+            });
+
+            if (isHidden) {
+                detailEl.classList.remove('hidden');
+                chevronEl.classList.add('rotate-180');
+            }
+        }
+
+        // Seleccionar servicio desde la tarjeta y bajar al cotizador
+        function chooseServiceForQuote(serviceTitle) {
+            const select = document.getElementById('service-select');
+            for (let i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === serviceTitle) {
+                    select.selectedIndex = i;
+                    break;
+                }
+            }
+            updateWhatsappPreview();
+            document.getElementById('cotizador').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 2. Interacción de tarjetas de Vehículos
+        function selectVehicle(vehicleName) {
+            // Actualizar estilo visual de las tarjetas
+            document.querySelectorAll('.vehicle-btn').forEach(btn => {
+                if (btn.dataset.vehicle === vehicleName) {
+                    btn.classList.remove('border-gray-200');
+                    btn.classList.add('border-naranja', 'bg-orange-50/40', 'ring-2', 'ring-naranja/20');
+                } else {
+                    btn.classList.add('border-gray-200');
+                    btn.classList.remove('border-naranja', 'bg-orange-50/40', 'ring-2', 'ring-naranja/20');
+                }
+            });
+
+            // Mostrar panel informativo
+            const panel = document.getElementById('vehicle-info-panel');
+            document.getElementById('vehicle-info-title').textContent = vehicleName;
+            document.getElementById('vehicle-info-desc').textContent = vehicleNotes[vehicleName];
+            panel.classList.remove('hidden');
+
+            // Sincronizar también con el formulario
+            setFormVehicle(vehicleName);
+        }
+
+        // 3. Cotizador / Generador de WhatsApp
+        function setFormVehicle(vehicleName) {
+            selectedFormVehicle = vehicleName;
+            document.querySelectorAll('.form-v-btn').forEach(btn => {
+                if (btn.textContent.trim() === vehicleName) {
+                    btn.className = 'form-v-btn py-2.5 px-3 rounded-xl border-2 border-naranja bg-orange-50 text-sm font-bold text-naranja transition';
+                } else {
+                    btn.className = 'form-v-btn py-2.5 px-3 rounded-xl border-2 border-gray-200 text-sm font-semibold text-pizarra hover:border-naranja transition';
+                }
+            });
+            updateWhatsappPreview();
+        }
+
+        function updateWhatsappPreview() {
+            const service = document.getElementById('service-select').value;
+            const note = document.getElementById('extra-note').value.trim();
+            
+            let message = `Hola *Gomería Gral. Paz*, quisiera consultar por:\n• *Vehículo:* ${selectedFormVehicle}\n• *Servicio:* ${service}`;
+            if (note) {
+                message += `\n• *Detalle:* ${note}`;
+            }
+
+            // Mostrar en vista previa (sin asteriscos para lectura limpia)
+            const cleanPreview = message.replace(/\*/g, '');
+            document.getElementById('whatsapp-preview-text').innerText = cleanPreview;
+
+            // Actualizar enlace de WhatsApp (54 9 3564 631714)
+            const encoded = encodeURIComponent(message);
+            document.getElementById('whatsapp-send-btn').href = `https://wa.me/5493564631714?text=${encoded}`;
+        }
+
+        // Copiar mensaje al portapapeles (compatible con iframes)
+        function copyMessage() {
+            const text = document.getElementById('whatsapp-preview-text').innerText;
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = text;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            try {
+                document.execCommand('copy');
+                const btnText = document.getElementById('copy-btn-text');
+                btnText.textContent = '¡Mensaje copiado!';
+                setTimeout(() => {
+                    btnText.textContent = 'Copiar texto del mensaje';
+                }, 2000);
+            } catch (err) {
+                console.error('No se pudo copiar el texto', err);
+            }
+            document.body.removeChild(tempTextarea);
+        }
+
+        // 4. Indicador Dinámico de Horario (Abierto / Cerrado según reloj del dispositivo)
+        function updateStoreStatus() {
+            const now = new Date();
+            const day = now.getDay(); // 0 = Dom, 1 = Lun, ..., 6 = Sáb
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+            let isOpen = false;
+            let statusText = '';
+            let subText = '';
+
+            // Lunes (1) a Viernes (5): 8:00-13:00 (480-780) y 15:30-20:00 (930-1200)
+            if (day >= 1 && day <= 5) {
+                if ((currentMinutes >= 480 && currentMinutes < 780) || (currentMinutes >= 930 && currentMinutes < 1200)) {
+                    isOpen = true;
+                    statusText = 'LOCAL ABIERTO AHORA';
+                    subText = currentMinutes < 780 ? 'Abierto hasta las 13:00 hs' : 'Abierto hasta las 20:00 hs';
+                } else {
+                    isOpen = false;
+                    statusText = 'LOCAL CERRADO AHORA';
+                    subText = currentMinutes < 480 ? 'Abre hoy a las 8:00 hs' : (currentMinutes < 930 ? 'Abre hoy a las 15:30 hs' : 'Auxilios Lunes a Viernes disponibles');
+                }
+            } 
+            // Sábado (6): 9:00-13:00 (540-780)
+            else if (day === 6) {
+                if (currentMinutes >= 540 && currentMinutes < 780) {
+                    isOpen = true;
+                    statusText = 'LOCAL ABIERTO AHORA';
+                    subText = 'Abierto hasta las 13:00 hs';
+                } else {
+                    isOpen = false;
+                    statusText = 'LOCAL CERRADO AHORA';
+                    subText = currentMinutes < 540 ? 'Abre hoy a las 9:00 hs' : 'Auxilios de emergencia Lunes a Viernes';
+                }
+            } 
+            // Domingo (0)
+            else {
+                isOpen = false;
+                statusText = 'LOCAL CERRADO (DOMINGO)';
+                subText = 'Guardia de auxilios Lunes a Viernes';
+            }
+
+            // Actualizar barra superior
+            const topBadge = document.getElementById('status-badge-top');
+            if (isOpen) {
+                topBadge.innerHTML = `
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-400 animate-ping"></span>
+                    <span class="text-green-400 font-bold">Abierto ahora</span>
+                    <span class="hidden sm:inline text-gray-400">• Auxilios Lunes a Viernes</span>
+                `;
+            } else {
+                topBadge.innerHTML = `
+                    <span class="w-2.5 h-2.5 rounded-full bg-naranja"></span>
+                    <span class="text-gray-200">Local cerrado</span>
+                    <span class="text-arena font-bold">• Auxilios Lunes a Viernes activos</span>
+                `;
+            }
+
+            // Actualizar tarjeta de horarios
+            const cardBadge = document.getElementById('store-status-card');
+            if (isOpen) {
+                cardBadge.className = 'mb-4 p-3 rounded-xl border border-green-200 bg-green-50 text-green-800 text-sm flex items-center gap-3';
+                cardBadge.innerHTML = `
+                    <span class="w-3 h-3 rounded-full bg-green-600 shrink-0 animate-pulse"></span>
+                    <div>
+                        <p class="font-bold text-xs uppercase tracking-wide">${statusText}</p>
+                        <p class="text-xs text-green-700">${subText}</p>
+                    </div>
+                `;
+            } else {
+                cardBadge.className = 'mb-4 p-3 rounded-xl border border-orange-200 bg-orange-50 text-pizarra text-sm flex items-center gap-3';
+                cardBadge.innerHTML = `
+                    <span class="w-3 h-3 rounded-full bg-naranja shrink-0"></span>
+                    <div>
+                        <p class="font-bold text-xs uppercase tracking-wide text-naranja">${statusText}</p>
+                        <p class="text-xs text-gray-600">${subText}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Inicialización al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            renderServices();
+            updateWhatsappPreview();
+            updateStoreStatus();
+            // Actualizar estado del reloj cada minuto
+            setInterval(updateStoreStatus, 60000);
+            // Inicializar íconos Lucide
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
