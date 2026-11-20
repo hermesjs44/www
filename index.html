@@ -1,1224 +1,1014 @@
 <!DOCTYPE html>
 <html lang="es">
-  <!-- **************   CON ENVIO DE SOLICITUD POR WHATSAPP  * ********* -->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Directorio San Francisco, Arroyito y Zona</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- PWA Manifest & Theme Configuration -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e293b">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Guía Regional">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestión - Portal Comercial & Directorio de Empresas</title>
+  <style>
+    :root {
+      --primary: #6c5ce7;
+      --secondary: #00cec9;
+      --accent-yellow: #fdcb6e;
+      --accent-orange: #e17055;
+      --accent-pink: #fd79a8;
+      --accent-green: #00b894;
+      --accent-red: #d63031;
+      --dark: #2d3436;
+      --light: #f8f9fa;
+      --gold-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      --card-shadow: 0 10px 20px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06);
+    }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom smooth transitions and scrollbar */
-        html {
-            scroll-behavior: smooth;
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #f0f3f8;
+      color: #2d3436;
+      line-height: 1.6;
+    }
+
+    /* Top Bar Promocional */
+    .top-bar {
+      background: linear-gradient(90deg, #ff007f, #7928ca, #4286f4, #00b894);
+      background-size: 300% 300%;
+      animation: gradientBG 8s ease infinite;
+      color: white;
+      text-align: center;
+      padding: 8px 15px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Header y Logo Principal */
+    header {
+      background: white;
+      border-bottom: 4px solid var(--primary);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .brand-logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .logo-badge {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #f3e7e9 0%, #e3eeff 100%);
+      border: 3px solid #d4af37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      font-weight: 900;
+      color: #900c3f;
+      font-size: 1.4rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .brand-text h1 {
+      font-size: 1.6rem;
+      font-style: italic;
+      color: #2c3e50;
+      font-weight: 800;
+    }
+
+    .brand-text p {
+      font-size: 0.85rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .header-contact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #e3f2fd;
+      padding: 8px 15px;
+      border-radius: 30px;
+      border: 2px solid #2196f3;
+    }
+
+    .btn-wsp-header {
+      background: #25d366;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+      transition: transform 0.2s;
+    }
+
+    .btn-wsp-header:hover {
+      transform: scale(1.05);
+    }
+
+    /* Navegación Multipágina SPA */
+    nav {
+      background: #2d3436;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: #dfe6e9;
+      padding: 14px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 3px solid transparent;
+    }
+
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .nav-btn.active {
+      color: #ffeaa7;
+      border-bottom: 3px solid #fdcb6e;
+      background: rgba(255,255,255,0.15);
+    }
+
+    /* Layout Principal */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .page-section {
+      display: none;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hero Banner */
+    .hero-banner {
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+      color: white;
+      border-radius: 20px;
+      padding: 40px 30px;
+      text-align: center;
+      margin-bottom: 35px;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner h2 {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+
+    .hero-banner p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto 20px;
+      opacity: 0.95;
+    }
+
+    .tag-pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(5px);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Grid de Empresas */
+    .section-title {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      color: #2d3436;
+      border-left: 6px solid var(--primary);
+      padding-left: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .business-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.18);
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #ff7675;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      z-index: 2;
+    }
+
+    .card-header-img {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Estilos específicos de encabezados de tarjetas */
+    .bg-mantenimiento-sf {
+      background: linear-gradient(135deg, #0984e3, #74b9ff);
+    }
+
+    .bg-mantenimiento-arroyito {
+      background: linear-gradient(135deg, #d63031, #ff7675);
+    }
+
+    .bg-polleria {
+      background: linear-gradient(135deg, #d63031, #e17055);
+    }
+
+    .bg-fotografia {
+      background: linear-gradient(135deg, #fd79a8, #e84393);
+    }
+
+    .bg-desarrollo {
+      background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+    }
+
+    .card-body {
+      padding: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: flex-direction;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      color: #2d3436;
+      margin-bottom: 5px;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: #636e72;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .services-list {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .services-list li {
+      padding: 5px 0;
+      font-size: 0.92rem;
+      border-bottom: 1px dashed #eee;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      padding-top: 15px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-align: center;
+      flex: 1;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s, transform 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-wsp {
+      background: #25d366;
+      color: white;
+    }
+
+    .btn-wsp:hover {
+      background: #1eb857;
+    }
+
+    .btn-link {
+      background: #0984e3;
+      color: white;
+    }
+
+    .btn-link:hover {
+      background: #076bba;
+    }
+
+    /* Módulo de Calculadora para Imprenta */
+    .interactive-box {
+      background: #fff;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      margin-top: 20px;
+      border: 2px solid #fd79a8;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    /* Formulario para agregar anuncio */
+    .add-ad-section {
+      background: linear-gradient(135deg, #ffffff, #f1f2f6);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: var(--card-shadow);
+      border: 3px dashed #6c5ce7;
+    }
+
+    .ad-preview {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
+      border-left: 5px solid #00b894;
+    }
+
+    /* Footer */
+    footer {
+      background: #2d3436;
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+      margin-top: 50px;
+      border-top: 5px solid #fdcb6e;
+    }
+
+    footer a {
+      color: #fdcb6e;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+      }
+      .brand-logo-container {
+        flex-direction: column;
+      }
+      .hero-banner h2 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+<body>
 
-    <!-- Header / Navigation -->
-    <header class="bg-white sticky top-0 z-40 shadow-sm border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Brand Logo Modificado -->
-            <a href="#" class="flex items-center gap-3 group">
-                <div class="w-12 h-12 bg-gradient-to-br from-[#801321] to-[#600c17] rounded-2xl flex items-center justify-center text-white shadow-md shadow-red-900/20 group-hover:scale-105 transition-transform p-1.5">
-                    <div class="w-full h-full bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-inner relative overflow-hidden">
-                        <i class="fa-solid fa-compass text-lg"></i>
-                    </div>
-                </div>
-                <div>
-                    <span class="text-lg font-extrabold text-[#801321] block leading-tight">Guía Regional</span>
-                    <span class="text-[11px] font-semibold text-slate-400 tracking-wider uppercase">San Francisco • Arroyito • Zona</span>
-                </div>
-            </a>
+  <!-- Barra Superior de Ofertas -->
+  <div class="top-bar">
+    🚀 ¡Promocioná tu Comercio o Empresa de San Francisco, Arroyito y la Zona! Contacto Directo: 3564-687954[cite: 7, 8, 9, 10]
+  </div>
 
-            <!-- Desktop Nav Links -->
-            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-                <a href="#directorio" class="hover:text-blue-600 transition-colors">Directorio</a>
-                <a href="#destacados" class="hover:text-blue-600 transition-colors">Promos Destacadas</a>
-                <a href="#sumarse" class="text-blue-600 font-semibold bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-store"></i> Sumar mi Negocio
-                </a>
-                <!-- Designer Access Button -->
-                <button onclick="openDesignerLoginModal()" id="designer-nav-btn" class="text-slate-700 font-semibold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-lock text-xs text-amber-600"></i> Acceso Diseñador
-                </button>
-            </nav>
-
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
-                <i class="fa-solid fa-bars text-xl"></i>
-            </button>
+  <!-- Encabezado Principal con Logo del Sistema de Gestión -->
+  <header>
+    <div class="header-container">
+      <a href="#" class="brand-logo-container" onclick="showPage('home')">
+        <div class="logo-badge">
+          HJS
         </div>
-
-        <!-- Mobile Menu Modal/Dropdown -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-100 px-4 pt-2 pb-4 space-y-3">
-            <a href="#directorio" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Directorio</a>
-            <a href="#destacados" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Promos Destacadas</a>
-            <a href="#sumarse" class="block px-3 py-2 rounded-lg bg-blue-50 text-blue-700 font-semibold text-center">Sumar mi Negocio</a>
-            <button onclick="openDesignerLoginModal()" class="w-full text-left px-3 py-2 rounded-lg bg-slate-100 text-slate-700 font-semibold flex items-center gap-2">
-                <i class="fa-solid fa-lock text-xs text-amber-600"></i> Acceso Diseñador
-            </button>
+        <div class="brand-text">
+          <h1>Sistema de Gestión[cite: 7]</h1>
+          <p>Hermes Suares • Diseños de APP y Páginas Web[cite: 7, 8]</p>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-grow">
-
-        <!-- Rotating Promotional Banner Section -->
-        <section id="destacados" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-            <div class="relative bg-slate-900 rounded-3xl overflow-hidden shadow-xl min-h-[380px] sm:min-h-[420px] flex items-center">
-                <!-- Background slides container -->
-                <div id="banner-slider" class="absolute inset-0 w-full h-full">
-                    <!-- Slides will be injected dynamically from featured items -->
-                </div>
-
-                <!-- Slider Controls -->
-                <button onclick="prevSlide()" class="absolute left-4 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button onclick="nextSlide()" class="absolute right-4 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-
-                <!-- Slider Indicators -->
-                <div id="slider-dots" class="absolute bottom-4 left-0 right-0 z-30 flex justify-center gap-2">
-                    <!-- Dots injected dynamically -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Search & Filters Section -->
-        <section id="directorio" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 mb-8">
-                <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
-                    
-                    <!-- Search Bar -->
-                    <div class="relative w-full lg:w-96">
-                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="search-input" oninput="handleSearch()" placeholder="Buscá por local, servicio o palabra clave..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
-                    </div>
-
-                    <!-- Locality Filter Tabs -->
-                    <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-2 hidden sm:inline">Localidad:</span>
-                        <button onclick="filterByLocation('Todas')" class="loc-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-blue-600 text-white shadow-sm shadow-blue-500/20">Todas</button>
-                        <button onclick="filterByLocation('San Francisco')" class="loc-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">San Francisco</button>
-                        <button onclick="filterByLocation('Arroyito')" class="loc-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Arroyito</button>
-                        <button onclick="filterByLocation('Zona')" class="loc-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Zona</button>
-                    </div>
-                </div>
-
-                <!-- Category Filters Row -->
-                <div id="category-filters-container" class="flex items-center gap-3 overflow-x-auto pb-2 pt-6 mt-6 border-t border-slate-100 no-scrollbar">
-                    <!-- Categories injected dynamically -->
-                </div>
-            </div>
-
-            <!-- Results Grid -->
-            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cards will be injected dynamically via JavaScript -->
-            </div>
-
-            <!-- Empty State -->
-            <div id="empty-state" class="hidden text-center py-16">
-                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-3xl mb-4">
-                    <i class="fa-solid fa-face-frown"></i>
-                </div>
-                <h3 class="text-lg font-bold text-slate-700 mb-1">No se encontraron resultados</h3>
-                <p class="text-slate-500 text-sm">Intentá buscando con otros términos o cambiando los filtros seleccionados.</p>
-            </div>
-        </section>
-
-        <!-- Business Registration Form Section -->
-        <section id="sumarse" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="relative z-10">
-                    <div class="text-center max-w-xl mx-auto mb-10">
-                        <span class="bg-blue-500/30 text-blue-200 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Unete a la red</span>
-                        <h2 class="text-2xl sm:text-4xl font-extrabold mb-3">¿Tenés un negocio, queres tener tu app o página web?</h2>
-                        <p class="text-blue-200 text-sm sm:text-base">Sumá tu emprendimiento al directorio regional de San Francisco, Arroyito y Zona. Solicitalo rapidamente.</p>
-                    </div>
-
-                    <form id="business-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Nombre del Local o Servicio</label>
-                                <input type="text" id="form-name" required placeholder="Ej: Pizzería Don Carlos" class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Categoría</label>
-                                <select id="form-category" required class="w-full bg-slate-900 border border-white/20 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white transition-all text-sm">
-                                    <!-- Populated dynamically -->
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Localidad</label>
-                                <select id="form-locality" required class="w-full bg-slate-900 border border-white/20 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white transition-all text-sm">
-                                    <option value="San Francisco" class="bg-slate-900">San Francisco</option>
-                                    <option value="Arroyito" class="bg-slate-900">Arroyito</option>
-                                    <option value="Zona" class="bg-slate-900">Zona (Saturnino M. María, Devoto, etc.)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">WhatsApp / Teléfono</label>
-                                <input type="text" id="form-phone" required placeholder="Ej: 3564 123456" class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Sitio Web o App (URL)</label>
-                                <input type="url" id="form-website" placeholder="https://minegocio.com" class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Imagen / Foto (URL)</label>
-                                <input type="url" id="form-image" placeholder="https://images.unsplash.com/..." class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Breve Descripción</label>
-                            <textarea id="form-desc" rows="3" required placeholder="Contanos qué ofrece tu comercio o servicio..." class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm"></textarea>
-                        </div>
-
-                        <div class="text-center pt-2">
-                            <button type="submit" class="bg-white text-blue-900 font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition-all w-full sm:w-auto">
-                                <i class="fa-solid fa-paper-plane mr-2"></i> solicitud
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Details Modal -->
-    <div id="details-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all">
-            <div class="relative h-48 sm:h-56">
-                <img id="modal-img" src="" alt="Servicio" class="w-full h-full object-cover">
-                <button onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-                <div class="absolute bottom-4 left-4">
-                    <span id="modal-category" class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider"></span>
-                </div>
-            </div>
-            <div class="p-6 sm:p-8 space-y-4">
-                <div>
-                    <span id="modal-locality" class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1"></span>
-                    <h3 id="modal-title" class="text-2xl font-bold text-slate-800"></h3>
-                </div>
-                <p id="modal-desc" class="text-slate-600 text-sm leading-relaxed"></p>
-                <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
-                    <a id="modal-whatsapp" href="#" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-2xl text-center transition-colors flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-lg"></i> Contactar por WhatsApp
-                    </a>
-                    <a id="modal-link" href="#" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-2xl text-center transition-colors flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-globe"></i> Visitar Sitio / App
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Designer Login Modal -->
-    <div id="designer-login-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
-            <button onclick="closeDesignerLoginModal()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-            <div class="text-center mb-6">
-                <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-                <h3 class="text-xl font-bold text-slate-800">Acceso Diseñador</h3>
-                <p class="text-xs text-slate-500 mt-1">Ingresá la clave secreta para administrar categorías y negocios.</p>
-            </div>
-            <form onsubmit="handleDesignerLogin(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Clave de Acceso</label>
-                    <input type="password" id="designer-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-slate-800 focus:outline-none focus:border-blue-500 transition-all text-sm">
-                </div>
-                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl shadow-lg transition-all text-sm">
-                    Ingresar al Panel
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Designer Dashboard Modal -->
-    <div id="designer-dashboard-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
-            <div class="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between z-10">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center">
-                        <i class="fa-solid fa-gauge-high"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-800">Panel de Diseñador & Administrador</h3>
-                        <p class="text-xs text-slate-400">Gestión completa de categorías, negocios y destacados del banner</p>
-                    </div>
-                </div>
-                <button onclick="closeDesignerDashboard()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="p-6 sm:p-8 space-y-8">
-                <!-- Tab Controls inside Dashboard -->
-                <div class="flex flex-wrap gap-2 border-b border-slate-100 pb-4">
-                    <button onclick="switchAdminTab('negocios')" id="tab-btn-negocios" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white">Gestionar Negocios</button>
-                    <button onclick="switchAdminTab('categorias')" id="tab-btn-categorias" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Gestionar Categorías</button>
-                    <button onclick="switchAdminTab('visitas')" id="tab-btn-visitas" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Control de Visitas</button>
-                </div>
-
-                <!-- Tab 1: Negocios Management -->
-                <div id="admin-tab-negocios" class="space-y-6">
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-3xl p-6">
-                        <h4 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-plus-circle text-blue-600"></i> Cargar o Editar Negocio / App / Web
-                        </h4>
-                        <form id="admin-business-form" onsubmit="handleAdminBusinessSubmit(event)" class="space-y-4">
-                            <input type="hidden" id="admin-bus-id">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nombre</label>
-                                    <input type="text" id="admin-bus-name" required placeholder="Ej: Pizzería La Strada" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Categoría</label>
-                                    <select id="admin-bus-category" required class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                        <!-- Populated dynamically -->
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Localidad</label>
-                                    <select id="admin-bus-locality" required class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                        <option value="San Francisco">San Francisco</option>
-                                        <option value="Arroyito">Arroyito</option>
-                                        <option value="Zona">Zona</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">WhatsApp / Teléfono</label>
-                                    <input type="text" id="admin-bus-phone" required placeholder="Ej: 3564123456" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Sitio Web o App (URL)</label>
-                                    <input type="url" id="admin-bus-website" placeholder="https://..." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Imagen (URL)</label>
-                                    <input type="url" id="admin-bus-image" required placeholder="https://..." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Descripción</label>
-                                <textarea id="admin-bus-desc" rows="2" required placeholder="Breve descripción..." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm"></textarea>
-                            </div>
-                            <div class="flex items-center gap-2 pt-1">
-                                <input type="checkbox" id="admin-bus-featured" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
-                                <label for="admin-bus-featured" class="text-sm font-medium text-slate-700">Destacar en el Banner Rotativo Principal</label>
-                            </div>
-                            <div class="flex gap-3 pt-2">
-                                <button type="submit" id="admin-bus-submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-2xl text-sm transition-all shadow-md">Guardar Negocio</button>
-                                <button type="button" onclick="resetAdminBusForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-sm transition-all">Cancelar</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- List of businesses for admin -->
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-base mb-3">Negocios Registrados</h4>
-                        <div id="admin-business-list" class="space-y-3 max-h-72 overflow-y-auto pr-2">
-                            <!-- Injected dynamically -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab 2: Categorias Management -->
-                <div id="admin-tab-categorias" class="hidden space-y-6">
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-3xl p-6">
-                        <h4 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-folder-plus text-indigo-600"></i> Crear o Editar Categoría
-                        </h4>
-                        <form id="admin-cat-form" onsubmit="handleAdminCatSubmit(event)" class="space-y-4">
-                            <input type="hidden" id="admin-cat-old-name">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nombre de la Categoría</label>
-                                    <input type="text" id="admin-cat-name" required placeholder="Ej: Automotor" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Icono FontAwesome (clase)</label>
-                                    <input type="text" id="admin-cat-icon" required placeholder="Ej: fa-solid fa-car" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                </div>
-                            </div>
-                            <div class="flex gap-3 pt-2">
-                                <button type="submit" id="admin-cat-submit-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-2xl text-sm transition-all shadow-md">Guardar Categoría</button>
-                                <button type="button" onclick="resetAdminCatForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-sm transition-all">Cancelar</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- List of categories for admin -->
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-base mb-3">Categorías Existentes</h4>
-                        <div id="admin-category-list" class="space-y-3 max-h-72 overflow-y-auto pr-2">
-                            <!-- Injected dynamically -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab 3: Control de Visitas -->
-                <div id="admin-tab-visitas" class="hidden space-y-6">
-                    <div class="bg-slate-50 border border-slate-200/80 rounded-3xl p-6">
-                        <h4 class="font-bold text-slate-800 text-base mb-2 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-emerald-600"></i> Negocios y Páginas con Más Ingresos / Visitas
-                        </h4>
-                        <p class="text-xs text-slate-500 mb-4">Ranking actualizado en tiempo real basado en las interacciones y aperturas de los usuarios.</p>
-                        
-                        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-100 text-slate-600 text-xs uppercase tracking-wider">
-                                        <th class="p-3 pl-4">Negocio / Elemento</th>
-                                        <th class="p-3 text-center">Total de Visitas</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="admin-visitas-list" class="divide-y divide-slate-100 text-sm">
-                                    <!-- Se carga dinámicamente -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Success Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-28 opacity-0 transition-all duration-300 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white">
-            <i class="fa-solid fa-check text-sm"></i>
-        </div>
+      </a>
+      <div class="header-contact">
         <div>
-            <h4 class="font-bold text-sm" id="toast-title">¡Operación exitosa!</h4>
-            <p class="text-xs text-slate-300" id="toast-desc">Los cambios se guardaron correctamente.</p>
+          <div style="font-size:0.75rem; color:#555; font-weight:bold;">¿Querés anunciar tu negocio?[cite: 7, 8]</div>
+          <div style="font-size:0.95rem; font-weight:bold; color:#000;">Hermes Suares[cite: 7, 8]</div>
         </div>
+        <a href="https://wa.me/5493564687954?text=Hola%20Hermes,%20quiero%20publicitar%20mi%20negocio%20en%20tu%20pagina%20web" target="_blank" class="btn-wsp-header">
+          📱 3564-687954[cite: 7, 8]
+        </a>
+      </div>
     </div>
+  </header>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-100 py-10 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
-            <p>Guía y Directorio Regional de Aplicaciones y Páginas Web • San Francisco, Arroyito y Zona</p>
-            <button onclick="openDesignerLoginModal()" class="text-xs font-semibold text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1">
-                <i class="fa-solid fa-lock text-[10px]"></i> Panel Diseñador
-            </button>
+  <!-- Navegación Multipágina SPA -->
+  <nav>
+    <div class="nav-container">
+      <button class="nav-btn active" onclick="showPage('home')" id="btn-home">🏠 Inicio / Directorio</button>
+      <button class="nav-btn" onclick="showPage('mantenimiento')" id="btn-mantenimiento">🛠️ Mantenimiento & Servicios</button>
+      <button class="nav-btn" onclick="showPage('polleria')" id="btn-polleria">🍗 Pollería REY</button>
+      <button class="nav-btn" onclick="showPage('imprenta')" id="btn-imprenta">📸 Fotos, Álbumes & Anillados</button>
+      <button class="nav-btn" onclick="showPage('desarrollo')" id="btn-desarrollo">💻 Desarrollo App & Web</button>
+      <button class="nav-btn" onclick="showPage('publicitar')" id="btn-publicitar">➕ Publicitar Mi Negocio</button>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- ==================== PÁGINA 1: INICIO / DIRECTORIO ==================== -->
+    <section id="page-home" class="page-section active">
+      <div class="hero-banner">
+        <h2>Guía Comercial y Servicios de la Región</h2>
+        <p>Encontrá los mejores proveedores, servicios generales de mantenimiento, gastronomía e impresiones en San Francisco, Arroyito y toda la zona[cite: 9, 10].</p>
+        <div class="tag-pills">
+          <span class="pill">📍 San Francisco y Zona[cite: 9]</span>
+          <span class="pill">📍 Arroyito y Zona[cite: 10]</span>
+          <span class="pill">🍗 Pollería REY[cite: 6]</span>
+          <span class="pill">🛠️ Mantenimiento General[cite: 9, 10]</span>
+          <span class="pill">📸 Impresión & Anillados</span>
+          <span class="pill">💻 Desarrollo de Software[cite: 7, 8]</span>
         </div>
-    </footer>
+      </div>
 
-    <!-- Firebase SDK & App Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      <div class="section-title">
+        <span>Empresas Destacadas</span>
+        <small style="font-size:0.9rem; font-weight:normal; color:#666;">Actualizado 2026</small>
+      </div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAWX0Iahmrb8086ASP01mepWLiLlwKMHvM",
-            authDomain: "pumashopp-a3535.firebaseapp.com",
-            projectId: "pumashopp-a3535",
-            storageBucket: "pumashopp-a3535.firebasestorage.app",
-            messagingSenderId: "443896359532",
-            appId: "1:443896359532:web:3bea6404cd626058108649",
-            measurementId: "G-0WK1QN3WHK"
-        };
+      <div class="business-grid">
+        
+        <!-- Tarjeta 1: Reparo Todo (San Francisco) -->
+        <div class="card">
+          <span class="card-badge" style="background:#0984e3;">San Francisco[cite: 9]</span>
+          <div class="card-header-img bg-mantenimiento-sf">
+            <div>
+              <h3 style="font-size:1.6rem; text-shadow:0 2px 4px rgba(0,0,0,0.3);">REPARO TODO[cite: 9]</h3>
+              <p style="font-size:0.9rem; opacity:0.9;">Servicios Generales[cite: 9]</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title">Reparo Todo - Rodrigo Araneda[cite: 9]</h4>
+            <p class="card-subtitle">Socio-Gerente • San Francisco - CBA y Zona[cite: 9]</p>
+            <ul class="services-list">
+              <li>🔨 Construcción de Muebles[cite: 9]</li>
+              <li>🔧 Plomería y Herrería[cite: 9]</li>
+              <li>🎨 Pintura y Albañilería[cite: 9]</li>
+              <li>⚡ Electricidad Integral[cite: 9]</li>
+              <li>💳 <strong>FINANCIACIÓN DISPONIBLE[cite: 9]</strong></li>
+            </ul>
+            <div class="card-footer">
+              <a href="https://wa.me/5493564652571?text=Hola%20Rodrigo,%20vi%20tu%20anuncio%20en%20el%20Sistema%20de%20Gestion%20y%20necesito%20un%20presupuesto" target="_blank" class="btn btn-wsp">
+                💬 3564-652571[cite: 9]
+              </a>
+              <button onclick="showPage('mantenimiento')" class="btn btn-link">Ver Más Info</button>
+            </div>
+          </div>
+        </div>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        <!-- Tarjeta 2: Guillermo Nagel (Arroyito) -->
+        <div class="card">
+          <span class="card-badge" style="background:#d63031;">Arroyito[cite: 10]</span>
+          <div class="card-header-img bg-mantenimiento-arroyito">
+            <div>
+              <h3 style="font-size:1.6rem; text-shadow:0 2px 4px rgba(0,0,0,0.3);">GUILLERMO NAGEL[cite: 10]</h3>
+              <p style="font-size:0.9rem; opacity:0.9;">Servicios Generales[cite: 10]</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title">Guillermo Nagel[cite: 10]</h4>
+            <p class="card-subtitle">Arroyito - CBA y Zona[cite: 10]</p>
+            <ul class="services-list">
+              <li>🚿 Plomería Profesional[cite: 10]</li>
+              <li>🖌️ Pintura de Interiores y Exteriores[cite: 10]</li>
+              <li>🧱 Albañilería y Herrería[cite: 10]</li>
+              <li>💡 Instalaciones Eléctricas[cite: 10]</li>
+              <li>📍 Trabajos en toda la Zona[cite: 10]</li>
+            </ul>
+            <div class="card-footer">
+              <a href="https://wa.me/5493576524479?text=Hola%20Guillermo,%20te%20contacto%20desde%20el%20portal%20comercial%20por%20un%20trabajo" target="_blank" class="btn btn-wsp">
+                💬 3576-524479[cite: 10]
+              </a>
+              <button onclick="showPage('mantenimiento')" class="btn btn-link">Ver Más Info</button>
+            </div>
+          </div>
+        </div>
 
-        // Registro de Service Worker para habilitar PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registrado con éxito', reg))
-                    .catch(err => console.log('Error al registrar el Service Worker', err));
-            });
-        }
+        <!-- Tarjeta 3: Pollería REY -->
+        <div class="card">
+          <span class="card-badge" style="background:#e17055;">Gastronomía[cite: 6]</span>
+          <div class="card-header-img bg-polleria">
+            <div>
+              <h3 style="font-size:1.8rem; text-shadow:0 2px 4px rgba(0,0,0,0.3);">Pollería REY 👑[cite: 6]</h3>
+              <p style="font-size:0.9rem; opacity:0.9;">Lo mejor en aves y elaborados[cite: 6]</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title">Pollería REY[cite: 6]</h4>
+            <p class="card-subtitle">Venta de Pollos e Insumos Avícolas[cite: 6]</p>
+            <ul class="services-list">
+              <li>🍗 Pollo fresco y trozado</li>
+              <li>🥩 Milanesas preparadas y pamplonas</li>
+              <li>🔥 Pollos al spiedo y elaborados</li>
+              <li>🛒 Envíos a domicilio directos</li>
+            </ul>
+            <div class="card-footer">
+              <a href="https://wa.me/5493564687954?text=Hola%20Polleria%20REY,%20quiero%20hacer%20un%20pedido" target="_blank" class="btn btn-wsp">
+                🛒 Pedir por WhatsApp[cite: 6]
+              </a>
+              <button onclick="showPage('polleria')" class="btn btn-link">Ver Menú</button>
+            </div>
+          </div>
+        </div>
 
-        // Default categories with icons
-        const defaultCategories = [
-            { name: "Gastronomía", icon: "fa-solid fa-utensils text-orange-500" },
-            { name: "Comercios", icon: "fa-solid fa-store text-emerald-500" },
-            { name: "Servicios", icon: "fa-solid fa-screwdriver-wrench text-blue-500" },
-            { name: "Salud y Belleza", icon: "fa-solid fa-heart-pulse text-rose-500" },
-            { name: "Tecnología", icon: "fa-solid fa-laptop text-indigo-500" }
-        ];
+        <!-- Tarjeta 4: Fotografía & Anillados -->
+        <div class="card">
+          <span class="card-badge" style="background:#e84393;">Imprenta</span>
+          <div class="card-header-img bg-fotografia">
+            <div>
+              <h3 style="font-size:1.6rem; text-shadow:0 2px 4px rgba(0,0,0,0.3);">FOTO & DIGITAL</h3>
+              <p style="font-size:0.9rem; opacity:0.9;">Impresiones y Encuadernación</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title">Estudio Gráfico & Impresiones</h4>
+            <p class="card-subtitle">Álbumes, Fotografías y Anillados</p>
+            <ul class="services-list">
+              <li>🖼️ Impresión de Fotografías HD</li>
+              <li>📖 Álbumes de fotos personalizados</li>
+              <li>📚 Anillados y encuadernados de textos</li>
+              <li>📇 Tarjetas personales y folletería</li>
+            </ul>
+            <div class="card-footer">
+              <a href="https://wa.me/5493564687954?text=Hola,%20quiero%20consultar%20precios%20de%20impresion%20y%20anillados" target="_blank" class="btn btn-wsp">
+                📸 Presupuesto Foto
+              </a>
+              <button onclick="showPage('imprenta')" class="btn btn-link">Calculadora</button>
+            </div>
+          </div>
+        </div>
 
-        // Initial Mock Database
-        const defaultServices = [
-            {
-                name: "Pizzería La Strada",
-                category: "Gastronomía",
-                locality: "San Francisco",
-                description: "App de pedidos online y delivery de pizzas artesanales, empanadas y calzones en todo San Francisco.",
-                image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80",
-                website: "https://example.com/lastrada",
-                whatsapp: "3564123456",
-                featured: true
-            },
-            {
-                name: "Arroyito Materiales",
-                category: "Comercios",
-                locality: "Arroyito",
-                description: "Página web de venta y distribución de materiales para la construcción, cerámicos y sanitarios con cotizador online.",
-                image: "https://images.unsplash.com/photo-1541888946425-d0fbb18f1f92?auto=format&fit=crop&w=800&q=80",
-                website: "https://example.com/arroyitomateriales",
-                whatsapp: "3576456789",
-                featured: true
-            },
-            {
-                name: "Centro Odontológico Integral",
-                category: "Salud y Belleza",
-                locality: "San Francisco",
-                description: "Plataforma de turnos médicos online, atención en ortodoncia, implantes y estética dental.",
-                image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80",
-                website: "https://example.com/odontologia",
-                whatsapp: "3564987654",
-                featured: false
-            },
-            {
-                name: "TecnoSur Informática",
-                category: "Tecnología",
-                locality: "Zona",
-                description: "Servicio técnico oficial de PC, notebooks, armado de equipos gamers y venta de periféricos con envío zonal.",
-                image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80",
-                website: "https://example.com/tecnosur",
-                whatsapp: "3564332211",
-                featured: true
-            },
-            {
-                name: "Café del Boulevard",
-                category: "Gastronomía",
-                locality: "Arroyito",
-                description: "Cafetería de especialidad, pastelería artesanal y desayunos con carta digital y reservas por web.",
-                image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80",
-                website: "https://example.com/cafeboulevard",
-                whatsapp: "3576112233",
-                featured: false
-            },
-            {
-                name: "Ferretería Industrial San Justo",
-                category: "Comercios",
-                locality: "San Francisco",
-                description: "Herramientas eléctricas, bulonería y suministros para la industria con catálogo web actualizado.",
-                image: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=800&q=80",
-                website: "https://example.com/ferreteriasanjusto",
-                whatsapp: "3564778899",
-                featured: false
-            },
-            {
-                name: "Estudio Contabilidad Digital",
-                category: "Servicios",
-                locality: "Zona",
-                description: "Asesoramiento contable e impositivo para monotributistas, PyMEs y agropecuarias de la región.",
-                image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80",
-                website: "https://example.com/estudiocontable",
-                whatsapp: "3564554433",
-                featured: false
-            },
-            {
-                name: "Gimnasio Evolution Fit",
-                category: "Salud y Belleza",
-                locality: "Arroyito",
-                description: "App de reservas de turnos para musculación, clases de funcional, spinning y seguimiento de rutinas.",
-                image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80",
-                website: "https://example.com/evolutionfit",
-                whatsapp: "3576998877",
-                featured: false
-            }
-        ];
+        <!-- Tarjeta 5: Hermes Suares (Desarrollo) -->
+        <div class="card">
+          <span class="card-badge" style="background:#6c5ce7;">Sistemas & Web[cite: 7, 8]</span>
+          <div class="card-header-img bg-desarrollo">
+            <div>
+              <h3 style="font-size:1.6rem; text-shadow:0 2px 4px rgba(0,0,0,0.3);">HERMES SUARES[cite: 7, 8]</h3>
+              <p style="font-size:0.9rem; opacity:0.9;">Desarrollo de APP y Páginas Web[cite: 7, 8]</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h4 class="card-title">Diseño de APP & Páginas[cite: 7, 8]</h4>
+            <p class="card-subtitle">Sistemas de Gestión a Medida[cite: 7]</p>
+            <ul class="services-list">
+              <li>📱 Aplicaciones Móviles Android / iOS[cite: 8]</li>
+              <li>🌐 Portales Web y Tiendas Online[cite: 8]</li>
+              <li>📊 Sistemas de Gestión de Negocios[cite: 7]</li>
+              <li>📢 Publicidad Digital y Posicionamiento</li>
+            </ul>
+            <div class="card-footer">
+              <a href="https://wa.me/5493564687954?text=Hola%20Hermes%20Suares,%20necesito%20un%20presupuesto%20para%20crear%20una%20app%20o%20pagina%20web" target="_blank" class="btn btn-wsp">
+                💬 3564-687954[cite: 7, 8]
+              </a>
+              <button onclick="showPage('desarrollo')" class="btn btn-link">Ver Planes</button>
+            </div>
+          </div>
+        </div>
 
-        let categoriesData = [];
-        let servicesData = [];
+      </div>
+    </section>
 
-        let currentCategory = 'Todas';
-        let currentLocality = 'Todas';
-        let searchQuery = '';
+    <!-- ==================== PÁGINA 2: MANTENIMIENTO EN LOCALIDADES ==================== -->
+    <section id="page-mantenimiento" class="page-section">
+      <div class="section-title">
+        🛠️ Mantenimiento y Servicios Generales por Localidad[cite: 9, 10]
+      </div>
 
-        // Load data from Firebase Firestore
-        async function loadDataFromFirebase() {
-            try {
-                // Load categories
-                const catSnapshot = await getDocs(collection(db, "categorias"));
-                if (catSnapshot.empty) {
-                    for (let cat of defaultCategories) {
-                        await addDoc(collection(db, "categorias"), cat);
-                    }
-                    categoriesData = [...defaultCategories];
-                } else {
-                    categoriesData = [];
-                    catSnapshot.forEach(doc => {
-                        categoriesData.push({ id: doc.id, ...doc.data() });
-                    });
-                }
+      <div class="business-grid">
+        <!-- Detalle Completo Reparo Todo -->
+        <div class="card">
+          <div class="card-header-img bg-mantenimiento-sf">
+            <div>
+              <h2 style="font-size:2rem;">REPARO TODO[cite: 9]</h2>
+              <p>San Francisco - CBA y Zonas Aledañas[cite: 9]</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Rodrigo Araneda (Socio-Gerente)[cite: 9]</h3>
+            <br>
+            <p><strong>Catálogo Completo de Servicios:[cite: 9]</strong></p>
+            <ul class="services-list" style="margin-top:10px;">
+              <li>🪵 <strong>Construcción de Muebles:</strong> Placards, amoblamientos de cocina y muebles a medida[cite: 9].</li>
+              <li>🚰 <strong>Plomería:</strong> Reparaciones, instalaciones de agua, desinfecciones y sanitarios[cite: 9].</li>
+              <li>🎨 <strong>Pintura:</strong> Obras, casas, locales comerciales y restauración[cite: 9].</li>
+              <li>🧱 <strong>Albañilería:</strong> Refacciones generales, colocación de cerámicos y arreglos[cite: 9].</li>
+              <li>⚙️ <strong>Herrería:</strong> Rejas, portones, estructuras metálicas y soldadura[cite: 9].</li>
+              <li>💡 <strong>Electricidad:</strong> Cableados, tableros, iluminación LED e instalaciones[cite: 9].</li>
+            </ul>
+            <div style="background:#e3f2fd; padding:12px; border-radius:8px; margin-bottom:15px; font-weight:bold; color:#0d47a1;">
+              💵 Cuenta con facilidades de FINANCIACIÓN para tus trabajos[cite: 9].
+            </div>
+            <a href="https://wa.me/5493564652571?text=Hola%20Rodrigo%20Araneda,%20necesito%20presupuesto%20para%20un%20trabajo%20en%20San%20Francisco" target="_blank" class="btn btn-wsp" style="width:100%;">
+              📱 Contactar a Rodrigo Araneda (3564-652571)[cite: 9]
+            </a>
+          </div>
+        </div>
 
-                // Load services
-                const servSnapshot = await getDocs(collection(db, "negocios"));
-                if (servSnapshot.empty) {
-                    for (let serv of defaultServices) {
-                        await addDoc(collection(db, "negocios"), serv);
-                    }
-                    servicesData = [...defaultServices];
-                } else {
-                    servicesData = [];
-                    servSnapshot.forEach(doc => {
-                        servicesData.push({ id: doc.id, ...doc.data() });
-                    });
-                }
+        <!-- Detalle Completo Guillermo Nagel -->
+        <div class="card">
+          <div class="card-header-img bg-mantenimiento-arroyito">
+            <div>
+              <h2 style="font-size:2rem;">GUILLERMO NAGEL[cite: 10]</h2>
+              <p>Arroyito - CBA y Zona[cite: 10]</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Guillermo Nagel - Servicios Generales[cite: 10]</h3>
+            <br>
+            <p><strong>Especialista en Mantenimiento Integral:[cite: 10]</strong></p>
+            <ul class="services-list" style="margin-top:10px;">
+              <li>💧 <strong>Plomería:</strong> Arreglo de fugas, colocación de griferías y cañerías[cite: 10].</li>
+              <li>🖌️ <strong>Pintura General:</strong> Interiores, fachadas, látex y sintéticos[cite: 10].</li>
+              <li>🧱 <strong>Albañilería:</strong> Arreglos de mampostería, revoques y terminaciones[cite: 10].</li>
+              <li>🛠️ <strong>Herrería:</strong> Mantenimiento de aberturas y estructuras[cite: 10].</li>
+              <li>🔌 <strong>Electricidad:</strong> Solución de cortocircuitos, llaves y térmicas[cite: 10].</li>
+            </ul>
+            <div style="background:#ffebee; padding:12px; border-radius:8px; margin-bottom:15px; font-weight:bold; color:#b71c1c;">
+              📍 Cobertura rápida y garantizada en Arroyito y la región[cite: 10].
+            </div>
+            <a href="https://wa.me/5493576524479?text=Hola%20Guillermo%20Nagel,%20te%20contacto%20desde%20el%20portal%20por%20un%20servicio%20en%20Arroyito" target="_blank" class="btn btn-wsp" style="width:100%;">
+              📱 Contactar a Guillermo Nagel (3576-524479)[cite: 10]
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-                renderCategories();
-                renderServices();
-                initSlider();
-            } catch (error) {
-                console.error("Error al cargar datos de Firebase:", error);
-            }
-        }
+    <!-- ==================== PÁGINA 3: POLLERÍA REY ==================== -->
+    <section id="page-polleria" class="page-section">
+      <div class="hero-banner" style="background: linear-gradient(135deg, #d63031, #e17055);">
+        <h2>🍗 Pollería REY - Calidad e Higiene Garantizada 👑[cite: 6]</h2>
+        <p>Venta de pollos frescos, cortes especiales y elaborados artesanales listos para cocinar[cite: 6].</p>
+      </div>
 
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
-            loadDataFromFirebase();
+      <div class="interactive-box" style="border-color:#e17055;">
+        <h3 style="margin-bottom:15px; color:#d63031;">Menú de Productos Destacados</h3>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
+          <div style="border:1px solid #ddd; padding:15px; border-radius:10px; text-align:center; background:#fff5f5;">
+            <h4>Pollo Entero Fresco</h4>
+            <p style="color:#666; font-size:0.9rem;">Ideal para el horno o la parrilla</p>
+          </div>
+          <div style="border:1px solid #ddd; padding:15px; border-radius:10px; text-align:center; background:#fff5f5;">
+            <h4>Milanesas Preparadas</h4>
+            <p style="color:#666; font-size:0.9rem;">De pechuga o muslo</p>
+          </div>
+          <div style="border:1px solid #ddd; padding:15px; border-radius:10px; text-align:center; background:#fff5f5;">
+            <h4>Pamplonas y Arrollados</h4>
+            <p style="color:#666; font-size:0.9rem;">Rellenos con jamón y queso</p>
+          </div>
+          <div style="border:1px solid #ddd; padding:15px; border-radius:10px; text-align:center; background:#fff5f5;">
+            <h4>Hamburguesas de Pollo</h4>
+            <p style="color:#666; font-size:0.9rem;">100% magras y especiadas</p>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:25px;">
+          <a href="https://wa.me/5493564687954?text=Hola%20Polleria%20REY,%20quiero%20consultar%20el%20precio%20del%20dia%20y%20hacer%20un%20pedido" target="_blank" class="btn btn-wsp" style="padding:15px 30px; font-size:1.1rem;">
+            🛒 Realizar Pedido por WhatsApp Ahora[cite: 6]
+          </a>
+        </div>
+      </div>
+    </section>
 
-            // Mobile menu toggle
-            const menuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
+    <!-- ==================== PÁGINA 4: FOTOGRAFÍA Y ANILLADOS ==================== -->
+    <section id="page-imprenta" class="page-section">
+      <div class="hero-banner" style="background: linear-gradient(135deg, #fd79a8, #e84393);">
+        <h2>📸 Fotografía, Álbumes e Impresiones Digitales</h2>
+        <p>Servicio profesional de anillados, encuadernación de apuntes y revelado de recuerdos en alta calidad.</p>
+      </div>
+
+      <div class="interactive-box">
+        <h3 style="color:#e84393; margin-bottom:15px;">Calculadora de Presupuesto Rápido para Anillados y Fotos</h3>
+        <div class="form-group">
+          <label>Tipo de Trabajo:</label>
+          <select id="calc-tipo" class="form-control" onchange="calcularPresupuesto()">
+            <option value="15">Impresión Foto 10x15 ($15 c/u)</option>
+            <option value="25">Impresión Foto 13x18 ($25 c/u)</option>
+            <option value="5">Anillado + Tapas Plastificadas ($5 por hoja)</option>
+            <option value="150">Álbum Fotográfico Terminado ($150 p/página)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cantidad (Hojas / Fotos):</label>
+          <input type="number" id="calc-cant" class="form-control" value="10" min="1" oninput="calcularPresupuesto()">
+        </div>
+        <div style="background:#f8f9fa; padding:15px; border-radius:8px; text-align:center; margin-top:15px;">
+          <h4>Estimado Total Aprox: <span id="calc-result" style="color:#e84393; font-size:1.5rem;">$150</span></h4>
+        </div>
+        <div style="text-align:center; margin-top:15px;">
+          <a id="calc-wsp-btn" href="#" target="_blank" class="btn btn-wsp">
+            📩 Enviar este pedido de impresión por WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 5: DESARROLLO DE APP & WEB ==================== -->
+    <section id="page-desarrollo" class="page-section">
+      <div class="hero-banner" style="background: linear-gradient(135deg, #6c5ce7, #341f97);">
+        <h2>💻 Hermes Suares - Desarrollo de APP y Páginas Web[cite: 7, 8]</h2>
+        <p>Llevá tu comercio o pyme al siguiente nivel digital con un Sistema de Gestión a medida y presencia web moderna[cite: 7].</p>
+      </div>
+
+      <div class="business-grid">
+        <div class="card">
+          <div class="card-body">
+            <h3>🌐 Páginas Web Informativas</h3>
+            <p style="color:#666; margin-top:10px;">Diseño adaptado a celulares, botones de WhatsApp, galería de productos y ubicación en mapa.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h3>📱 Aplicaciones Móviles</h3>
+            <p style="color:#666; margin-top:10px;">Apps personalizadas para Android e iOS con catálogo, notificaciones y usuarios[cite: 8].</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <h3>📊 Sistemas de Gestión[cite: 7]</h3>
+            <p style="color:#666; margin-top:10px;">Control de stock, ventas, clientes, facturación y panel de administración[cite: 7].</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:20px;">
+        <a href="https://wa.me/5493564687954?text=Hola%20Hermes%20Suares,%20quisiera%20solicitar%20un%20presupuesto%20para%20un%20sistema%20de%20gestion/web" target="_blank" class="btn btn-wsp" style="padding:15px 30px; font-size:1.1rem;">
+          📱 Consultar a Hermes Suares (3564-687954)[cite: 7, 8]
+        </a>
+      </div>
+    </section>
+
+    <!-- ==================== PÁGINA 6: PUBLICITAR MI NEGOCIO ==================== -->
+    <section id="page-publicitar" class="page-section">
+      <div class="add-ad-section">
+        <h2 style="color:#6c5ce7; margin-bottom:10px;">📢 ¿Querés publicitar tu negocio en este sitio?[cite: 7, 8]</h2>
+        <p style="margin-bottom:20px;">Completá el siguiente formulario para generar tu anuncio e inviarlo directamente a <strong>Hermes Suares (3564-687954)</strong> para sumarlo al directorio[cite: 7, 8].</p>
+
+        <div class="form-group">
+          <label>Nombre de tu Empresa / Comercio:</label>
+          <input type="text" id="ad-nombre" class="form-control" placeholder="Ej: Talleres San Francisco" oninput="actualizarPreview()">
+        </div>
+
+        <div class="form-group">
+          <label>Rubro / Categoría:</label>
+          <select id="ad-rubro" class="form-control" onchange="actualizarPreview()">
+            <option value="Mantenimiento y Servicios">Mantenimiento y Servicios[cite: 9, 10]</option>
+            <option value="Gastronomía">Gastronomía[cite: 6]</option>
+            <option value="Fotografía e Imprenta">Fotografía e Imprenta</option>
+            <option value="Comercio General">Comercio General</option>
+            <option value="Profesionales">Profesionales</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Localidad:</label>
+          <input type="text" id="ad-localidad" class="form-control" placeholder="Ej: San Francisco y Zona / Arroyito" oninput="actualizarPreview()">
+        </div>
+
+        <div class="form-group">
+          <label>Detalle de Servicios / Productos (separados por coma):</label>
+          <textarea id="ad-servicios" class="form-control" rows="3" placeholder="Ej: Plomería, Pintura, Trabajos garantizados" oninput="actualizarPreview()"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono de Contacto / WhatsApp:</label>
+          <input type="text" id="ad-telefono" class="form-control" placeholder="Ej: 3564-XXXXXX" oninput="actualizarPreview()">
+        </div>
+
+        <div class="form-group">
+          <label>Enlace a Tu Página Web o Red Social (Opcional):</label>
+          <input type="url" id="ad-link" class="form-control" placeholder="https://instagram.com/tunegocio" oninput="actualizarPreview()">
+        </div>
+
+        <!-- Previsualización -->
+        <h3>Previsualización en Vivo de tu Tarjeta:</h3>
+        <div class="ad-preview" id="preview-box">
+          <span style="float:right; background:#6c5ce7; color:white; padding:2px 10px; border-radius:10px; font-size:0.8rem;" id="prev-rubro">Mantenimiento y Servicios</span>
+          <h3 id="prev-nombre" style="color:#2d3436;">Nombre de tu Empresa</h3>
+          <p style="color:#666; font-size:0.9rem;" id="prev-localidad">📍 San Francisco / Arroyito</p>
+          <ul id="prev-lista-servicios" style="margin:15px 0 15px 20px; font-size:0.95rem;">
+            <li>Servicio de ejemplo 1</li>
+            <li>Servicio de ejemplo 2</li>
+          </ul>
+          <p style="font-weight:bold; color:#00b894;" id="prev-tel">📞 Tel: 3564-XXXXXX</p>
+        </div>
+
+        <div style="text-align:center; margin-top:25px;">
+          <button onclick="enviarAnuncioWsp()" class="btn btn-wsp" style="padding:15px 30px; font-size:1.1rem;">
+            🚀 Enviar Solicitud de Publicidad a Hermes Suares (WhatsApp)[cite: 7, 8]
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Pie de Página -->
+  <footer>
+    <p><strong>Sistema de Gestión - Portal Comercial Multipágina</strong>[cite: 7]</p>
+    <p>Desarrollado por <strong>Hermes Suares</strong> • Teléfono / WhatsApp: <a href="https://wa.me/5493564687954" target="_blank">3564-687954</a>[cite: 7, 8]</p>
+    <p style="font-size:0.85rem; margin-top:10px; opacity:0.8;">San Francisco, Arroyito y Zonas Aledañas - Córdoba, Argentina[cite: 9, 10]</p>
+  </footer>
+
+  <script>
+    // Navegación entre Páginas SPA
+    function showPage(pageId) {
+      const pages = document.querySelectorAll('.page-section');
+      pages.forEach(page => page.classList.remove('active'));
+
+      const buttons = document.querySelectorAll('.nav-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById('page-' + pageId).classList.add('active');
+      document.getElementById('btn-' + pageId).classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Calculadora para Imprenta
+    function calcularPresupuesto() {
+      const precioUnitario = parseFloat(document.getElementById('calc-tipo').value);
+      const cantidad = parseInt(document.getElementById('calc-cant').value) || 0;
+      const total = precioUnitario * cantidad;
+      
+      document.getElementById('calc-result').innerText = '$' + total.toLocaleString();
+
+      const selectElem = document.getElementById('calc-tipo');
+      const tipoTexto = selectElem.options[selectElem.selectedIndex].text;
+      const mensaje = `Hola,%20quiero%20solicitar%20un%20presupuesto%20para:%20${tipoTexto}%20-%20Cantidad:%20${cantidad}%20(Total%20estimado:%20$${total})`;
+      
+      document.getElementById('calc-wsp-btn').href = `https://wa.me/5493564687954?text=${mensaje}`;
+    }
+
+    // Previsualización en Vivo de la Publicidad
+    function actualizarPreview() {
+      const nombre = document.getElementById('ad-nombre').value || 'Nombre de tu Empresa';
+      const rubro = document.getElementById('ad-rubro').value;
+      const localidad = document.getElementById('ad-localidad').value || 'San Francisco / Arroyito';
+      const serviciosTexto = document.getElementById('ad-servicios').value;
+      const telefono = document.getElementById('ad-telefono').value || '3564-XXXXXX';
+
+      document.getElementById('prev-nombre').innerText = nombre;
+      document.getElementById('prev-rubro').innerText = rubro;
+      document.getElementById('prev-localidad').innerText = '📍 ' + localidad;
+      document.getElementById('prev-tel').innerText = '📞 Tel: ' + telefono;
+
+      const listaUl = document.getElementById('prev-lista-servicios');
+      listaUl.innerHTML = '';
+
+      if (serviciosTexto.trim() !== '') {
+        const items = serviciosTexto.split(',');
+        items.forEach(item => {
+          if (item.trim() !== '') {
+            const li = document.createElement('li');
+            li.innerText = item.trim();
+            listaUl.appendChild(li);
+          }
         });
-
-        // Registrar visita / clic en Firestore
-        async function registrarVisita(nombreNegocio) {
-            try {
-                const docId = nombreNegocio.replace(/[^a-zA-Z0-9]/g, "_");
-                const docRef = doc(db, "visitas", docId);
-                await setDoc(docRef, {
-                    negocio: nombreNegocio,
-                    contador: increment(1),
-                    ultimaVisita: new Date().toISOString()
-                }, { merge: true });
-            } catch (e) {
-                console.error("Error al registrar visita:", e);
-            }
-        }
-
-        // Banner Slider Logic
-        let activeSlideIndex = 0;
-        let sliderInterval;
-
-        window.renderBannerSlider = function() {
-            const featuredItems = servicesData.filter(s => s.featured);
-            const sliderContainer = document.getElementById('banner-slider');
-            const dotsContainer = document.getElementById('slider-dots');
-
-            if (featuredItems.length === 0) {
-                sliderContainer.innerHTML = `
-                    <div class="banner-slide absolute inset-0 transition-opacity duration-1000 opacity-100 flex items-center">
-                        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10"></div>
-                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1600&q=80" class="absolute inset-0 w-full h-full object-cover">
-                        <div class="relative z-20 max-w-2xl px-6 sm:px-12 text-white">
-                            <span class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">Región</span>
-                            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Directorio San Francisco, Arroyito y Zona</h1>
-                            <p class="text-slate-300 text-sm sm:text-base mb-6">Encontrá comercios, servicios y apps locales fácilmente.</p>
-                        </div>
-                    </div>
-                `;
-                dotsContainer.innerHTML = '';
-                return;
-            }
-
-            sliderContainer.innerHTML = featuredItems.map((item, index) => `
-                <div class="banner-slide absolute inset-0 transition-opacity duration-1000 ${index === 0 ? 'opacity-100' : 'opacity-0'} flex items-center">
-                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10"></div>
-                    <img src="${item.image}" onerror="this.src='https://placehold.co/1200x600/1e293b/cbd5e1?text=Destacado'" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="relative z-20 max-w-2xl px-6 sm:px-12 text-white">
-                        <span class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">${item.locality} • ${item.category}</span>
-                        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">${item.name}</h1>
-                        <p class="text-slate-300 text-sm sm:text-base mb-6 line-clamp-2">${item.description}</p>
-                        <div class="flex gap-3">
-                            <button onclick="openModal('${item.id}')" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-slate-100 transition-all">
-                                Ver Detalles <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                            <a href="https://wa.me/549${item.whatsapp}" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-emerald-700 transition-all">
-                                <i class="fa-brands fa-whatsapp"></i> WhatsApp
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            dotsContainer.innerHTML = featuredItems.map((_, index) => `
-                <button onclick="currentSlide(${index})" class="slider-dot w-3 h-3 rounded-full ${index === 0 ? 'bg-white' : 'bg-white/50'} hover:bg-white transition-all"></button>
-            `).join('');
-        }
-
-        window.updateSlider = function() {
-            const slides = document.querySelectorAll('.banner-slide');
-            const dots = document.querySelectorAll('.slider-dot');
-            slides.forEach((slide, index) => {
-                slide.style.opacity = index === activeSlideIndex ? '1' : '0';
-            });
-            dots.forEach((dot, index) => {
-                dot.style.backgroundColor = index === activeSlideIndex ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)';
-            });
-        }
-
-        window.nextSlide = function() {
-            const slides = document.querySelectorAll('.banner-slide');
-            if (slides.length === 0) return;
-            activeSlideIndex = (activeSlideIndex + 1) % slides.length;
-            updateSlider();
-        }
-
-        window.prevSlide = function() {
-            const slides = document.querySelectorAll('.banner-slide');
-            if (slides.length === 0) return;
-            activeSlideIndex = (activeSlideIndex - 1 + slides.length) % slides.length;
-            updateSlider();
-        }
-
-        window.currentSlide = function(index) {
-            activeSlideIndex = index;
-            updateSlider();
-        }
-
-        function initSlider() {
-            renderBannerSlider();
-            if (sliderInterval) clearInterval(sliderInterval);
-            sliderInterval = setInterval(nextSlide, 5000);
-        }
-
-        // Render Category Filter Buttons & Selects
-        window.renderCategories = function() {
-            const container = document.getElementById('category-filters-container');
-            const formSelect = document.getElementById('form-category');
-            const adminSelect = document.getElementById('admin-bus-category');
-
-            if (!container) return;
-
-            container.innerHTML = `
-                <button onclick="filterByCategory('Todas')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${currentCategory === 'Todas' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
-                    <i class="fa-solid fa-border-all"></i> Todas las categorías
-                </button>
-            ` + categoriesData.map(cat => `
-                <button onclick="filterByCategory('${cat.name}')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${currentCategory === cat.name ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
-                    <i class="${cat.icon}"></i> ${cat.name}
-                </button>
-            `).join('');
-
-            if (formSelect) {
-                formSelect.innerHTML = categoriesData.map(cat => `<option value="${cat.name}" class="bg-slate-900">${cat.name}</option>`).join('');
-            }
-
-            if (adminSelect) {
-                adminSelect.innerHTML = categoriesData.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
-            }
-        }
-
-        window.filterByCategory = function(category) {
-            currentCategory = category;
-            renderCategories();
-            renderServices();
-        }
-
-        window.filterByLocation = function(locality) {
-            currentLocality = locality;
-            document.querySelectorAll('.loc-btn').forEach(btn => {
-                if (btn.textContent === locality) {
-                    btn.className = "loc-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-blue-600 text-white shadow-sm shadow-blue-500/20";
-                } else {
-                    btn.className = "loc-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all bg-slate-100 text-slate-600 hover:bg-slate-200";
-                }
-            });
-            renderServices();
-        }
-
-        window.handleSearch = function() {
-            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
-            renderServices();
-        }
-
-        // Render Services Grid
-        window.renderServices = function() {
-            const grid = document.getElementById('services-grid');
-            const emptyState = document.getElementById('empty-state');
-            if (!grid) return;
-
-            const filtered = servicesData.filter(item => {
-                const matchCategory = currentCategory === 'Todas' || item.category === currentCategory;
-                const matchLocality = currentLocality === 'Todas' || item.locality === currentLocality;
-                const matchSearch = item.name.toLowerCase().includes(searchQuery) || 
-                                    item.description.toLowerCase().includes(searchQuery) ||
-                                    item.category.toLowerCase().includes(searchQuery);
-                return matchCategory && matchLocality && matchSearch;
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '';
-                emptyState.classList.remove('hidden');
-                return;
-            }
-
-            emptyState.classList.add('hidden');
-            grid.innerHTML = filtered.map(item => `
-                <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
-                    <div>
-                        <div class="relative h-48 overflow-hidden bg-slate-100">
-                            <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Local'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute top-3 left-3 flex gap-2">
-                                <span class="bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
-                                    ${item.category}
-                                </span>
-                                ${item.featured ? '<span class="bg-amber-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm"><i class="fa-solid fa-star"></i> Destacado</span>' : ''}
-                            </div>
-                            <div class="absolute top-3 right-3">
-                                <span class="bg-slate-900/80 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full shadow-sm">
-                                    ${item.locality}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">${item.name}</h3>
-                            <p class="text-slate-600 text-sm line-clamp-2 leading-relaxed mb-4">${item.description}</p>
-                        </div>
-                    </div>
-                    <div class="px-6 pb-6 pt-0 flex items-center justify-between gap-3 border-t border-slate-50 pt-4">
-                        <a href="https://wa.me/549${item.whatsapp}" target="_blank" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
-                            <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
-                        </a>
-                        <button onclick="openModal('${item.id}')" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
-                            <i class="fa-solid fa-circle-info text-sm"></i> Ver más
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Modal Controls
-        window.openModal = function(id) {
-            const item = servicesData.find(s => s.id === id);
-            if (!item) return;
-
-            // Registrar visita automáticamente al abrir el modal
-            registrarVisita(item.name);
-
-            document.getElementById('modal-img').src = item.image;
-            document.getElementById('modal-category').textContent = item.category;
-            document.getElementById('modal-locality').textContent = item.locality;
-            document.getElementById('modal-title').textContent = item.name;
-            document.getElementById('modal-desc').textContent = item.description;
-            document.getElementById('modal-whatsapp').href = `https://wa.me/549${item.whatsapp}`;
-            document.getElementById('modal-link').href = item.website || '#';
-
-            const modal = document.getElementById('details-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        window.closeModal = function() {
-            const modal = document.getElementById('details-modal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
-
-        // Designer Authentication & Dashboard Logic
-        window.openDesignerLoginModal = function() {
-            const modal = document.getElementById('designer-login-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        window.closeDesignerLoginModal = function() {
-            const modal = document.getElementById('designer-login-modal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-        }
-
-        window.handleDesignerLogin = function(e) {
-            e.preventDefault();
-            const pass = document.getElementById('designer-password').value;
-            if (pass === 'Hjs2154') {
-                closeDesignerLoginModal();
-                document.getElementById('designer-password').value = '';
-                openDesignerDashboard();
-                showToast("¡Bienvenido Diseñador!", "Acceso concedido al panel de administración.");
-            } else {
-                showToast("Clave incorrecta", "La clave de acceso ingresada no es válida.");
-            }
-        }
-
-        window.openDesignerDashboard = function() {
-            renderAdminBusinessList();
-            renderAdminCategoryList();
-            const modal = document.getElementById('designer-dashboard-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        window.closeDesignerDashboard = function() {
-            const modal = document.getElementById('designer-dashboard-modal');
-            modal.classList.remove('flex');
-            modal.classList.add('hidden');
-            initSlider();
-            renderCategories();
-            renderServices();
-        }
-
-        window.switchAdminTab = function(tab) {
-            const tabNegocios = document.getElementById('admin-tab-negocios');
-            const tabCategorias = document.getElementById('admin-tab-categorias');
-            const tabVisitas = document.getElementById('admin-tab-visitas');
-
-            const btnNegocios = document.getElementById('tab-btn-negocios');
-            const btnCategorias = document.getElementById('tab-btn-categorias');
-            const btnVisitas = document.getElementById('tab-btn-visitas');
-
-            // Hide all tabs
-            tabNegocios.classList.add('hidden');
-            tabCategorias.classList.add('hidden');
-            if (tabVisitas) tabVisitas.classList.add('hidden');
-
-            btnNegocios.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200";
-            btnCategorias.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200";
-            if (btnVisitas) btnVisitas.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200";
-
-            if (tab === 'negocios') {
-                tabNegocios.classList.remove('hidden');
-                btnNegocios.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white";
-            } else if (tab === 'categorias') {
-                tabCategorias.classList.remove('hidden');
-                btnCategorias.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white";
-            } else if (tab === 'visitas') {
-                if (tabVisitas) tabVisitas.classList.remove('hidden');
-                if (btnVisitas) btnVisitas.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white";
-                renderAdminVisitasList();
-            }
-        }
-
-        // Render Admin Visitas List from Firestore
-        async function renderAdminVisitasList() {
-            const tbody = document.getElementById('admin-visitas-list');
-            if (!tbody) return;
-
-            tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-slate-400">Cargando estadísticas...</td></tr>`;
-
-            try {
-                const querySnapshot = await getDocs(collection(db, "visitas"));
-                let visitasArray = [];
-                querySnapshot.forEach(doc => {
-                    visitasArray.push(doc.data());
-                });
-
-                // Ordenar de mayor a menor según las visitas
-                visitasArray.sort((a, b) => b.contador - a.contador);
-
-                if (visitasArray.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-slate-400">Aún no hay registros de visitas.</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = visitasArray.map(item => `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-3 pl-4 font-semibold text-slate-800">${item.negocio}</td>
-                        <td class="p-3 text-center">
-                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
-                                ${item.contador} visitas
-                            </span>
-                        </td>
-                    </tr>
-                `).join('');
-            } catch (error) {
-                console.error("Error al cargar visitas:", error);
-                tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-rose-500">Error al obtener las estadísticas.</td></tr>`;
-            }
-        }
-
-        // Admin Business CRUD (Firebase)
-        window.renderAdminBusinessList = function() {
-            const list = document.getElementById('admin-business-list');
-            if (!list) return;
-            list.innerHTML = servicesData.map(item => `
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <img src="${item.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/64748b?text=Local'" class="w-12 h-12 rounded-xl object-cover">
-                        <div>
-                            <h5 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                ${item.name} 
-                                ${item.featured ? '<span class="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded-full font-bold">Destacado</span>' : ''}
-                            </h5>
-                            <p class="text-xs text-slate-400">${item.locality} • ${item.category}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="editBusiness('${item.id}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteBusiness('${item.id}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.handleAdminBusinessSubmit = async function(e) {
-            e.preventDefault();
-            const id = document.getElementById('admin-bus-id').value;
-            const name = document.getElementById('admin-bus-name').value;
-            const category = document.getElementById('admin-bus-category').value;
-            const locality = document.getElementById('admin-bus-locality').value;
-            const phone = document.getElementById('admin-bus-phone').value;
-            const website = document.getElementById('admin-bus-website').value;
-            const image = document.getElementById('admin-bus-image').value;
-            const description = document.getElementById('admin-bus-desc').value;
-            const featured = document.getElementById('admin-bus-featured').checked;
-
-            const businessData = { name, category, locality, whatsapp: phone.replace(/\D/g,''), website, image, description, featured };
-
-            try {
-                if (id) {
-                    await updateDoc(doc(db, "negocios", id), businessData);
-                    const index = servicesData.findIndex(s => s.id === id);
-                    if (index !== -1) servicesData[index] = { id, ...businessData };
-                    showToast("¡Negocio actualizado!", "Los datos fueron modificados en la nube.");
-                } else {
-                    const docRef = await addDoc(collection(db, "negocios"), businessData);
-                    servicesData.unshift({ id: docRef.id, ...businessData });
-                    showToast("¡Negocio creado!", "El comercio fue agregado a la nube.");
-                }
-                resetAdminBusForm();
-                renderAdminBusinessList();
-                renderServices();
-                renderBannerSlider();
-            } catch (error) {
-                console.error("Error al guardar en Firebase:", error);
-                showToast("Error", "No se pudo guardar en la base de datos.");
-            }
-        }
-
-        window.editBusiness = function(id) {
-            const item = servicesData.find(s => s.id === id);
-            if (!item) return;
-            document.getElementById('admin-bus-id').value = item.id;
-            document.getElementById('admin-bus-name').value = item.name;
-            document.getElementById('admin-bus-category').value = item.category;
-            document.getElementById('admin-bus-locality').value = item.locality;
-            document.getElementById('admin-bus-phone').value = item.whatsapp;
-            document.getElementById('admin-bus-website').value = item.website || '';
-            document.getElementById('admin-bus-image').value = item.image;
-            document.getElementById('admin-bus-desc').value = item.description;
-            document.getElementById('admin-bus-featured').checked = item.featured || false;
-            document.getElementById('admin-bus-submit-btn').textContent = "Actualizar Negocio";
-        }
-
-        window.deleteBusiness = async function(id) {
-            if (confirm("¿Estás seguro de eliminar este negocio de la nube?")) {
-                try {
-                    await deleteDoc(doc(db, "negocios", id));
-                    servicesData = servicesData.filter(s => s.id !== id);
-                    renderAdminBusinessList();
-                    renderServices();
-                    renderBannerSlider();
-                    showToast("Negocio eliminado", "El elemento fue removido.");
-                } catch (error) {
-                    console.error("Error al eliminar:", error);
-                }
-            }
-        }
-
-        window.resetAdminBusForm = function() {
-            document.getElementById('admin-business-form').reset();
-            document.getElementById('admin-bus-id').value = '';
-            document.getElementById('admin-bus-submit-btn').textContent = "Guardar Negocio";
-        }
-
-        // Admin Category CRUD (Firebase)
-        window.renderAdminCategoryList = function() {
-            const list = document.getElementById('admin-category-list');
-            if (!list) return;
-            list.innerHTML = categoriesData.map(cat => `
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg">
-                            <i class="${cat.icon}"></i>
-                        </div>
-                        <div>
-                            <h5 class="font-bold text-slate-800 text-sm">${cat.name}</h5>
-                            <p class="text-xs text-slate-400">Icono: ${cat.icon}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="editCategory('${cat.name}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteCategory('${cat.name}', '${cat.id}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.handleAdminCatSubmit = async function(e) {
-            e.preventDefault();
-            const oldName = document.getElementById('admin-cat-old-name').value;
-            const name = document.getElementById('admin-cat-name').value.trim();
-            const icon = document.getElementById('admin-cat-icon').value.trim();
-
-            try {
-                if (oldName) {
-                    const cat = categoriesData.find(c => c.name === oldName);
-                    if (cat && cat.id) {
-                        await updateDoc(doc(db, "categorias", cat.id), { name, icon });
-                        cat.name = name;
-                        cat.icon = icon;
-                    }
-                    showToast("¡Categoría actualizada!", "Los cambios se aplicaron correctamente.");
-                } else {
-                    if (categoriesData.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-                        showToast("Error", "Ya existe una categoría con ese nombre.");
-                        return;
-                    }
-                    const docRef = await addDoc(collection(db, "categorias"), { name, icon });
-                    categoriesData.push({ id: docRef.id, name, icon });
-                    showToast("¡Categoría creada!", "La nueva categoría está lista.");
-                }
-                resetAdminCatForm();
-                renderAdminCategoryList();
-                renderCategories();
-            } catch (error) {
-                console.error("Error al guardar categoría:", error);
-            }
-        }
-
-        window.editCategory = function(name) {
-            const cat = categoriesData.find(c => c.name === name);
-            if (!cat) return;
-            document.getElementById('admin-cat-old-name').value = cat.name;
-            document.getElementById('admin-cat-name').value = cat.name;
-            document.getElementById('admin-cat-icon').value = cat.icon;
-            document.getElementById('admin-cat-submit-btn').textContent = "Actualizar Categoría";
-        }
-
-        window.deleteCategory = async function(name, id) {
-            if (categoriesData.length <= 1) {
-                showToast("Acción no permitida", "Debe existir al menos una categoría.");
-                return;
-            }
-            if (confirm(`¿Estás seguro de eliminar la categoría "${name}"?`)) {
-                try {
-                    await deleteDoc(doc(db, "categorias", id));
-                    categoriesData = categoriesData.filter(c => c.name !== name);
-                    renderAdminCategoryList();
-                    renderCategories();
-                    showToast("Categoría eliminada", "Se removió la categoría.");
-                } catch (error) {
-                    console.error("Error al eliminar categoría:", error);
-                }
-            }
-        }
-
-        window.resetAdminCatForm = function() {
-            document.getElementById('admin-cat-form').reset();
-            document.getElementById('admin-cat-old-name').value = '';
-            document.getElementById('admin-cat-submit-btn').textContent = "Guardar Categoría";
-        }
-
-        // Public Form Submit Handler modificado para WhatsApp
-        window.handleFormSubmit = function(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('form-name').value.trim();
-            const category = document.getElementById('form-category').value;
-            const locality = document.getElementById('form-locality').value;
-            const phone = document.getElementById('form-phone').value.trim();
-            const website = document.getElementById('form-website').value.trim();
-            const image = document.getElementById('form-image').value.trim();
-            const description = document.getElementById('form-desc').value.trim();
-
-            // Construir el mensaje formateado para WhatsApp
-            let mensaje = `*¡Hola! Quiero sumar mi negocio al Directorio Regional:*%0A%0A`;
-            mensaje += `🏪 *Nombre:* ${name}%0A`;
-            mensaje += `📂 *Categoría:* ${category}%0A`;
-            mensaje += `📍 *Localidad:* ${locality}%0A`;
-            mensaje += `📱 *WhatsApp / Teléfono:* ${phone}%0A`;
-            if (website) mensaje += `🌐 *Sitio Web/App:* ${website}%0A`;
-            if (image) mensaje += `🖼️ *Imagen:* ${image}%0A`;
-            mensaje += `📝 *Descripción:* ${description}`;
-
-            // Número de destino solicitado
-            const numeroDestino = "5493564687954";
-
-            // Abrir WhatsApp con el mensaje codificado
-            const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${mensaje}`;
-            window.open(urlWhatsApp, '_blank');
-
-            // Limpiar formulario y mostrar notificación
-            document.getElementById('business-form').reset();
-            showToast("¡Solicitud preparada!", "Se está abriendo WhatsApp para enviar tus datos.");
-        }
-
-        window.showToast = function(title, desc) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-title').textContent = title;
-            document.getElementById('toast-desc').textContent = desc;
-
-            toast.classList.remove('translate-y-28', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-28', 'opacity-0');
-            }, 4000);
-        }
-    </script>
+      } else {
+        listaUl.innerHTML = '<li>Servicio de ejemplo 1</li><li>Servicio de ejemplo 2</li>';
+      }
+    }
+
+    // Enviar Solicitud por WhatsApp
+    function enviarAnuncioWsp() {
+      const nombre = document.getElementById('ad-nombre').value;
+      const rubro = document.getElementById('ad-rubro').value;
+      const localidad = document.getElementById('ad-localidad').value;
+      const servicios = document.getElementById('ad-servicios').value;
+      const telefono = document.getElementById('ad-telefono').value;
+      const link = document.getElementById('ad-link').value;
+
+      if (!nombre || !telefono) {
+        alert('Por favor, ingresá al menos el Nombre de la Empresa y el Teléfono de Contacto.');
+        return;
+      }
+
+      const mensaje = `Hola%20Hermes%20Suares,%20quiero%20publicitar%20mi%20negocio%20en%20el%20portal:%0A%0A` +
+                      `📌%20*Empresa:*%20${encodeURIComponent(nombre)}%0A` +
+                      `🏷️%20*Rubro:*%20${encodeURIComponent(rubro)}%0A` +
+                      `📍%20*Localidad:*%20${encodeURIComponent(localidad)}%0A` +
+                      `🛠️%20*Servicios:*%20${encodeURIComponent(servicios)}%0A` +
+                      `📞%20*Contacto:*%20${encodeURIComponent(telefono)}%0A` +
+                      `🔗%20*Link:*%20${encodeURIComponent(link)}`;
+
+      window.open(`https://wa.me/5493564687954?text=${mensaje}`, '_blank');
+    }
+
+    // Inicializar calculadora
+    calcularPresupuesto();
+  </script>
 </body>
 </html>
