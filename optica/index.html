@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Óptica Nueva Visión | Salud Visual y Estilo (@onuevavision)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome para íconos nítidos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            navy: '#0B1F3A',
+                            deep: '#0F2C59',
+                            cyan: '#06B6D4',
+                            teal: '#0D9488',
+                            light: '#F0F9FF'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Notificación / Toast personalizado (reemplazo elegante de alert) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Encabezado / Barra de Navegación -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo y Marca -->
+                <a href="#inicio" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand-navy to-cyan-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-glasses text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-display font-bold text-xl tracking-tight text-brand-navy block leading-none">
+                            Óptica <span class="text-cyan-600">Nueva Visión</span>
+                        </span>
+                        <span class="text-xs font-medium text-slate-500 tracking-wide">@onuevavision</span>
+                    </div>
+                </a>
+
+                <!-- Navegación Desktop -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="#inicio" class="text-sm font-semibold text-slate-600 hover:text-cyan-600 transition-colors">Inicio</a>
+                    <a href="#servicios" class="text-sm font-semibold text-slate-600 hover:text-cyan-600 transition-colors">Servicios</a>
+                    <a href="#ubicacion" class="text-sm font-semibold text-slate-600 hover:text-cyan-600 transition-colors">Ubicación / Cómo llegar</a>
+                    <a href="#contacto" class="text-sm font-semibold text-slate-600 hover:text-cyan-600 transition-colors">Contacto</a>
+                </nav>
+
+                <!-- Botón CTA Header -->
+                <div class="hidden sm:flex items-center gap-3">
+                    <a href="#ubicacion" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-navy hover:bg-brand-deep text-white text-sm font-semibold shadow-sm transition-all">
+                        <i class="fa-solid fa-location-dot text-cyan-400"></i>
+                        <span>Cómo llegar</span>
+                    </a>
+                </div>
+
+                <!-- Botón Menú Móvil -->
+                <button id="mobile-menu-btn" aria-label="Abrir menú" class="md:hidden p-2.5 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 px-4 pt-2 pb-6 space-y-2 shadow-lg">
+            <a href="#inicio" class="mobile-link block px-4 py-3 rounded-xl text-base font-semibold text-slate-700 hover:bg-cyan-50 hover:text-cyan-700">Inicio</a>
+            <a href="#servicios" class="mobile-link block px-4 py-3 rounded-xl text-base font-semibold text-slate-700 hover:bg-cyan-50 hover:text-cyan-700">Servicios</a>
+            <a href="#ubicacion" class="mobile-link block px-4 py-3 rounded-xl text-base font-semibold text-slate-700 hover:bg-cyan-50 hover:text-cyan-700">Ubicación / Cómo llegar</a>
+            <a href="#contacto" class="mobile-link block px-4 py-3 rounded-xl text-base font-semibold text-slate-700 hover:bg-cyan-50 hover:text-cyan-700">Contacto</a>
+        </div>
+    </header>
+
+    <!-- Sección Hero -->
+    <section id="inicio" class="relative overflow-hidden bg-gradient-to-br from-brand-navy via-[#0e2a4f] to-[#083344] text-white pt-16 pb-24 lg:pt-24 lg:pb-32">
+        <!-- Elementos decorativos de fondo -->
+        <div class="absolute inset-0 opacity-15 pointer-events-none">
+            <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-cyan-400 blur-3xl"></div>
+            <div class="absolute bottom-0 left-10 w-80 h-80 rounded-full bg-teal-400 blur-3xl"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Columna de Texto -->
+                <div class="lg:col-span-7 space-y-7 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm text-cyan-300 text-xs sm:text-sm font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <span>Atención Óptica Profesional &amp; Estilo Personalizado</span>
+                    </div>
+
+                    <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.12]">
+                        Claridad visual con el <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-teal-200">estilo que te define</span>
+                    </h1>
+
+                    <p class="text-base sm:text-lg text-slate-200/90 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        En <strong>Óptica Nueva Visión</strong> cuidamos tu salud visual con tecnología de precisión, asesoramiento experto y las últimas tendencias en armazones y cristales.
+                    </p>
+
+                    <!-- Botones de Acción Principales -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                        <a href="#ubicacion" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-brand-navy font-bold text-base shadow-lg shadow-cyan-500/25 transition-all transform hover:-translate-y-0.5">
+                            <i class="fa-solid fa-diamond-turn-right text-lg"></i>
+                            <span>Cómo llegar con GPS</span>
+                        </a>
+
+                        <a href="https://www.instagram.com/onuevavision?lqvp=OXZzc210MTByYWI1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold text-base backdrop-blur-sm transition-all">
+                            <i class="fa-brands fa-instagram text-xl text-pink-400"></i>
+                            <span>Ver catálogo en Instagram</span>
+                        </a>
+                    </div>
+
+                    <!-- Indicadores de Confianza -->
+                    <div class="pt-6 grid grid-cols-3 gap-4 border-t border-white/10 max-w-lg mx-auto lg:mx-0">
+                        <div>
+                            <p class="font-display font-bold text-2xl text-cyan-300">+1000</p>
+                            <p class="text-xs text-slate-300">Clientes felices</p>
+                        </div>
+                        <div>
+                            <p class="font-display font-bold text-2xl text-cyan-300">100%</p>
+                            <p class="text-xs text-slate-300">Garantía óptica</p>
+                        </div>
+                        <div>
+                            <p class="font-display font-bold text-2xl text-cyan-300">GPS</p>
+                            <p class="text-xs text-slate-300">Acceso directo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Visual / Tarjeta Destacada -->
+                <div class="lg:col-span-5">
+                    <div class="relative mx-auto max-w-md">
+                        <div class="rounded-3xl bg-white/10 p-3 backdrop-blur-md border border-white/20 shadow-2xl">
+                            <div class="relative rounded-2xl overflow-hidden bg-slate-900 aspect-[4/3]">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1574258495973-f010dfbb5371?auto=format&fit=crop&w=900&q=80" 
+                                    alt="Armazones modernos en Óptica Nueva Visión" 
+                                    onerror="this.onerror=null; this.src='https://placehold.co/800x600/0B1F3A/06B6D4?text=Optica+Nueva+Vision';"
+                                    class="w-full h-full object-cover opacity-90"
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-t from-brand-navy/90 via-transparent to-transparent"></div>
+                                <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
+                                    <div>
+                                        <p class="text-xs uppercase tracking-wider text-cyan-300 font-semibold">Nuevos ingresos</p>
+                                        <p class="font-display font-bold text-lg">Colección 2026</p>
+                                    </div>
+                                    <a href="https://www.instagram.com/onuevavision?lqvp=OXZzc210MTByYWI1" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white text-brand-navy flex items-center justify-center hover:bg-cyan-400 transition-colors shadow-md" title="Ir a Instagram">
+                                        <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Servicios Ópticos -->
+    <section id="servicios" class="py-20 lg:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-bold uppercase tracking-widest text-cyan-600 bg-cyan-50 px-3.5 py-1.5 rounded-full">Nuestros Servicios</span>
+                <h2 class="mt-4 font-display font-extrabold text-3xl sm:text-4xl text-brand-navy">
+                    Soluciones integrales para tu salud visual
+                </h2>
+                <p class="mt-4 text-slate-600 text-base sm:text-lg">
+                    Combinamos precisión clínica, asesoramiento estético y materiales de primera calidad para cada necesidad.
+                </p>
+            </div>
+
+            <!-- Grid de Tarjetas de Servicios -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Servicio 1: Examen Visual -->
+                <div class="group p-8 rounded-3xl bg-slate-50 border border-slate-200/70 hover:bg-white hover:border-cyan-200 hover:shadow-xl hover:shadow-cyan-900/5 transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-cyan-100 text-cyan-700 flex items-center justify-center text-2xl mb-6 group-hover:bg-cyan-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-xl text-brand-navy mb-3">Control y Asesoramiento Visual</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Evaluación personalizada de tus recetas ópticas, medición digital de distancia interpupilar y recomendación de cristales ideales para tu rutina.
+                    </p>
+                </div>
+
+                <!-- Servicio 2: Lentes Recetados -->
+                <div class="group p-8 rounded-3xl bg-slate-50 border border-slate-200/70 hover:bg-white hover:border-cyan-200 hover:shadow-xl hover:shadow-cyan-900/5 transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl mb-6 group-hover:bg-brand-navy group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-glasses"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-xl text-brand-navy mb-3">Lentes Recetados</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Cristales monofocales, bifocales y multifocales de última generación con tratamientos antirreflejo, filtro de luz azul y fotocromáticos.
+                    </p>
+                </div>
+
+                <!-- Servicio 3: Lentes de Sol -->
+                <div class="group p-8 rounded-3xl bg-slate-50 border border-slate-200/70 hover:bg-white hover:border-cyan-200 hover:shadow-xl hover:shadow-cyan-900/5 transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center text-2xl mb-6 group-hover:bg-teal-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-sun"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-xl text-brand-navy mb-3">Lentes de Sol</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Protección 100% UV400 y lentes polarizados. Modelos clásicos y de tendencia, también disponibles con graduación a medida.
+                    </p>
+                </div>
+
+                <!-- Servicio 4: Lentes de Contacto -->
+                <div class="group p-8 rounded-3xl bg-slate-50 border border-slate-200/70 hover:bg-white hover:border-cyan-200 hover:shadow-xl hover:shadow-cyan-900/5 transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center text-2xl mb-6 group-hover:bg-sky-600 group-hover:text-white transition-colors">
+                        <i class="fa-regular fa-circle-dot"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-xl text-brand-navy mb-3">Lentes de Contacto</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Adaptación de lentes blandas, tóricas, multifocales y cosméticas. Contamos con líquidos multipropósito y accesorios para su cuidado.
+                    </p>
+                </div>
+
+                <!-- Servicio 5: Reparación y Ajustes -->
+                <div class="group p-8 rounded-3xl bg-slate-50 border border-slate-200/70 hover:bg-white hover:border-cyan-200 hover:shadow-xl hover:shadow-cyan-900/5 transition-all duration-300">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-2xl mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-xl text-brand-navy mb-3">Reparación y Ajustes</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        Servicio técnico especializado: calibración de armazones, cambio de plaquetas, tornillos, soldaduras y limpieza ultrasónica profesional.
+                    </p>
+                </div>
+
+                <!-- Tarjeta Promocional Instagram -->
+                <div class="p-8 rounded-3xl bg-gradient-to-br from-brand-navy to-cyan-800 text-white flex flex-col justify-between shadow-lg">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-white/15 flex items-center justify-center text-2xl mb-6 text-pink-300">
+                            <i class="fa-brands fa-instagram"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Explorá Nuestros Modelos</h3>
+                        <p class="text-cyan-100 text-sm leading-relaxed">
+                            Mirá los armazones recién llegados, promociones vigentes y consultanos directamente por mensaje en nuestro Instagram oficial.
+                        </p>
+                    </div>
+                    <a href="https://www.instagram.com/onuevavision?lqvp=OXZzc210MTByYWI1" target="_blank" rel="noopener noreferrer" class="mt-6 inline-flex items-center justify-center gap-2 w-full py-3.5 px-5 rounded-2xl bg-white text-brand-navy font-bold text-sm hover:bg-cyan-50 transition-colors">
+                        <span>Visitar @onuevavision</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Interactiva de Ubicación y Navegación GPS -->
+    <section id="ubicacion" class="py-20 lg:py-28 bg-slate-100 border-y border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-bold uppercase tracking-widest text-teal-700 bg-teal-100 px-3.5 py-1.5 rounded-full">Ubicación &amp; Navegación GPS</span>
+                <h2 class="mt-4 font-display font-extrabold text-3xl sm:text-4xl text-brand-navy">
+                    Cómo llegar a Óptica Nueva Visión
+                </h2>
+                <p class="mt-3 text-slate-600 text-base">
+                    Activá tu ubicación GPS para trazar la ruta más rápida en Google Maps desde donde estés hasta nuestro local.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                <!-- Panel Izquierdo: Controles de GPS y Dirección Editable -->
+                <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col justify-between space-y-6">
+                    <div class="space-y-5">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 text-xl">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-display font-bold text-lg text-brand-navy">Destino configurado</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">Podés ajustar la dirección o localidad si deseás mayor precisión en el mapa.</p>
+                            </div>
+                        </div>
+
+                        <!-- Campo Editable de Dirección / Destino -->
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            <label for="destination-input" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                                Dirección o búsqueda en Google Maps
+                            </label>
+                            <div class="flex gap-2">
+                                <input 
+                                    type="text" 
+                                    id="destination-input" 
+                                    value="Óptica Nueva Visión" 
+                                    placeholder="Ej: Óptica Nueva Visión, Calle y Número..."
+                                    class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"
+                                >
+                                <button 
+                                    id="update-map-btn" 
+                                    type="button"
+                                    class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold shrink-0 transition-colors"
+                                    title="Actualizar vista previa del mapa"
+                                >
+                                    Actualizar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Estado de Geolocalización -->
+                        <div id="gps-status-box" class="hidden p-4 rounded-2xl bg-cyan-50 border border-cyan-200 text-cyan-900 text-sm">
+                            <div class="flex items-center gap-3">
+                                <i id="gps-status-icon" class="fa-solid fa-satellite-dish text-cyan-600 animate-pulse"></i>
+                                <span id="gps-status-text" class="font-medium">Obteniendo coordenadas GPS...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Navegación Google Maps -->
+                    <div class="space-y-3 pt-2">
+                        <!-- Botón Principal con Geolocalización del Navegador -->
+                        <button 
+                            id="start-gps-btn" 
+                            type="button"
+                            class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-brand-navy to-cyan-700 hover:from-brand-deep hover:to-cyan-600 text-white font-bold text-base shadow-lg shadow-cyan-900/15 flex items-center justify-center gap-3 transition-all transform active:scale-[0.99]"
+                        >
+                            <i class="fa-solid fa-location-crosshairs text-cyan-300 text-lg"></i>
+                            <span>Iniciar ruta GPS desde mi ubicación actual</span>
+                        </button>
+
+                        <!-- Botón Secundario Directo a Google Maps -->
+                        <a 
+                            id="direct-maps-link"
+                            href="https://www.google.com/maps/dir/?api=1&destination=%C3%93ptica%20Nueva%20Visi%C3%B3n" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            class="w-full py-3.5 px-6 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm flex items-center justify-center gap-2 transition-colors"
+                        >
+                            <i class="fa-brands fa-google text-cyan-700"></i>
+                            <span>Abrir directamente en Google Maps</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Panel Derecho: Mapa Embebido de Google Maps -->
+                <div class="lg:col-span-7 bg-white rounded-3xl p-2.5 shadow-sm border border-slate-200 min-h-[380px] sm:min-h-[450px] flex flex-col">
+                    <div class="relative w-full h-full flex-1 rounded-2xl overflow-hidden bg-slate-200">
+                        <iframe 
+                            id="google-map-iframe"
+                            title="Mapa de ubicación Óptica Nueva Visión"
+                            src="https://maps.google.com/maps?q=%C3%93ptica%20Nueva%20Visi%C3%B3n&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                            class="w-full h-full min-h-[380px] border-0"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                        ></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Contacto y Horarios -->
+    <section id="contacto" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="rounded-3xl bg-brand-navy text-white p-8 sm:p-12 lg:p-16 shadow-xl relative overflow-hidden">
+                <!-- Decoración sutil -->
+                <div class="absolute right-0 top-0 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    <!-- Información de Contacto y Redes -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <span class="inline-block px-3.5 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold uppercase tracking-wider">
+                            Contacto &amp; Comunidad
+                        </span>
+                        <h2 class="font-display font-extrabold text-3xl sm:text-4xl">
+                            ¿Tenés alguna consulta sobre tus lentes?
+                        </h2>
+                        <p class="text-slate-300 text-base max-w-xl leading-relaxed">
+                            Escribinos por mensaje directo en Instagram para consultar disponibilidad de armazones, presupuestos de recetas o coordinar tu visita al local.
+                        </p>
+
+                        <!-- Botón Destacado a Instagram -->
+                        <div class="pt-2 flex flex-wrap gap-4">
+                            <a 
+                                href="https://www.instagram.com/onuevavision?lqvp=OXZzc210MTByYWI1" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-3 px-7 py-4 rounded-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 hover:opacity-95 text-white font-bold text-base shadow-lg transition-all transform hover:-translate-y-0.5"
+                            >
+                                <i class="fa-brands fa-instagram text-2xl"></i>
+                                <span>Seguir y escribir a @onuevavision</span>
+                            </a>
+
+                            <button 
+                                id="copy-ig-btn"
+                                type="button"
+                                class="inline-flex items-center gap-2 px-5 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-sm font-semibold text-white transition-colors"
+                            >
+                                <i class="fa-regular fa-copy"></i>
+                                <span>Copiar usuario</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta de Horarios de Atención -->
+                    <div class="lg:col-span-5">
+                        <div class="rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 p-6 sm:p-8 space-y-5">
+                            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-regular fa-clock text-cyan-400 text-xl"></i>
+                                    <h3 class="font-display font-bold text-lg">Horarios de Atención</h3>
+                                </div>
+                                <span class="text-xs bg-teal-500/20 text-teal-300 px-2.5 py-1 rounded-lg font-semibold">Estándar</span>
+                            </div>
+
+                            <ul class="space-y-3 text-sm">
+                                <li class="flex justify-between items-center text-slate-200">
+                                    <span>Lunes a Viernes</span>
+                                    <span class="font-semibold text-white">08:30 – 12:30 / 16:30 – 20:30</span>
+                                </li>
+                                <li class="flex justify-between items-center text-slate-200">
+                                    <span>Sábados</span>
+                                    <span class="font-semibold text-white">09:00 – 13:00</span>
+                                </li>
+                                <li class="flex justify-between items-center text-slate-400">
+                                    <span>Domingos y Feriados</span>
+                                    <span class="font-medium">Cerrado</span>
+                                </li>
+                            </ul>
+
+                            <p class="text-xs text-slate-300/80 pt-2 border-t border-white/10">
+                                * Confirmá horarios especiales o turnos a través de nuestro perfil oficial en Instagram.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pie de Página -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-cyan-600 flex items-center justify-center text-white">
+                    <i class="fa-solid fa-glasses"></i>
+                </div>
+                <div>
+                    <p class="font-display font-bold text-white text-base">Óptica Nueva Visión</p>
+                    <p class="text-xs text-slate-400">Cuidamos tu mirada todos los días</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6 text-sm">
+                <a href="#inicio" class="hover:text-white transition-colors">Inicio</a>
+                <a href="#servicios" class="hover:text-white transition-colors">Servicios</a>
+                <a href="#ubicacion" class="hover:text-white transition-colors">GPS</a>
+                <a href="https://www.instagram.com/onuevavision?lqvp=OXZzc210MTByYWI1" target="_blank" rel="noopener noreferrer" class="text-cyan-400 hover:text-cyan-300 font-semibold inline-flex items-center gap-1.5">
+                    <i class="fa-brands fa-instagram"></i>
+                    <span>@onuevavision</span>
+                </a>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-slate-800/80 text-center sm:text-left text-xs text-slate-500">
+            &copy; <span id="current-year"></span> Óptica Nueva Visión. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Lógica JavaScript Interactiva -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Año actual en el footer
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Menú móvil
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // Sistema de notificaciones Toast (sin usar alert)
+            function showToast(message, type = 'info') {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                
+                const colors = {
+                    info: 'bg-brand-navy text-white border-cyan-500',
+                    success: 'bg-teal-800 text-white border-teal-400',
+                    warning: 'bg-amber-800 text-white border-amber-400'
+                };
+
+                toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-2xl border-l-4 shadow-xl text-sm font-medium transition-all duration-300 transform translate-y-2 opacity-0 ${colors[type] || colors.info}`;
+                toast.innerHTML = `
+                    <i class="fa-solid ${type === 'success' ? 'fa-circle-check text-teal-300' : type === 'warning' ? 'fa-triangle-exclamation text-amber-300' : 'fa-circle-info text-cyan-300'}"></i>
+                    <span>${message}</span>
+                `;
+
+                container.appendChild(toast);
+                requestAnimationFrame(() => {
+                    toast.classList.remove('translate-y-2', 'opacity-0');
+                });
+
+                setTimeout(() => {
+                    toast.classList.add('translate-y-2', 'opacity-0');
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+
+            // Gestión del Mapa y Destino Editable
+            const destinationInput = document.getElementById('destination-input');
+            const updateMapBtn = document.getElementById('update-map-btn');
+            const googleMapIframe = document.getElementById('google-map-iframe');
+            const directMapsLink = document.getElementById('direct-maps-link');
+
+            function updateMapDestination() {
+                const query = destinationInput.value.trim() || 'Óptica Nueva Visión';
+                const encodedQuery = encodeURIComponent(query);
+
+                // Actualizar iframe embebido
+                googleMapIframe.src = `https://maps.google.com/maps?q=${encodedQuery}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
+                // Actualizar enlace directo sin origen GPS
+                directMapsLink.href = `https://www.google.com/maps/dir/?api=1&destination=${encodedQuery}`;
+            }
+
+            updateMapBtn.addEventListener('click', () => {
+                updateMapDestination();
+                showToast('Mapa actualizado con el destino ingresado.', 'success');
+            });
+
+            destinationInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    updateMapDestination();
+                    showToast('Mapa actualizado.', 'success');
+                }
+            });
+
+            // Botón de Navegación GPS con Geolocalización del Navegador
+            const startGpsBtn = document.getElementById('start-gps-btn');
+            const gpsStatusBox = document.getElementById('gps-status-box');
+            const gpsStatusText = document.getElementById('gps-status-text');
+            const gpsStatusIcon = document.getElementById('gps-status-icon');
+
+            startGpsBtn.addEventListener('click', () => {
+                const destination = encodeURIComponent(destinationInput.value.trim() || 'Óptica Nueva Visión');
+
+                if (!('geolocation' in navigator)) {
+                    showToast('Tu navegador no soporta geolocalización. Abriendo Google Maps...', 'warning');
+                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${destination}`, '_blank', 'noopener,noreferrer');
+                    return;
+                }
+
+                // Mostrar estado de carga GPS
+                gpsStatusBox.classList.remove('hidden');
+                gpsStatusIcon.className = 'fa-solid fa-satellite-dish text-cyan-600 animate-pulse';
+                gpsStatusText.textContent = 'Obteniendo tu ubicación GPS actual...';
+                startGpsBtn.disabled = true;
+                startGpsBtn.classList.add('opacity-80', 'cursor-wait');
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lng}&destination=${destination}&travelmode=driving`;
+
+                        gpsStatusIcon.className = 'fa-solid fa-circle-check text-teal-600';
+                        gpsStatusText.textContent = `Ubicación detectada (${lat.toFixed(4)}, ${lng.toFixed(4)}). Abriendo ruta...`;
+                        
+                        startGpsBtn.disabled = false;
+                        startGpsBtn.classList.remove('opacity-80', 'cursor-wait');
+
+                        showToast('Ruta GPS lista en Google Maps.', 'success');
+                        window.open(mapsUrl, '_blank', 'noopener,noreferrer');
+                    },
+                    (error) => {
+                        startGpsBtn.disabled = false;
+                        startGpsBtn.classList.remove('opacity-80', 'cursor-wait');
+
+                        let errorMsg = 'No se pudo obtener el GPS automático. Abriendo ruta manual en Google Maps.';
+                        if (error.code === error.PERMISSION_DENIED) {
+                            errorMsg = 'Permiso de ubicación denegado. Abriendo Google Maps para que ingreses tu punto de partida.';
+                        }
+
+                        gpsStatusIcon.className = 'fa-solid fa-triangle-exclamation text-amber-600';
+                        gpsStatusText.textContent = errorMsg;
+                        showToast(errorMsg, 'warning');
+
+                        // Fallback automático a Google Maps
+                        window.open(`https://www.google.com/maps/dir/?api=1&destination=${destination}`, '_blank', 'noopener,noreferrer');
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            });
+
+            // Copiar usuario de Instagram al portapapeles
+            const copyIgBtn = document.getElementById('copy-ig-btn');
+            copyIgBtn.addEventListener('click', () => {
+                const tempInput = document.createElement('input');
+                tempInput.value = '@onuevavision';
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('Usuario @onuevavision copiado al portapapeles.', 'success');
+                } catch (err) {
+                    showToast('Usuario: @onuevavision', 'info');
+                }
+                document.body.removeChild(tempInput);
+            });
+        });
+    </script>
+</body>
+</html>
