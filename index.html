@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directorio Regional San Francisco y Zona (120 km)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Leaflet.js CSS & JS for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom smooth transitions and scrollbar */
+        html {
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Leaflet custom z-index fix so modals stay above map */
+        #regional-map {
+            z-index: 10;
+        }
+        .leaflet-popup-content-wrapper {
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .leaflet-popup-content {
+            margin: 14px 16px;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Datalist global con localidades dentro del radio de 120 km de San Francisco -->
+    <datalist id="localidades-list">
+        <option value="San Francisco">
+        <option value="Arroyito">
+        <option value="Frontera">
+        <option value="Josefina">
+        <option value="Devoto">
+        <option value="Freyre">
+        <option value="Porteña">
+        <option value="Brinkmann">
+        <option value="Morteros">
+        <option value="Las Varillas">
+        <option value="El Tío">
+        <option value="La Francia">
+        <option value="Tránsito">
+        <option value="Santiago Temple">
+        <option value="Rafaela">
+        <option value="Sunchales">
+        <option value="María Juana">
+        <option value="Zenón Pereyra">
+        <option value="Plaza Clucellas">
+        <option value="Estación Clucellas">
+        <option value="San Jorge">
+        <option value="Sastre">
+        <option value="Carlos Pellegrini">
+        <option value="El Trébol">
+        <option value="Balnearia">
+        <option value="Miramar de Ansenuza">
+        <option value="Marull">
+        <option value="La Para">
+        <option value="Villa Concepción del Tío">
+        <option value="Saturnino María Laspiur">
+        <option value="Alicia">
+        <option value="El Fortín">
+        <option value="Sacanta">
+        <option value="Luque">
+        <option value="Villa del Rosario">
+        <option value="Humberto Primo">
+        <option value="Lehmann">
+        <option value="Susana">
+        <option value="Vila">
+        <option value="Ramona">
+        <option value="Bauer y Sigel">
+        <option value="Colonia Marina">
+        <option value="Quebracho Herrado">
+        <option value="Luxardo">
+        <option value="Seeber">
+        <option value="Suardi">
+    </datalist>
+
+    <!-- Header / Navigation -->
+    <header class="bg-white sticky top-0 z-40 shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-compass text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-lg font-bold bg-gradient-to-r from-blue-700 to-indigo-700 bg-clip-text text-transparent block leading-tight">Guía Regional</span>
+                    <span class="text-xs font-medium text-slate-400 tracking-wider uppercase">Radio 120 km • San Francisco y Zona</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+                <a href="#directorio" class="hover:text-blue-600 transition-colors">Directorio</a>
+                <a href="#mapa-cobertura" class="hover:text-blue-600 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-map-location-dot text-blue-500"></i> Mapa 120 km
+                </a>
+                <a href="#sumarse" class="text-blue-600 font-semibold bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-store"></i> Sumar mi Negocio
+                </a>
+                <!-- Designer Access Button -->
+                <button onclick="openDesignerLoginModal()" id="designer-nav-btn" class="text-slate-700 font-semibold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-xs text-amber-600"></i> Acceso Diseñador
+                </button>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Modal/Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-100 px-4 pt-2 pb-4 space-y-3">
+            <a href="#directorio" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Directorio</a>
+            <a href="#mapa-cobertura" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Mapa Cobertura 120 km</a>
+            <a href="#sumarse" class="block px-3 py-2 rounded-lg bg-blue-50 text-blue-700 font-semibold text-center">Sumar mi Negocio</a>
+            <button onclick="openDesignerLoginModal()" class="w-full text-left px-3 py-2 rounded-lg bg-slate-100 text-slate-700 font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-lock text-xs text-amber-600"></i> Acceso Diseñador
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+
+        <!-- Rotating Promotional Banner Section -->
+        <section id="destacados" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+            <div class="relative bg-slate-900 rounded-3xl overflow-hidden shadow-xl min-h-[360px] sm:min-h-[400px] flex items-center">
+                <!-- Background slides container -->
+                <div id="banner-slider" class="absolute inset-0 w-full h-full">
+                    <!-- Slides will be injected dynamically from featured items -->
+                </div>
+
+                <!-- Slider Controls -->
+                <button onclick="prevSlide()" class="absolute left-4 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button onclick="nextSlide()" class="absolute right-4 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+                <!-- Slider Indicators -->
+                <div id="slider-dots" class="absolute bottom-4 left-0 right-0 z-30 flex justify-center gap-2">
+                    <!-- Dots injected dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Filters Section -->
+        <section id="directorio" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 mb-8">
+                
+                <!-- Top Row: General Search & Locality Search/Selector -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+                    
+                    <!-- General Search Bar (7 cols on lg) -->
+                    <div class="relative lg:col-span-7">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="search-input" oninput="handleSearch()" placeholder="Buscá por local, servicio, categoría o localidad..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-10 py-3.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm">
+                        <button id="clear-search-btn" onclick="clearGeneralSearch()" class="hidden absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                        </button>
+                    </div>
+
+                    <!-- Specific Locality Selector + Text Search (5 cols on lg) -->
+                    <div class="lg:col-span-5 flex flex-col sm:flex-row gap-2">
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-location-dot absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-600"></i>
+                            <select id="locality-select" onchange="filterByLocation(this.value)" class="w-full bg-blue-50/60 border border-blue-200/80 rounded-2xl pl-10 pr-8 py-3.5 text-slate-700 font-medium focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm appearance-none cursor-pointer">
+                                <option value="Todas">Todas las localidades</option>
+                                <!-- Populated dynamically with all unique localities -->
+                            </select>
+                            <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+                        </div>
+                        <div class="relative flex-1">
+                            <i class="fa-solid fa-city absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="locality-text-filter" list="localidades-list" oninput="handleLocalityTextFilter(this.value)" placeholder="Filtrar localidad..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-9 pr-8 py-3.5 text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-sm">
+                            <button id="clear-loc-btn" onclick="resetLocationFilter()" title="Limpiar filtro de localidad" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Locality Access Pills -->
+                <div class="flex flex-wrap items-center gap-2 mt-5 pt-4 border-t border-slate-100">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-1 flex items-center gap-1">
+                        <i class="fa-solid fa-bolt text-amber-500"></i> Localidades:
+                    </span>
+                    <div id="quick-localities-container" class="flex flex-wrap items-center gap-2">
+                        <!-- Dynamically rendered quick locality pills -->
+                    </div>
+                </div>
+
+                <!-- Category Filters Row -->
+                <div id="category-filters-container" class="flex items-center gap-2.5 overflow-x-auto pb-2 pt-4 mt-4 border-t border-slate-100">
+                    <!-- Categories injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Active Filter Status Bar -->
+            <div id="active-filter-banner" class="hidden mb-6 bg-blue-50 border border-blue-100 rounded-2xl px-5 py-3 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2 text-sm text-blue-900">
+                    <i class="fa-solid fa-filter text-blue-600"></i>
+                    <span id="active-filter-text">Mostrando resultados filtrados</span>
+                </div>
+                <button onclick="resetAllFilters()" class="text-xs font-bold text-blue-700 hover:text-blue-900 bg-white px-3 py-1.5 rounded-xl shadow-sm border border-blue-100 transition-colors">
+                    Limpiar todos los filtros
+                </button>
+            </div>
+
+            <!-- Results Grid -->
+            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be injected dynamically via JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-16 bg-white rounded-3xl border border-slate-100">
+                <div class="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 text-3xl mb-4">
+                    <i class="fa-solid fa-map-pin"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-700 mb-1">No se encontraron negocios con esos filtros</h3>
+                <p class="text-slate-500 text-sm mb-4">Intentá buscando con otros términos, seleccionando otra localidad o explorando el mapa regional.</p>
+                <button onclick="resetAllFilters()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
+                    Ver todos los negocios
+                </button>
+            </div>
+        </section>
+
+        <!-- Interactive 120 km Radius Coverage Map Section -->
+        <section id="mapa-cobertura" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                            <i class="fa-solid fa-satellite-dish"></i> Cobertura Regional
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800">Mapa de Alcance: 120 km desde San Francisco</h2>
+                        <p class="text-slate-500 text-sm mt-1">Explorá las localidades de Córdoba y Santa Fe dentro del radio de cobertura. Hacé clic en un marcador para filtrar sus negocios.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 text-xs font-medium bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3.5 h-3.5 rounded-full bg-blue-600/20 border-2 border-blue-600 inline-block"></span>
+                            <span class="text-slate-600">Radio 120 km</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block shadow-sm"></span>
+                            <span class="text-slate-600">Con negocios activos</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-slate-400 inline-block"></span>
+                            <span class="text-slate-600">Localidad en cobertura</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Container -->
+                <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
+                    <div id="regional-map" class="w-full h-[420px] sm:h-[480px]"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Business Registration Form Section -->
+        <section id="sumarse" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="text-center max-w-xl mx-auto mb-10">
+                        <span class="bg-blue-500/30 text-blue-200 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Unite a la red regional</span>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold mb-3">¿Tenés un negocio, app o página web?</h2>
+                        <p class="text-blue-200 text-sm sm:text-base">Sumá tu emprendimiento al directorio de San Francisco y localidades dentro de los 120 km de forma totalmente gratuita.</p>
+                    </div>
+
+                    <form id="business-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Nombre del Local o Servicio</label>
+                                <input type="text" id="form-name" required placeholder="Ej: Pizzería Don Carlos" class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Categoría</label>
+                                <select id="form-category" required class="w-full bg-slate-900 border border-white/20 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white transition-all text-sm">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Localidad (Escribí o elegí de la lista)</label>
+                                <div class="relative">
+                                    <input type="text" id="form-locality" list="localidades-list" required placeholder="Ej: San Francisco, Devoto, Rafaela..." class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">WhatsApp / Teléfono</label>
+                                <input type="text" id="form-phone" required placeholder="Ej: 3564 123456" class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Sitio Web o App (URL)</label>
+                                <input type="url" id="form-website" placeholder="https://minegocio.com" class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Imagen / Foto (URL)</label>
+                                <input type="url" id="form-image" placeholder="https://images.unsplash.com/..." class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Breve Descripción</label>
+                            <textarea id="form-desc" rows="3" required placeholder="Contanos qué ofrece tu comercio o servicio..." class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-blue-300/60 focus:outline-none focus:border-white transition-all text-sm"></textarea>
+                        </div>
+
+                        <div class="text-center pt-2">
+                            <button type="submit" class="bg-white text-blue-900 font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition-all w-full sm:w-auto">
+                                <i class="fa-solid fa-paper-plane mr-2"></i> Enviar mi Negocio al Directorio
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all">
+            <div class="relative h-48 sm:h-56">
+                <img id="modal-img" src="" alt="Servicio" class="w-full h-full object-cover">
+                <button onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="absolute bottom-4 left-4">
+                    <span id="modal-category" class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider"></span>
+                </div>
+            </div>
+            <div class="p-6 sm:p-8 space-y-4">
+                <div>
+                    <span id="modal-locality" class="text-xs font-bold text-blue-600 uppercase tracking-wider flex items-center gap-1.5 mb-1"></span>
+                    <h3 id="modal-title" class="text-2xl font-bold text-slate-800"></h3>
+                </div>
+                <p id="modal-desc" class="text-slate-600 text-sm leading-relaxed"></p>
+                <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
+                    <a id="modal-whatsapp" href="#" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-2xl text-center transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Contactar por WhatsApp
+                    </a>
+                    <a id="modal-link" href="#" target="_blank" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-2xl text-center transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-globe"></i> Visitar Sitio / App
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Designer Login Modal -->
+    <div id="designer-login-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
+            <button onclick="closeDesignerLoginModal()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center mx-auto mb-3 text-2xl shadow-inner">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800">Acceso Diseñador</h3>
+                <p class="text-xs text-slate-500 mt-1">Ingresá la clave secreta para administrar categorías y negocios.</p>
+            </div>
+            <form onsubmit="handleDesignerLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Clave de Acceso</label>
+                    <input type="password" id="designer-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-slate-800 focus:outline-none focus:border-blue-500 transition-all text-sm">
+                </div>
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-2xl shadow-lg transition-all text-sm">
+                    Ingresar al Panel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Designer Dashboard Modal -->
+    <div id="designer-dashboard-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+            <div class="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800">Panel de Diseñador & Administrador</h3>
+                        <p class="text-xs text-slate-400">Gestión completa de categorías, negocios, localidades y banner</p>
+                    </div>
+                </div>
+                <button onclick="closeDesignerDashboard()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 sm:p-8 space-y-8">
+                <!-- Tab Controls inside Dashboard -->
+                <div class="flex gap-2 border-b border-slate-100 pb-4">
+                    <button onclick="switchAdminTab('negocios')" id="tab-btn-negocios" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white">Gestionar Negocios</button>
+                    <button onclick="switchAdminTab('categorias')" id="tab-btn-categorias" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Gestionar Categorías</button>
+                </div>
+
+                <!-- Tab 1: Negocios Management -->
+                <div id="admin-tab-negocios" class="space-y-6">
+                    <div class="bg-slate-50 border border-slate-200/80 rounded-3xl p-6">
+                        <h4 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-blue-600"></i> Cargar o Editar Negocio / App / Web
+                        </h4>
+                        <form id="admin-business-form" onsubmit="handleAdminBusinessSubmit(event)" class="space-y-4">
+                            <input type="hidden" id="admin-bus-id">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nombre</label>
+                                    <input type="text" id="admin-bus-name" required placeholder="Ej: Pizzería La Strada" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Categoría</label>
+                                    <select id="admin-bus-category" required class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Localidad (Libre o sugerida)</label>
+                                    <input type="text" id="admin-bus-locality" list="localidades-list" required placeholder="Ej: San Francisco, Brinkmann, Rafaela..." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">WhatsApp / Teléfono</label>
+                                    <input type="text" id="admin-bus-phone" required placeholder="Ej: 3564123456" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Sitio Web o App (URL)</label>
+                                    <input type="url" id="admin-bus-website" placeholder="https://..." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Imagen (URL)</label>
+                                    <input type="url" id="admin-bus-image" required placeholder="https://..." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Descripción</label>
+                                <textarea id="admin-bus-desc" rows="2" required placeholder="Breve descripción..." class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm"></textarea>
+                            </div>
+                            <div class="flex items-center gap-2 pt-1">
+                                <input type="checkbox" id="admin-bus-featured" class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                                <label for="admin-bus-featured" class="text-sm font-medium text-slate-700">Destacar en el Banner Rotativo Principal</label>
+                            </div>
+                            <div class="flex gap-3 pt-2">
+                                <button type="submit" id="admin-bus-submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-2xl text-sm transition-all shadow-md">Guardar Negocio</button>
+                                <button type="button" onclick="resetAdminBusForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-sm transition-all">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- List of businesses for admin -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base mb-3">Negocios Registrados</h4>
+                        <div id="admin-business-list" class="space-y-3 max-h-72 overflow-y-auto pr-2">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Categorias Management -->
+                <div id="admin-tab-categorias" class="hidden space-y-6">
+                    <div class="bg-slate-50 border border-slate-200/80 rounded-3xl p-6">
+                        <h4 class="font-bold text-slate-800 text-base mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-folder-plus text-indigo-600"></i> Crear o Editar Categoría
+                        </h4>
+                        <form id="admin-cat-form" onsubmit="handleAdminCatSubmit(event)" class="space-y-4">
+                            <input type="hidden" id="admin-cat-old-name">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Nombre de la Categoría</label>
+                                    <input type="text" id="admin-cat-name" required placeholder="Ej: Automotor" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Icono FontAwesome (clase)</label>
+                                    <input type="text" id="admin-cat-icon" required placeholder="Ej: fa-solid fa-car" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                </div>
+                            </div>
+                            <div class="flex gap-3 pt-2">
+                                <button type="submit" id="admin-cat-submit-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-2xl text-sm transition-all shadow-md">Guardar Categoría</button>
+                                <button type="button" onclick="resetAdminCatForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold px-5 py-2.5 rounded-2xl text-sm transition-all">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- List of categories for admin -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-base mb-3">Categorías Existentes</h4>
+                        <div id="admin-category-list" class="space-y-3 max-h-72 overflow-y-auto pr-2">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal (Replaces window.confirm) -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center">
+            <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h4 class="text-lg font-bold text-slate-800 mb-2" id="confirm-title">¿Confirmar eliminación?</h4>
+            <p class="text-sm text-slate-500 mb-6" id="confirm-desc">Esta acción no se puede deshacer.</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl text-sm transition-colors">Cancelar</button>
+                <button id="confirm-yes-btn" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-28 opacity-0 transition-all duration-300 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0">
+            <i class="fa-solid fa-check text-sm"></i>
+        </div>
+        <div>
+            <h4 class="font-bold text-sm" id="toast-title">¡Operación exitosa!</h4>
+            <p class="text-xs text-slate-300" id="toast-desc">Los cambios se guardaron correctamente.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-10 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
+            <p>Guía y Directorio Regional • Cobertura 120 km alrededor de San Francisco (Córdoba y Santa Fe)</p>
+            <button onclick="openDesignerLoginModal()" class="text-xs font-semibold text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1">
+                <i class="fa-solid fa-lock text-[10px]"></i> Panel Diseñador
+            </button>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data and Logic -->
+    <script>
+        // Coordinates dictionary for localities within ~120 km radius of San Francisco (-31.425, -62.084)
+        const SAN_FRANCISCO_COORDS = [-31.425, -62.084];
+        const COVERAGE_RADIUS_METERS = 120000; // 120 km
+
+        const localityCoordinates = {
+            "san francisco": { lat: -31.4250, lng: -62.0840, label: "San Francisco (Cba)" },
+            "frontera": { lat: -31.4333, lng: -62.0667, label: "Frontera (Sta Fe)" },
+            "josefina": { lat: -31.4500, lng: -61.9833, label: "Josefina (Sta Fe)" },
+            "devoto": { lat: -31.4044, lng: -62.3069, label: "Devoto (Cba)" },
+            "la francia": { lat: -31.4053, lng: -62.6331, label: "La Francia (Cba)" },
+            "el tío": { lat: -31.3853, lng: -62.8228, label: "El Tío (Cba)" },
+            "arroyito": { lat: -31.4194, lng: -63.0494, label: "Arroyito (Cba)" },
+            "tránsito": { lat: -31.4222, lng: -63.1972, label: "Tránsito (Cba)" },
+            "santiago temple": { lat: -31.3886, lng: -63.4183, label: "Santiago Temple (Cba)" },
+            "freyre": { lat: -31.1636, lng: -62.0989, label: "Freyre (Cba)" },
+            "porteña": { lat: -31.0156, lng: -62.0631, label: "Porteña (Cba)" },
+            "brinkmann": { lat: -30.8667, lng: -62.0333, label: "Brinkmann (Cba)" },
+            "morteros": { lat: -30.7119, lng: -61.9986, label: "Morteros (Cba)" },
+            "suardi": { lat: -30.5333, lng: -61.9667, label: "Suardi (Sta Fe)" },
+            "seeber": { lat: -30.8500, lng: -62.1833, label: "Seeber (Cba)" },
+            "balnearia": { lat: -31.0089, lng: -62.6683, label: "Balnearia (Cba)" },
+            "miramar de ansenuza": { lat: -30.9167, lng: -62.6833, label: "Miramar de Ansenuza (Cba)" },
+            "marull": { lat: -30.9969, lng: -62.8275, label: "Marull (Cba)" },
+            "la para": { lat: -30.8936, lng: -62.9994, label: "La Para (Cba)" },
+            "las varillas": { lat: -31.8719, lng: -62.7192, label: "Las Varillas (Cba)" },
+            "saturnino maría laspiur": { lat: -31.7014, lng: -62.4847, label: "S. M. Laspiur (Cba)" },
+            "alicia": { lat: -31.9403, lng: -62.4653, label: "Alicia (Cba)" },
+            "el fortín": { lat: -31.9722, lng: -62.3083, label: "El Fortín (Cba)" },
+            "sacanta": { lat: -31.6667, lng: -63.0500, label: "Sacanta (Cba)" },
+            "luque": { lat: -31.6461, lng: -63.3422, label: "Luque (Cba)" },
+            "villa del rosario": { lat: -31.5567, lng: -63.5333, label: "Villa del Rosario (Cba)" },
+            "rafaela": { lat: -31.2503, lng: -61.4867, label: "Rafaela (Sta Fe)" },
+            "sunchales": { lat: -30.9456, lng: -61.5614, label: "Sunchales (Sta Fe)" },
+            "maría juana": { lat: -31.6667, lng: -61.7333, label: "María Juana (Sta Fe)" },
+            "zenón pereyra": { lat: -31.5667, lng: -61.9000, label: "Zenón Pereyra (Sta Fe)" },
+            "plaza clucellas": { lat: -31.4333, lng: -61.7667, label: "Plaza Clucellas (Sta Fe)" },
+            "estación clucellas": { lat: -31.4667, lng: -61.8167, label: "Estación Clucellas (Sta Fe)" },
+            "san jorge": { lat: -31.8964, lng: -61.8597, label: "San Jorge (Sta Fe)" },
+            "sastre": { lat: -31.7667, lng: -61.8333, label: "Sastre (Sta Fe)" },
+            "carlos pellegrini": { lat: -32.0500, lng: -61.7833, label: "Carlos Pellegrini (Sta Fe)" },
+            "el trébol": { lat: -32.2000, lng: -61.7000, label: "El Trébol (Sta Fe)" },
+            "humberto primo": { lat: -30.8667, lng: -61.3500, label: "Humberto Primo (Sta Fe)" },
+            "lehmann": { lat: -31.1167, lng: -61.4500, label: "Lehmann (Sta Fe)" },
+            "susana": { lat: -31.3500, lng: -61.5167, label: "Susana (Sta Fe)" },
+            "vila": { lat: -31.1333, lng: -61.6833, label: "Vila (Sta Fe)" },
+            "ramona": { lat: -31.0500, lng: -61.7500, label: "Ramona (Sta Fe)" },
+            "colonia marina": { lat: -31.2333, lng: -62.3833, label: "Colonia Marina (Cba)" },
+            "quebracho herrado": { lat: -31.5667, lng: -62.1333, label: "Quebracho Herrado (Cba)" },
+            "luxardo": { lat: -31.3167, lng: -62.1333, label: "Luxardo (Cba)" },
+            "zona": { lat: -31.4044, lng: -62.3069, label: "Zona Regional" }
+        };
+
+        // Default categories with icons
+        const defaultCategories = [
+            { name: "Gastronomía", icon: "fa-solid fa-utensils text-orange-500" },
+            { name: "Comercios", icon: "fa-solid fa-store text-emerald-500" },
+            { name: "Servicios", icon: "fa-solid fa-screwdriver-wrench text-blue-500" },
+            { name: "Salud y Belleza", icon: "fa-solid fa-heart-pulse text-rose-500" },
+            { name: "Tecnología", icon: "fa-solid fa-laptop text-indigo-500" }
+        ];
+
+        // Initial Mock Database of Services & Apps
+        const defaultServices = [
+            {
+                id: 1,
+                name: "Pizzería La Strada",
+                category: "Gastronomía",
+                locality: "San Francisco",
+                description: "App de pedidos online y delivery de pizzas artesanales, empanadas y calzones en todo San Francisco.",
+                image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80",
+                website: "https://example.com/lastrada",
+                whatsapp: "3564123456",
+                featured: true
+            },
+            {
+                id: 2,
+                name: "Arroyito Materiales",
+                category: "Comercios",
+                locality: "Arroyito",
+                description: "Página web de venta y distribución de materiales para la construcción, cerámicos y sanitarios con cotizador online.",
+                image: "https://images.unsplash.com/photo-1541888946425-d0fbb18f1f92?auto=format&fit=crop&w=800&q=80",
+                website: "https://example.com/arroyitomateriales",
+                whatsapp: "3576456789",
+                featured: true
+            },
+            {
+                id: 3,
+                name: "Centro Odontológico Integral",
+                category: "Salud y Belleza",
+                locality: "San Francisco",
+                description: "Plataforma de turnos médicos online, atención en ortodoncia, implantes y estética dental.",
+                image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80",
+                website: "https://example.com/odontologia",
+                whatsapp: "3564987654",
+                featured: false
+            },
+            {
+                id: 4,
+                name: "TecnoSur Informática",
+                category: "Tecnología",
+                locality: "Devoto",
+                description: "Servicio técnico oficial de PC, notebooks, armado de equipos gamers y venta de periféricos con envío zonal.",
+                image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80",
+                website: "https://example.com/tecnosur",
+                whatsapp: "3564332211",
+                featured: true
+            },
+            {
+                id: 5,
+                name: "Café del Boulevard",
+                category: "Gastronomía",
+                locality: "Rafaela",
+                description: "Cafetería de especialidad, pastelería artesanal y desayunos con carta digital y reservas por web.",
+                image: "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80",
+                website: "https://example.com/cafeboulevard",
+                whatsapp: "3492112233",
+                featured: false
+            },
+            {
+                id: 6,
+                name: "Ferretería Industrial San Justo",
+                category: "Comercios",
+                locality: "San Francisco",
+                description: "Herramientas eléctricas, bulonería y suministros para la industria con catálogo web actualizado.",
+                image: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=800&q=80",
+                website: "https://example.com/ferreteriasanjusto",
+                whatsapp: "3564778899",
+                featured: false
+            },
+            {
+                id: 7,
+                name: "Estudio Contabilidad Digital",
+                category: "Servicios",
+                locality: "Brinkmann",
+                description: "Asesoramiento contable e impositivo para monotributistas, PyMEs y agropecuarias de la región.",
+                image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80",
+                website: "https://example.com/estudiocontable",
+                whatsapp: "3562554433",
+                featured: false
+            },
+            {
+                id: 8,
+                name: "Gimnasio Evolution Fit",
+                category: "Salud y Belleza",
+                locality: "Las Varillas",
+                description: "App de reservas de turnos para musculación, clases de funcional, spinning y seguimiento de rutinas.",
+                image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80",
+                website: "https://example.com/evolutionfit",
+                whatsapp: "3533998877",
+                featured: false
+            }
+        ];
+
+        // Load data from localStorage or fallback to defaults
+        let categoriesData = JSON.parse(localStorage.getItem('sf_categories')) || defaultCategories;
+        let servicesData = JSON.parse(localStorage.getItem('sf_services')) || defaultServices;
+
+        function saveToLocalStorage() {
+            localStorage.setItem('sf_categories', JSON.stringify(categoriesData));
+            localStorage.setItem('sf_services', JSON.stringify(servicesData));
+        }
+
+        // State variables
+        let currentCategory = 'Todas';
+        let currentLocality = 'Todas';
+        let localityTextQuery = '';
+        let searchQuery = '';
+
+        // Leaflet Map variables
+        let map = null;
+        let markersLayer = null;
+
+        // Helper: Normalize strings for accent-insensitive and case-insensitive matching
+        function normalizeStr(str) {
+            return (str || '').toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            refreshLocalityFiltersUI();
+            renderServices();
+            initSlider();
+            initRegionalMap();
+
+            // Mobile menu toggle
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        });
+
+        // ==========================================
+        // INTERACTIVE MAP (120 KM RADIUS)
+        // ==========================================
+        function initRegionalMap() {
+            const mapContainer = document.getElementById('regional-map');
+            if (!mapContainer) return;
+
+            // Initialize Leaflet map centered on San Francisco, Córdoba
+            map = L.map('regional-map', {
+                scrollWheelZoom: false
+            }).setView(SAN_FRANCISCO_COORDS, 8);
+
+            // OpenStreetMap Clean Tile Layer
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 18
+            }).addTo(map);
+
+            // Draw 120 km Radius Circle around San Francisco
+            L.circle(SAN_FRANCISCO_COORDS, {
+                color: '#2563eb',
+                weight: 2,
+                dashArray: '6, 6',
+                fillColor: '#3b82f6',
+                fillOpacity: 0.08,
+                radius: COVERAGE_RADIUS_METERS
+            }).addTo(map);
+
+            // Center Epicenter Badge for San Francisco
+            const centerIcon = L.divIcon({
+                className: 'custom-center-pin',
+                html: `<div class="w-5 h-5 bg-blue-600 border-2 border-white rounded-full shadow-lg flex items-center justify-center animate-pulse"></div>`,
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+            L.marker(SAN_FRANCISCO_COORDS, { icon: centerIcon, interactive: false }).addTo(map);
+
+            markersLayer = L.layerGroup().addTo(map);
+            updateMapMarkers();
+        }
+
+        function updateMapMarkers() {
+            if (!map || !markersLayer) return;
+            markersLayer.clearLayers();
+
+            // Count businesses per normalized locality
+            const businessCountsByNormLoc = {};
+            const displayNamesByNormLoc = {};
+
+            servicesData.forEach(service => {
+                const rawLoc = service.locality.trim();
+                const normLoc = normalizeStr(rawLoc);
+                businessCountsByNormLoc[normLoc] = (businessCountsByNormLoc[normLoc] || 0) + 1;
+                if (!displayNamesByNormLoc[normLoc]) {
+                    displayNamesByNormLoc[normLoc] = rawLoc;
+                }
+            });
+
+            // Plot known localities in dictionary
+            Object.entries(localityCoordinates).forEach(([key, info]) => {
+                if (key === 'zona') return;
+                const normKey = normalizeStr(key);
+                const count = businessCountsByNormLoc[normKey] || 0;
+                const displayName = displayNamesByNormLoc[normKey] || info.label.split(' (')[0];
+                const isSelected = normalizeStr(currentLocality) === normKey;
+
+                // Only show inactive localities as subtle dots, and active localities with prominent green/blue markers
+                const markerColor = isSelected ? 'bg-amber-500 scale-125' : (count > 0 ? 'bg-emerald-500' : 'bg-slate-400/70');
+                const size = count > 0 ? 26 : 12;
+
+                const customIcon = L.divIcon({
+                    className: 'custom-loc-marker',
+                    html: count > 0
+                        ? `<div class="${markerColor} text-white font-bold text-[11px] w-7 h-7 rounded-full border-2 border-white shadow-md flex items-center justify-center transition-transform hover:scale-110 cursor-pointer">${count}</div>`
+                        : `<div class="${markerColor} w-3 h-3 rounded-full border border-white shadow-sm cursor-pointer"></div>`,
+                    iconSize: [size, size],
+                    iconAnchor: [size / 2, size / 2]
+                });
+
+                const marker = L.marker([info.lat, info.lng], { icon: customIcon });
+
+                const safeLocArg = displayName.replace(/'/g, "\\'");
+                const popupHtml = `
+                    <div class="min-w-[180px] text-center">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 block mb-0.5">${info.label}</span>
+                        <h4 class="font-bold text-slate-800 text-sm mb-1">${displayName}</h4>
+                        <p class="text-xs text-slate-500 mb-3">
+                            ${count > 0 ? `<strong>${count}</strong> ${count === 1 ? 'negocio registrado' : 'negocios registrados'}` : 'Sin negocios cargados aún'}
+                        </p>
+                        ${count > 0 ? `
+                            <button onclick="selectLocalityFromMap('${safeLocArg}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2 px-3 rounded-xl transition-colors shadow-sm">
+                                Ver negocios aquí
+                            </button>
+                        ` : `
+                            <a href="#sumarse" onclick="prefillLocalityForm('${safeLocArg}')" class="inline-block w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2 px-3 rounded-xl transition-colors">
+                                Sumar mi negocio aquí
+                            </a>
+                        `}
+                    </div>
+                `;
+
+                marker.bindPopup(popupHtml);
+                markersLayer.addLayer(marker);
+            });
+        }
+
+        function selectLocalityFromMap(localityName) {
+            filterByLocation(localityName);
+            const dirSection = document.getElementById('directorio');
+            if (dirSection) {
+                dirSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function prefillLocalityForm(localityName) {
+            const formLocInput = document.getElementById('form-locality');
+            if (formLocInput) {
+                formLocInput.value = localityName;
+            }
+        }
+
+        // ==========================================
+        // LOCALITY FILTERS & DYNAMIC UI
+        // ==========================================
+        function getUniqueLocalitiesWithCounts() {
+            const mapCounts = new Map();
+            servicesData.forEach(s => {
+                const loc = s.locality.trim();
+                if (!loc) return;
+                // Find existing key case-insensitively
+                let existingKey = null;
+                for (let k of mapCounts.keys()) {
+                    if (normalizeStr(k) === normalizeStr(loc)) {
+                        existingKey = k;
+                        break;
+                    }
+                }
+                if (existingKey) {
+                    mapCounts.set(existingKey, mapCounts.get(existingKey) + 1);
+                } else {
+                    mapCounts.set(loc, 1);
+                }
+            });
+
+            // Sort by count desc, then alphabetically
+            return Array.from(mapCounts.entries())
+                .map(([name, count]) => ({ name, count }))
+                .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+        }
+
+        function refreshLocalityFiltersUI() {
+            const localities = getUniqueLocalitiesWithCounts();
+            const selectEl = document.getElementById('locality-select');
+            const quickContainer = document.getElementById('quick-localities-container');
+
+            // 1. Update Dropdown <select>
+            if (selectEl) {
+                const currentVal = currentLocality;
+                selectEl.innerHTML = `<option value="Todas">Todas las localidades (${servicesData.length})</option>` +
+                    localities.map(loc => `<option value="${loc.name}">${loc.name} (${loc.count})</option>`).join('');
+
+                // Keep selected option if present
+                const matchOption = Array.from(selectEl.options).find(opt => normalizeStr(opt.value) === normalizeStr(currentVal));
+                selectEl.value = matchOption ? matchOption.value : 'Todas';
+            }
+
+            // 2. Update Quick Pills (Todas + Top active localities)
+            if (quickContainer) {
+                const topLocalities = localities.slice(0, 6);
+                // Ensure currently selected locality appears as pill if not in top 6
+                if (currentLocality !== 'Todas' && !topLocalities.some(l => normalizeStr(l.name) === normalizeStr(currentLocality))) {
+                    const found = localities.find(l => normalizeStr(l.name) === normalizeStr(currentLocality));
+                    if (found) topLocalities.push(found);
+                }
+
+                const isAllActive = currentLocality === 'Todas' && !localityTextQuery;
+
+                quickContainer.innerHTML = `
+                    <button onclick="filterByLocation('Todas')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${isAllActive ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                        Todas
+                    </button>
+                ` + topLocalities.map(loc => {
+                    const isActive = normalizeStr(currentLocality) === normalizeStr(loc.name);
+                    const safeName = loc.name.replace(/'/g, "\\'");
+                    return `
+                        <button onclick="filterByLocation('${safeName}')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${isActive ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                            <span>${loc.name}</span>
+                            <span class="text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'}">${loc.count}</span>
+                        </button>
+                    `;
+                }).join('');
+            }
+        }
+
+        function filterByLocation(locality) {
+            currentLocality = locality || 'Todas';
+            localityTextQuery = '';
+
+            const textInput = document.getElementById('locality-text-filter');
+            const clearLocBtn = document.getElementById('clear-loc-btn');
+            if (textInput) {
+                textInput.value = currentLocality === 'Todas' ? '' : currentLocality;
+            }
+            if (clearLocBtn) {
+                clearLocBtn.classList.toggle('hidden', currentLocality === 'Todas');
+            }
+
+            refreshLocalityFiltersUI();
+            renderServices();
+            updateMapMarkers();
+        }
+
+        function handleLocalityTextFilter(val) {
+            localityTextQuery = val.trim();
+            const clearLocBtn = document.getElementById('clear-loc-btn');
+            if (clearLocBtn) {
+                clearLocBtn.classList.toggle('hidden', localityTextQuery === '');
+            }
+
+            // If exact match with an existing locality, sync currentLocality
+            const localities = getUniqueLocalitiesWithCounts();
+            const exactMatch = localities.find(l => normalizeStr(l.name) === normalizeStr(localityTextQuery));
+            if (exactMatch) {
+                currentLocality = exactMatch.name;
+            } else if (localityTextQuery === '') {
+                currentLocality = 'Todas';
+            } else {
+                currentLocality = 'Todas';
+            }
+
+            refreshLocalityFiltersUI();
+            renderServices();
+            updateMapMarkers();
+        }
+
+        function resetLocationFilter() {
+            filterByLocation('Todas');
+        }
+
+        function handleSearch() {
+            const input = document.getElementById('search-input');
+            const clearBtn = document.getElementById('clear-search-btn');
+            searchQuery = input.value.trim();
+            if (clearBtn) {
+                clearBtn.classList.toggle('hidden', searchQuery === '');
+            }
+            renderServices();
+        }
+
+        function clearGeneralSearch() {
+            const input = document.getElementById('search-input');
+            if (input) input.value = '';
+            searchQuery = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            renderServices();
+        }
+
+        function resetAllFilters() {
+            currentCategory = 'Todas';
+            currentLocality = 'Todas';
+            localityTextQuery = '';
+            searchQuery = '';
+
+            document.getElementById('search-input').value = '';
+            document.getElementById('locality-text-filter').value = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            document.getElementById('clear-loc-btn').classList.add('hidden');
+
+            renderCategories();
+            refreshLocalityFiltersUI();
+            renderServices();
+            updateMapMarkers();
+        }
+
+        // ==========================================
+        // BANNER SLIDER LOGIC
+        // ==========================================
+        let activeSlideIndex = 0;
+        let sliderInterval;
+
+        function renderBannerSlider() {
+            const featuredItems = servicesData.filter(s => s.featured);
+            const sliderContainer = document.getElementById('banner-slider');
+            const dotsContainer = document.getElementById('slider-dots');
+
+            if (featuredItems.length === 0) {
+                sliderContainer.innerHTML = `
+                    <div class="banner-slide absolute inset-0 transition-opacity duration-1000 opacity-100 flex items-center">
+                        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1600&q=80" class="absolute inset-0 w-full h-full object-cover">
+                        <div class="relative z-20 max-w-2xl px-6 sm:px-12 text-white">
+                            <span class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">Región 120 km</span>
+                            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">Directorio Regional San Francisco y Zona</h1>
+                            <p class="text-slate-300 text-sm sm:text-base mb-6">Encontrá comercios, servicios y apps de toda la región fácilmente.</p>
+                        </div>
+                    </div>
+                `;
+                dotsContainer.innerHTML = '';
+                return;
+            }
+
+            sliderContainer.innerHTML = featuredItems.map((item, index) => `
+                <div class="banner-slide absolute inset-0 transition-opacity duration-1000 ${index === 0 ? 'opacity-100' : 'opacity-0'} flex items-center">
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10"></div>
+                    <img src="${item.image}" onerror="this.src='https://placehold.co/1200x600/1e293b/cbd5e1?text=Destacado'" class="absolute inset-0 w-full h-full object-cover">
+                    <div class="relative z-20 max-w-2xl px-6 sm:px-12 text-white">
+                        <span class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">
+                            <i class="fa-solid fa-location-dot mr-1"></i> ${item.locality} • ${item.category}
+                        </span>
+                        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">${item.name}</h1>
+                        <p class="text-slate-300 text-sm sm:text-base mb-6 line-clamp-2">${item.description}</p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="openModal(${item.id})" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-slate-100 transition-all">
+                                Ver Detalles <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                            <a href="https://wa.me/549${item.whatsapp}" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-emerald-700 transition-all">
+                                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            dotsContainer.innerHTML = featuredItems.map((_, index) => `
+                <button onclick="currentSlide(${index})" class="slider-dot w-3 h-3 rounded-full ${index === 0 ? 'bg-white' : 'bg-white/50'} hover:bg-white transition-all"></button>
+            `).join('');
+        }
+
+        function updateSlider() {
+            const slides = document.querySelectorAll('.banner-slide');
+            const dots = document.querySelectorAll('.slider-dot');
+            slides.forEach((slide, index) => {
+                slide.style.opacity = index === activeSlideIndex ? '1' : '0';
+            });
+            dots.forEach((dot, index) => {
+                dot.style.backgroundColor = index === activeSlideIndex ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)';
+            });
+        }
+
+        function nextSlide() {
+            const slides = document.querySelectorAll('.banner-slide');
+            if (slides.length === 0) return;
+            activeSlideIndex = (activeSlideIndex + 1) % slides.length;
+            updateSlider();
+        }
+
+        function prevSlide() {
+            const slides = document.querySelectorAll('.banner-slide');
+            if (slides.length === 0) return;
+            activeSlideIndex = (activeSlideIndex - 1 + slides.length) % slides.length;
+            updateSlider();
+        }
+
+        function currentSlide(index) {
+            activeSlideIndex = index;
+            updateSlider();
+        }
+
+        function initSlider() {
+            renderBannerSlider();
+            if (sliderInterval) clearInterval(sliderInterval);
+            sliderInterval = setInterval(nextSlide, 5000);
+        }
+
+        // ==========================================
+        // CATEGORIES & SERVICES RENDERING
+        // ==========================================
+        function renderCategories() {
+            const container = document.getElementById('category-filters-container');
+            const formSelect = document.getElementById('form-category');
+            const adminSelect = document.getElementById('admin-bus-category');
+
+            container.innerHTML = `
+                <button onclick="filterByCategory('Todas')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${currentCategory === 'Todas' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                    <i class="fa-solid fa-border-all"></i> Todas las categorías
+                </button>
+            ` + categoriesData.map(cat => `
+                <button onclick="filterByCategory('${cat.name}')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${currentCategory === cat.name ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                    <i class="${cat.icon}"></i> ${cat.name}
+                </button>
+            `).join('');
+
+            if (formSelect) {
+                formSelect.innerHTML = categoriesData.map(cat => `<option value="${cat.name}" class="bg-slate-900">${cat.name}</option>`).join('');
+            }
+
+            if (adminSelect) {
+                adminSelect.innerHTML = categoriesData.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
+            }
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            renderCategories();
+            renderServices();
+        }
+
+        function renderServices() {
+            const grid = document.getElementById('services-grid');
+            const emptyState = document.getElementById('empty-state');
+            const filterBanner = document.getElementById('active-filter-banner');
+            const filterBannerText = document.getElementById('active-filter-text');
+
+            const normSearch = normalizeStr(searchQuery);
+            const normLocFilter = normalizeStr(currentLocality);
+            const normLocText = normalizeStr(localityTextQuery);
+
+            const filtered = servicesData.filter(item => {
+                const matchCategory = currentCategory === 'Todas' || item.category === currentCategory;
+
+                // Locality filter: matches either selected locality OR typed locality text
+                const itemNormLoc = normalizeStr(item.locality);
+                let matchLocality = true;
+                if (normLocText !== '') {
+                    matchLocality = itemNormLoc.includes(normLocText);
+                } else if (currentLocality !== 'Todas') {
+                    matchLocality = itemNormLoc === normLocFilter;
+                }
+
+                // General search matches name, description, category, or locality
+                const matchSearch = normSearch === '' ||
+                    normalizeStr(item.name).includes(normSearch) ||
+                    normalizeStr(item.description).includes(normSearch) ||
+                    normalizeStr(item.category).includes(normSearch) ||
+                    itemNormLoc.includes(normSearch);
+
+                return matchCategory && matchLocality && matchSearch;
+            });
+
+            // Update active filter status banner
+            const hasActiveFilters = currentCategory !== 'Todas' || currentLocality !== 'Todas' || normLocText !== '' || normSearch !== '';
+            if (hasActiveFilters) {
+                filterBanner.classList.remove('hidden');
+                const parts = [];
+                if (currentLocality !== 'Todas') parts.push(`Localidad: <strong>${currentLocality}</strong>`);
+                else if (normLocText !== '') parts.push(`Localidad contiene: <strong>"${localityTextQuery}"</strong>`);
+                if (currentCategory !== 'Todas') parts.push(`Categoría: <strong>${currentCategory}</strong>`);
+                if (normSearch !== '') parts.push(`Búsqueda: <strong>"${searchQuery}"</strong>`);
+                filterBannerText.innerHTML = `Mostrando <strong>${filtered.length}</strong> ${filtered.length === 1 ? 'resultado' : 'resultados'} (${parts.join(' • ')})`;
+            } else {
+                filterBanner.classList.add('hidden');
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(item => {
+                const safeLoc = item.locality.replace(/'/g, "\\'");
+                return `
+                <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+                    <div>
+                        <div class="relative h-48 overflow-hidden bg-slate-100">
+                            <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Local'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                                <span class="bg-white/95 backdrop-blur-sm text-slate-800 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
+                                    ${item.category}
+                                </span>
+                                ${item.featured ? '<span class="bg-amber-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm"><i class="fa-solid fa-star"></i> Destacado</span>' : ''}
+                            </div>
+                            <div class="absolute top-3 right-3">
+                                <button onclick="filterByLocation('${safeLoc}')" title="Filtrar negocios de ${item.locality}" class="bg-slate-900/85 hover:bg-blue-600 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full shadow-sm transition-colors flex items-center gap-1">
+                                    <i class="fa-solid fa-location-dot text-[10px] text-blue-300"></i> ${item.locality}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">${item.name}</h3>
+                            <p class="text-slate-600 text-sm line-clamp-2 leading-relaxed mb-4">${item.description}</p>
+                        </div>
+                    </div>
+                    <div class="px-6 pb-6 flex items-center justify-between gap-3 border-t border-slate-50 pt-4">
+                        <a href="https://wa.me/549${item.whatsapp}" target="_blank" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
+                            <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
+                        </a>
+                        <button onclick="openModal(${item.id})" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-circle-info text-sm"></i> Ver más
+                        </button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        // ==========================================
+        // DETAILS MODAL CONTROLS
+        // ==========================================
+        function openModal(id) {
+            const item = servicesData.find(s => s.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-img').src = item.image;
+            document.getElementById('modal-category').textContent = item.category;
+            document.getElementById('modal-locality').innerHTML = `<i class="fa-solid fa-location-dot"></i> ${item.locality}`;
+            document.getElementById('modal-title').textContent = item.name;
+            document.getElementById('modal-desc').textContent = item.description;
+            document.getElementById('modal-whatsapp').href = `https://wa.me/549${item.whatsapp}`;
+            document.getElementById('modal-link').href = item.website || '#';
+
+            const modal = document.getElementById('details-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('details-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        // ==========================================
+        // DESIGNER AUTH & DASHBOARD LOGIC
+        // ==========================================
+        function openDesignerLoginModal() {
+            const modal = document.getElementById('designer-login-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDesignerLoginModal() {
+            const modal = document.getElementById('designer-login-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function handleDesignerLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('designer-password').value;
+            if (pass === 'Hjs2154') {
+                closeDesignerLoginModal();
+                document.getElementById('designer-password').value = '';
+                openDesignerDashboard();
+                showToast("¡Bienvenido Diseñador!", "Acceso concedido al panel de administración.");
+            } else {
+                showToast("Clave incorrecta", "La clave de acceso ingresada no es válida.");
+            }
+        }
+
+        function openDesignerDashboard() {
+            renderAdminBusinessList();
+            renderAdminCategoryList();
+            const modal = document.getElementById('designer-dashboard-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeDesignerDashboard() {
+            const modal = document.getElementById('designer-dashboard-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            initSlider();
+            renderCategories();
+            refreshLocalityFiltersUI();
+            renderServices();
+            updateMapMarkers();
+        }
+
+        function switchAdminTab(tab) {
+            const tabNegocios = document.getElementById('admin-tab-negocios');
+            const tabCategorias = document.getElementById('admin-tab-categorias');
+            const btnNegocios = document.getElementById('tab-btn-negocios');
+            const btnCategorias = document.getElementById('tab-btn-categorias');
+
+            if (tab === 'negocios') {
+                tabNegocios.classList.remove('hidden');
+                tabCategorias.classList.add('hidden');
+                btnNegocios.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white";
+                btnCategorias.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200";
+            } else {
+                tabNegocios.classList.add('hidden');
+                tabCategorias.classList.remove('hidden');
+                btnCategorias.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white";
+                btnNegocios.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200";
+            }
+        }
+
+        // Custom Confirm Dialog (No window.confirm)
+        let pendingConfirmCallback = null;
+        function openConfirmModal(title, desc, onConfirm) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-desc').textContent = desc;
+            pendingConfirmCallback = onConfirm;
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            pendingConfirmCallback = null;
+        }
+
+        document.getElementById('confirm-yes-btn').addEventListener('click', () => {
+            if (typeof pendingConfirmCallback === 'function') {
+                pendingConfirmCallback();
+            }
+            closeConfirmModal();
+        });
+
+        // Admin Business CRUD
+        function renderAdminBusinessList() {
+            const list = document.getElementById('admin-business-list');
+            list.innerHTML = servicesData.map(item => `
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <img src="${item.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/64748b?text=Local'" class="w-12 h-12 rounded-xl object-cover">
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                                ${item.name} 
+                                ${item.featured ? '<span class="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded-full font-bold">Destacado</span>' : ''}
+                            </h5>
+                            <p class="text-xs text-slate-400"><i class="fa-solid fa-location-dot text-blue-500 mr-1"></i>${item.locality} • ${item.category}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="editBusiness(${item.id})" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteBusiness(${item.id})" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleAdminBusinessSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('admin-bus-id').value;
+            const name = document.getElementById('admin-bus-name').value.trim();
+            const category = document.getElementById('admin-bus-category').value;
+            const locality = document.getElementById('admin-bus-locality').value.trim();
+            const phone = document.getElementById('admin-bus-phone').value;
+            const website = document.getElementById('admin-bus-website').value;
+            const image = document.getElementById('admin-bus-image').value;
+            const description = document.getElementById('admin-bus-desc').value;
+            const featured = document.getElementById('admin-bus-featured').checked;
+
+            if (id) {
+                const index = servicesData.findIndex(s => s.id == id);
+                if (index !== -1) {
+                    servicesData[index] = { id: Number(id), name, category, locality, whatsapp: phone.replace(/\D/g, ''), website, image, description, featured };
+                }
+                showToast("¡Negocio actualizado!", "Los datos del comercio fueron modificados con éxito.");
+            } else {
+                const newId = servicesData.length > 0 ? Math.max(...servicesData.map(s => s.id)) + 1 : 1;
+                servicesData.unshift({ id: newId, name, category, locality, whatsapp: phone.replace(/\D/g, ''), website, image, description, featured });
+                showToast("¡Negocio creado!", "El nuevo comercio fue agregado al directorio y mapa.");
+            }
+
+            saveToLocalStorage();
+            resetAdminBusForm();
+            renderAdminBusinessList();
+            refreshLocalityFiltersUI();
+            updateMapMarkers();
+        }
+
+        function editBusiness(id) {
+            const item = servicesData.find(s => s.id === id);
+            if (!item) return;
+            document.getElementById('admin-bus-id').value = item.id;
+            document.getElementById('admin-bus-name').value = item.name;
+            document.getElementById('admin-bus-category').value = item.category;
+            document.getElementById('admin-bus-locality').value = item.locality;
+            document.getElementById('admin-bus-phone').value = item.whatsapp;
+            document.getElementById('admin-bus-website').value = item.website || '';
+            document.getElementById('admin-bus-image').value = item.image;
+            document.getElementById('admin-bus-desc').value = item.description;
+            document.getElementById('admin-bus-featured').checked = item.featured || false;
+            document.getElementById('admin-bus-submit-btn').textContent = "Actualizar Negocio";
+        }
+
+        function deleteBusiness(id) {
+            openConfirmModal("¿Eliminar negocio?", "Este comercio se quitará del directorio y del mapa.", () => {
+                servicesData = servicesData.filter(s => s.id !== id);
+                saveToLocalStorage();
+                renderAdminBusinessList();
+                refreshLocalityFiltersUI();
+                updateMapMarkers();
+                showToast("Negocio eliminado", "El elemento fue removido del directorio.");
+            });
+        }
+
+        function resetAdminBusForm() {
+            document.getElementById('admin-business-form').reset();
+            document.getElementById('admin-bus-id').value = '';
+            document.getElementById('admin-bus-submit-btn').textContent = "Guardar Negocio";
+        }
+
+        // Admin Category CRUD
+        function renderAdminCategoryList() {
+            const list = document.getElementById('admin-category-list');
+            list.innerHTML = categoriesData.map(cat => `
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg">
+                            <i class="${cat.icon}"></i>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 text-sm">${cat.name}</h5>
+                            <p class="text-xs text-slate-400">Icono: ${cat.icon}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="editCategory('${cat.name}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteCategory('${cat.name}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleAdminCatSubmit(e) {
+            e.preventDefault();
+            const oldName = document.getElementById('admin-cat-old-name').value;
+            const name = document.getElementById('admin-cat-name').value.trim();
+            const icon = document.getElementById('admin-cat-icon').value.trim();
+
+            if (oldName) {
+                const cat = categoriesData.find(c => c.name === oldName);
+                if (cat) {
+                    cat.name = name;
+                    cat.icon = icon;
+                }
+                servicesData.forEach(s => {
+                    if (s.category === oldName) s.category = name;
+                });
+                showToast("¡Categoría actualizada!", "Los cambios se aplicaron correctamente.");
+            } else {
+                if (categoriesData.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+                    showToast("Error", "Ya existe una categoría con ese nombre.");
+                    return;
+                }
+                categoriesData.push({ name, icon });
+                showToast("¡Categoría creada!", "La nueva categoría está lista para usar.");
+            }
+
+            saveToLocalStorage();
+            resetAdminCatForm();
+            renderAdminCategoryList();
+            renderCategories();
+        }
+
+        function editCategory(name) {
+            const cat = categoriesData.find(c => c.name === name);
+            if (!cat) return;
+            document.getElementById('admin-cat-old-name').value = cat.name;
+            document.getElementById('admin-cat-name').value = cat.name;
+            document.getElementById('admin-cat-icon').value = cat.icon;
+            document.getElementById('admin-cat-submit-btn').textContent = "Actualizar Categoría";
+        }
+
+        function deleteCategory(name) {
+            if (categoriesData.length <= 1) {
+                showToast("Acción no permitida", "Debe existir al menos una categoría.");
+                return;
+            }
+            openConfirmModal(`¿Eliminar "${name}"?`, "Se removerá esta categoría del sistema.", () => {
+                categoriesData = categoriesData.filter(c => c.name !== name);
+                saveToLocalStorage();
+                renderAdminCategoryList();
+                renderCategories();
+                showToast("Categoría eliminada", "Se removió la categoría del sistema.");
+            });
+        }
+
+        function resetAdminCatForm() {
+            document.getElementById('admin-cat-form').reset();
+            document.getElementById('admin-cat-old-name').value = '';
+            document.getElementById('admin-cat-submit-btn').textContent = "Guardar Categoría";
+        }
+
+        // ==========================================
+        // PUBLIC FORM SUBMIT HANDLER
+        // ==========================================
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('form-name').value.trim();
+            const category = document.getElementById('form-category').value;
+            const locality = document.getElementById('form-locality').value.trim();
+            const phone = document.getElementById('form-phone').value;
+            const website = document.getElementById('form-website').value;
+            const image = document.getElementById('form-image').value || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80';
+            const description = document.getElementById('form-desc').value;
+
+            const newService = {
+                id: servicesData.length > 0 ? Math.max(...servicesData.map(s => s.id)) + 1 : 1,
+                name,
+                category,
+                locality,
+                description,
+                image,
+                website,
+                whatsapp: phone.replace(/\D/g, ''),
+                featured: false
+            };
+
+            servicesData.unshift(newService);
+            saveToLocalStorage();
+            refreshLocalityFiltersUI();
+            renderServices();
+            updateMapMarkers();
+
+            document.getElementById('business-form').reset();
+            showToast("¡Negocio agregado con éxito!", `${name} (${locality}) ya está publicado en el directorio.`);
+        }
+
+        function showToast(title, desc) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-desc').textContent = desc;
+
+            toast.classList.remove('translate-y-28', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-28', 'opacity-0');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
