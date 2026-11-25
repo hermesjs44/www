@@ -32,7 +32,6 @@
         }
     </script>
     <style>
-        /* Custom smooth transitions and scrollbar */
         html {
             scroll-behavior: smooth;
         }
@@ -49,6 +48,13 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
@@ -57,7 +63,6 @@
     <!-- Header / Navigation -->
     <header class="bg-white sticky top-0 z-40 shadow-sm border-b border-slate-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Brand Logo Modificado -->
             <a href="#" class="flex items-center gap-3 group">
                 <div class="w-12 h-12 bg-gradient-to-br from-[#801321] to-[#600c17] rounded-2xl flex items-center justify-center text-white shadow-md shadow-red-900/20 group-hover:scale-105 transition-transform p-1.5">
                     <div class="w-full h-full bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-inner relative overflow-hidden">
@@ -70,31 +75,27 @@
                 </div>
             </a>
 
-            <!-- Desktop Nav Links -->
             <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
                 <a href="#directorio" class="hover:text-blue-600 transition-colors">Directorio</a>
                 <a href="#destacados" class="hover:text-blue-600 transition-colors">Promos Destacadas</a>
                 <a href="#sumarse" class="text-blue-600 font-semibold bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition-colors flex items-center gap-2">
                     <i class="fa-solid fa-store"></i> Sumar mi Negocio
                 </a>
-                <!-- Designer Access Button -->
-                <button onclick="openDesignerLoginModal()" id="designer-nav-btn" class="text-slate-700 font-semibold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
+                <button type="button" onclick="openDesignerLoginModal()" id="designer-nav-btn" class="text-slate-700 font-semibold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl transition-colors flex items-center gap-2">
                     <i class="fa-solid fa-lock text-xs text-amber-600"></i> Acceso Diseñador
                 </button>
             </nav>
 
-            <!-- Mobile Menu Button -->
-            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+            <button type="button" id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
                 <i class="fa-solid fa-bars text-xl"></i>
             </button>
         </div>
 
-        <!-- Mobile Menu Modal/Dropdown -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-100 px-4 pt-2 pb-4 space-y-3">
             <a href="#directorio" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Directorio</a>
             <a href="#destacados" class="block px-3 py-2 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Promos Destacadas</a>
             <a href="#sumarse" class="block px-3 py-2 rounded-lg bg-blue-50 text-blue-700 font-semibold text-center">Sumar mi Negocio</a>
-            <button onclick="openDesignerLoginModal()" class="w-full text-left px-3 py-2 rounded-lg bg-slate-100 text-slate-700 font-semibold flex items-center gap-2">
+            <button type="button" onclick="openDesignerLoginModal()" class="w-full text-left px-3 py-2 rounded-lg bg-slate-100 text-slate-700 font-semibold flex items-center gap-2">
                 <i class="fa-solid fa-lock text-xs text-amber-600"></i> Acceso Diseñador
             </button>
         </div>
@@ -106,30 +107,23 @@
         <!-- Rotating Promotional Banner Section -->
         <section id="destacados" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
             <div class="relative bg-slate-900 rounded-3xl overflow-hidden shadow-xl min-h-[380px] sm:min-h-[420px] flex items-center">
-                <!-- Background slides container -->
-                <div id="banner-slider" class="absolute inset-0 w-full h-full">
-                    <!-- Slides will be injected dynamically from featured items -->
-                </div>
+                <div id="banner-slider" class="absolute inset-0 w-full h-full"></div>
 
-                <!-- Slider Controls -->
-                <button onclick="prevSlide()" class="absolute left-4 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
+                <button type="button" onclick="prevSlide()" class="absolute left-4 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
-                <button onclick="nextSlide()" class="absolute right-4 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
+                <button type="button" onclick="nextSlide()" class="absolute right-4 z-30 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
 
-                <!-- Slider Indicators -->
-                <div id="slider-dots" class="absolute bottom-4 left-0 right-0 z-30 flex justify-center gap-2">
-                    <!-- Dots injected dynamically -->
-                </div>
+                <div id="slider-dots" class="absolute bottom-4 left-0 right-0 z-30 flex justify-center gap-2"></div>
             </div>
         </section>
 
         <!-- Search & Filters Section -->
         <section id="directorio" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 mb-8">
-                <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+                <div class="flex flex-col lg:flex-row gap-4 items-start justify-between">
                     
                     <!-- Search Bar -->
                     <div class="relative w-full lg:w-96">
@@ -143,7 +137,7 @@
                             <i class="fa-solid fa-location-dot absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                             <input type="text" id="locality-search" oninput="filterByLocation(this.value)" placeholder="Buscar por localidad (ej. Devoto, Freyre...)" class="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-slate-700 focus:outline-none focus:border-blue-500 focus:bg-white transition-all">
                         </div>
-                        <button onclick="filterByLocation('')" class="mt-2 text-xs text-blue-600 font-semibold">Mostrar todas las localidades</button>
+                        <button type="button" onclick="filterByLocation('')" class="mt-2 text-xs text-blue-600 font-semibold hover:underline">Mostrar todas las localidades</button>
                     </div>
                 </div>
 
@@ -153,22 +147,18 @@
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Buscar localidad en el mapa</label>
                             <input id="map-locality-search" type="text" placeholder="Escribí una localidad y presioná Enter" onkeydown="if(event.key==='Enter'){searchMapLocality();event.preventDefault();}" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm">
                         </div>
-                        <button onclick="searchMapLocality()" class="self-end bg-blue-600 text-white rounded-xl px-5 py-2.5 font-semibold text-sm hover:bg-blue-700"><i class="fa-solid fa-map-location-dot mr-2"></i>Buscar en mapa</button>
+                        <button type="button" onclick="searchMapLocality()" class="self-end bg-blue-600 text-white rounded-xl px-5 py-2.5 font-semibold text-sm hover:bg-blue-700"><i class="fa-solid fa-map-location-dot mr-2"></i>Buscar en mapa</button>
                     </div>
                     <p class="text-xs text-slate-500 mb-3">Área de cobertura: círculo de <strong>120 km de radio</strong> desde San Francisco, Córdoba. Podés buscar localidades para ubicarlas o hacer clic en los marcadores de cada comercio.</p>
                     <div id="regional-map" class="w-full rounded-2xl border border-slate-200 overflow-hidden z-10" style="height:380px"></div>
                 </div>
 
                 <!-- Category Filters Row -->
-                <div id="category-filters-container" class="flex items-center gap-3 overflow-x-auto pb-2 pt-6 mt-6 border-t border-slate-100 no-scrollbar">
-                    <!-- Categories injected dynamically -->
-                </div>
+                <div id="category-filters-container" class="flex items-center gap-3 overflow-x-auto pb-2 pt-6 mt-6 border-t border-slate-100 no-scrollbar"></div>
             </div>
 
             <!-- Results Grid -->
-            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Cards will be injected dynamically via JavaScript -->
-            </div>
+            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
             <!-- Empty State -->
             <div id="empty-state" class="hidden text-center py-16">
@@ -176,7 +166,10 @@
                     <i class="fa-solid fa-face-frown"></i>
                 </div>
                 <h3 class="text-lg font-bold text-slate-700 mb-1">No se encontraron resultados</h3>
-                <p class="text-slate-500 text-sm">Intentá buscando con otros términos o cambiando los filtros seleccionados.</p>
+                <p class="text-slate-500 text-sm mb-4">Intentá buscando con otros términos o cambiando los filtros seleccionados.</p>
+                <button type="button" onclick="resetAllFilters()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition-colors">
+                    Limpiar filtros y ver todos
+                </button>
             </div>
         </section>
 
@@ -199,9 +192,7 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold uppercase tracking-wider text-blue-200 mb-1">Categoría</label>
-                                <select id="form-category" required class="w-full bg-slate-900 border border-white/20 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white transition-all text-sm">
-                                    <!-- Populated dynamically -->
-                                </select>
+                                <select id="form-category" required class="w-full bg-slate-900 border border-white/20 rounded-2xl px-4 py-3 text-white focus:outline-none focus:border-white transition-all text-sm"></select>
                             </div>
                         </div>
 
@@ -234,7 +225,7 @@
 
                         <div class="text-center pt-2">
                             <button type="submit" class="bg-white text-blue-900 font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:bg-blue-50 transition-all w-full sm:w-auto">
-                                <i class="fa-solid fa-paper-plane mr-2"></i> solicitud
+                                <i class="fa-solid fa-paper-plane mr-2"></i> Enviar solicitud
                             </button>
                         </div>
                     </form>
@@ -249,7 +240,7 @@
         <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all">
             <div class="relative h-48 sm:h-56">
                 <img id="modal-img" src="" alt="Servicio" class="w-full h-full object-cover">
-                <button onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors">
+                <button type="button" onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 bg-black/50 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <div class="absolute bottom-4 left-4">
@@ -263,7 +254,7 @@
                 </div>
                 <p id="modal-desc" class="text-slate-600 text-sm leading-relaxed"></p>
                 <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
-                    <a id="modal-whatsapp" href="#" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-2xl text-center transition-colors flex items-center justify-center gap-2">
+                    <a id="modal-whatsapp" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-2xl text-center transition-colors flex items-center justify-center gap-2">
                         <i class="fa-brands fa-whatsapp text-lg"></i> Contactar por WhatsApp
                     </a>
                     <a id="modal-link" href="#" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-2xl text-center transition-colors flex items-center justify-center gap-2">
@@ -277,7 +268,7 @@
     <!-- Designer Login Modal -->
     <div id="designer-login-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl relative">
-            <button onclick="closeDesignerLoginModal()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
+            <button type="button" onclick="closeDesignerLoginModal()" class="absolute top-4 right-4 w-8 h-8 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div class="text-center mb-6">
@@ -312,7 +303,7 @@
                         <p class="text-xs text-slate-400">Gestión completa de categorías, negocios, ubicación en mapa y destacados</p>
                     </div>
                 </div>
-                <button onclick="closeDesignerDashboard()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
+                <button type="button" onclick="closeDesignerDashboard()" class="w-9 h-9 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-full flex items-center justify-center transition-colors">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
@@ -320,9 +311,9 @@
             <div class="p-6 sm:p-8 space-y-8">
                 <!-- Tab Controls inside Dashboard -->
                 <div class="flex flex-wrap gap-2 border-b border-slate-100 pb-4">
-                    <button onclick="switchAdminTab('negocios')" id="tab-btn-negocios" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white">Gestionar Negocios</button>
-                    <button onclick="switchAdminTab('categorias')" id="tab-btn-categorias" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Gestionar Categorías</button>
-                    <button onclick="switchAdminTab('visitas')" id="tab-btn-visitas" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Control de Visitas</button>
+                    <button type="button" onclick="switchAdminTab('negocios')" id="tab-btn-negocios" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white">Gestionar Negocios</button>
+                    <button type="button" onclick="switchAdminTab('categorias')" id="tab-btn-categorias" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Gestionar Categorías</button>
+                    <button type="button" onclick="switchAdminTab('visitas')" id="tab-btn-visitas" class="px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-100 text-slate-600 hover:bg-slate-200">Control de Visitas</button>
                 </div>
 
                 <!-- Tab 1: Negocios Management -->
@@ -340,9 +331,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Categoría</label>
-                                    <select id="admin-bus-category" required class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
-                                        <!-- Populated dynamically -->
-                                    </select>
+                                    <select id="admin-bus-category" required class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm"></select>
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -356,7 +345,7 @@
                                 </div>
                             </div>
                             
-                            <!-- Ubicación en Mapa (Buscador + Selector Visual Interactivo) -->
+                            <!-- Ubicación en Mapa -->
                             <div class="bg-white border border-slate-200 rounded-2xl p-4 space-y-3">
                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                                     <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
@@ -374,7 +363,6 @@
                                     </button>
                                 </div>
                                 
-                                <!-- Mini Mapa Interactivo para colocar el Pin -->
                                 <div id="admin-picker-map" class="w-full rounded-xl border border-slate-200 overflow-hidden z-10" style="height: 240px;"></div>
                                 
                                 <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
@@ -413,10 +401,11 @@
 
                     <!-- List of businesses for admin -->
                     <div>
-                        <h4 class="font-bold text-slate-800 text-base mb-3">Negocios Registrados</h4>
-                        <div id="admin-business-list" class="space-y-3 max-h-72 overflow-y-auto pr-2">
-                            <!-- Injected dynamically -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                            <h4 class="font-bold text-slate-800 text-base">Negocios Registrados</h4>
+                            <input type="text" id="admin-bus-filter" oninput="renderAdminBusinessList()" placeholder="Filtrar negocios..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700 w-full sm:w-64">
                         </div>
+                        <div id="admin-business-list" class="space-y-3 max-h-72 overflow-y-auto pr-2"></div>
                     </div>
                 </div>
 
@@ -435,7 +424,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1">Icono FontAwesome (clase)</label>
-                                    <input type="text" id="admin-cat-icon" required placeholder="Ej: fa-solid fa-car" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
+                                    <input type="text" id="admin-cat-icon" required placeholder="Ej: fa-solid fa-car text-blue-500" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-slate-800 text-sm">
                                 </div>
                             </div>
                             <div class="flex gap-3 pt-2">
@@ -445,12 +434,9 @@
                         </form>
                     </div>
 
-                    <!-- List of categories for admin -->
                     <div>
                         <h4 class="font-bold text-slate-800 text-base mb-3">Categorías Existentes</h4>
-                        <div id="admin-category-list" class="space-y-3 max-h-72 overflow-y-auto pr-2">
-                            <!-- Injected dynamically -->
-                        </div>
+                        <div id="admin-category-list" class="space-y-3 max-h-72 overflow-y-auto pr-2"></div>
                     </div>
                 </div>
 
@@ -470,9 +456,7 @@
                                         <th class="p-3 text-center">Total de Visitas</th>
                                     </tr>
                                 </thead>
-                                <tbody id="admin-visitas-list" class="divide-y divide-slate-100 text-sm">
-                                    <!-- Se carga dinámicamente -->
-                                </tbody>
+                                <tbody id="admin-visitas-list" class="divide-y divide-slate-100 text-sm"></tbody>
                             </table>
                         </div>
                     </div>
@@ -496,7 +480,7 @@
     <footer class="bg-white border-t border-slate-100 py-10 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
             <p>Guía y Directorio Regional de Aplicaciones y Páginas Web • San Francisco, Arroyito y Zona</p>
-            <button onclick="openDesignerLoginModal()" class="text-xs font-semibold text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1">
+            <button type="button" onclick="openDesignerLoginModal()" class="text-xs font-semibold text-slate-400 hover:text-slate-700 transition-colors flex items-center gap-1">
                 <i class="fa-solid fa-lock text-[10px]"></i> Panel Diseñador
             </button>
         </div>
@@ -520,16 +504,12 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Registro de Service Worker para habilitar PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker registrado con éxito', reg))
-                    .catch(err => console.log('Error al registrar el Service Worker', err));
+                navigator.serviceWorker.register('sw.js').catch(() => {});
             });
         }
 
-        // Default categories with icons
         const defaultCategories = [
             { name: "Gastronomía", icon: "fa-solid fa-utensils text-orange-500" },
             { name: "Comercios", icon: "fa-solid fa-store text-emerald-500" },
@@ -538,7 +518,6 @@
             { name: "Tecnología", icon: "fa-solid fa-laptop text-indigo-500" }
         ];
 
-        // Initial Mock Database
         const defaultServices = [
             {
                 name: "Pizzería La Strada",
@@ -626,13 +605,48 @@
         let servicesData = [];
 
         let currentCategory = 'Todas';
-        let currentLocality = 'Todas';
+        let currentLocality = '';
         let searchQuery = '';
 
-        // Load data from Firebase Firestore
+        function normalizeText(value) {
+            return String(value ?? '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .trim();
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[c]));
+        }
+
+        function resolveCategoryName(rawCategory) {
+            const raw = String(rawCategory ?? '').trim();
+            if (!raw) return categoriesData[0]?.name || 'Comercios';
+            const exact = categoriesData.find(c => c.name === raw);
+            if (exact) return exact.name;
+            const norm = normalizeText(raw);
+            const approx = categoriesData.find(c => normalizeText(c.name) === norm);
+            return approx ? approx.name : raw;
+        }
+
+        function sortData() {
+            categoriesData.sort((a, b) => a.name.localeCompare(b.name, 'es'));
+            servicesData.sort((a, b) => {
+                if (Boolean(a.featured) !== Boolean(b.featured)) return a.featured ? -1 : 1;
+                return a.name.localeCompare(b.name, 'es');
+            });
+        }
+
         async function loadDataFromFirebase() {
             try {
-                // Load categories
+                // 1. Cargar categorías
                 const catSnapshot = await getDocs(collection(db, "categorias"));
                 if (catSnapshot.empty) {
                     categoriesData = [];
@@ -641,30 +655,60 @@
                         categoriesData.push({ id: created.id, ...cat });
                     }
                 } else {
+                    const seenNames = new Set();
                     categoriesData = [];
-                    catSnapshot.forEach(doc => {
-                        categoriesData.push({ id: doc.id, ...doc.data() });
+                    catSnapshot.forEach(docSnap => {
+                        const data = docSnap.data() || {};
+                        const cleanName = String(data.name || '').trim();
+                        const normName = normalizeText(cleanName);
+                        if (cleanName && !seenNames.has(normName)) {
+                            seenNames.add(normName);
+                            categoriesData.push({
+                                id: docSnap.id,
+                                name: cleanName,
+                                icon: data.icon || "fa-solid fa-tag text-blue-500"
+                            });
+                        }
                     });
                 }
 
-                // Load services
+                // 2. Cargar comercios
                 const servSnapshot = await getDocs(collection(db, "negocios"));
                 if (servSnapshot.empty) {
                     servicesData = [];
                     for (const serv of defaultServices) {
-                        const created = await addDoc(collection(db, "negocios"), {
-                            ...serv, locality: serv.locality || "San Francisco",
-                            address: serv.address || "", lat: serv.lat ?? null, lng: serv.lng ?? null
-                        });
-                        servicesData.push({ id: created.id, ...serv });
+                        const payload = {
+                            ...serv,
+                            locality: serv.locality || "San Francisco",
+                            address: serv.address || "",
+                            lat: serv.lat ?? null,
+                            lng: serv.lng ?? null
+                        };
+                        const created = await addDoc(collection(db, "negocios"), payload);
+                        servicesData.push({ id: created.id, ...payload });
                     }
                 } else {
                     servicesData = [];
-                    servSnapshot.forEach(doc => {
-                        servicesData.push({ id: doc.id, ...doc.data() });
+                    servSnapshot.forEach(docSnap => {
+                        const data = docSnap.data() || {};
+                        servicesData.push({
+                            id: docSnap.id,
+                            name: String(data.name || 'Sin nombre').trim(),
+                            category: resolveCategoryName(data.category),
+                            locality: String(data.locality || 'San Francisco').trim(),
+                            description: String(data.description || '').trim(),
+                            image: data.image || 'https://placehold.co/600x400/e2e8f0/64748b?text=Local',
+                            website: data.website || '',
+                            whatsapp: String(data.whatsapp || '').replace(/\D/g, ''),
+                            featured: Boolean(data.featured),
+                            address: data.address || '',
+                            lat: data.lat ?? null,
+                            lng: data.lng ?? null
+                        });
                     });
                 }
 
+                sortData();
                 renderCategories();
                 renderServices();
                 initSlider();
@@ -672,17 +716,14 @@
                 console.error("Error al cargar datos de Firebase:", error);
                 renderCategories();
                 renderServices();
-                showToast("No se pudieron cargar los datos",
-                    "Revisá la conexión y las reglas de acceso de Firestore en Firebase.");
+                showToast("Error de conexión", "No se pudieron cargar los datos de Firebase.");
             }
         }
 
-        function escapeHtml(value) { return String(value ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c])); }
-
-        // Mapa regional: centro San Francisco, Córdoba y radio 120 km
+        // --- MAPA REGIONAL ---
         let regionalMap, coverageCircle, searchedPlaceMarker, businessMarkersLayer, categoryLegendControl;
         let adminPickerMap, adminPickerMarker, adminPickerCircle;
-        const COVERAGE_RADIUS_METERS = 110000; // 120 km
+        const COVERAGE_RADIUS_METERS = 120000; // 120 km reales
         const SAN_FRANCISCO_COORDS = [-31.427, -62.082];
 
         const CATEGORY_MAP_COLORS = ['#e11d48','#2563eb','#16a34a','#9333ea','#ea580c','#0891b2','#ca8a04','#4f46e5','#0d9488','#be123c','#64748b','#7c3aed'];
@@ -690,18 +731,23 @@
             const names = (categoriesData || []).map(c => c.name);
             const index = names.indexOf(category);
             if (index >= 0) return CATEGORY_MAP_COLORS[index % CATEGORY_MAP_COLORS.length];
-            let hash = 0; for (const ch of String(category || 'Otros')) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+            let hash = 0;
+            for (const ch of String(category || 'Otros')) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
             return CATEGORY_MAP_COLORS[hash % CATEGORY_MAP_COLORS.length];
         }
+
         function refreshCategoryMapLegend() {
-            if (!regionalMap || !L) return;
+            if (!regionalMap || !window.L) return;
             if (categoryLegendControl) regionalMap.removeControl(categoryLegendControl);
-            categoryLegendControl = L.control({position:'bottomright'});
+            categoryLegendControl = L.control({ position: 'bottomright' });
             categoryLegendControl.onAdd = function() {
                 const div = L.DomUtil.create('div', 'map-category-legend');
                 div.style.cssText = 'background:white;padding:10px 12px;border-radius:12px;box-shadow:0 2px 12px #0002;max-height:180px;overflow:auto;font-size:12px;line-height:1.5;';
-                div.innerHTML = '<strong style="display:block;margin-bottom:5px">Rubros</strong>' + (categoriesData || []).map(cat => `<div style="display:flex;align-items:center;gap:6px;margin:2px 0"><span style="width:11px;height:11px;border-radius:50%;background:${getCategoryMapColor(cat.name)};display:inline-block;border:1px solid #fff;box-shadow:0 0 0 1px #999"></span>${escapeHtml(cat.name)}</div>`).join('');
-                L.DomEvent.disableClickPropagation(div); return div;
+                div.innerHTML = '<strong style="display:block;margin-bottom:5px">Rubros</strong>' + (categoriesData || []).map(cat =>
+                    `<div style="display:flex;align-items:center;gap:6px;margin:2px 0"><span style="width:11px;height:11px;border-radius:50%;background:${getCategoryMapColor(cat.name)};display:inline-block;border:1px solid #fff;box-shadow:0 0 0 1px #999"></span>${escapeHtml(cat.name)}</div>`
+                ).join('');
+                L.DomEvent.disableClickPropagation(div);
+                return div;
             };
             categoryLegendControl.addTo(regionalMap);
         }
@@ -709,26 +755,26 @@
         window.initRegionalMap = function() {
             if (!window.L || regionalMap) return;
             regionalMap = L.map('regional-map').setView(SAN_FRANCISCO_COORDS, 8);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 18, attribution: '&copy; OpenStreetMap'}).addTo(regionalMap);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(regionalMap);
             L.marker(SAN_FRANCISCO_COORDS).addTo(regionalMap).bindPopup('<b>San Francisco, Córdoba</b><br>Centro de cobertura (120 km)');
-            coverageCircle = L.circle(SAN_FRANCISCO_COORDS, {radius: COVERAGE_RADIUS_METERS, color:'#2563eb', weight:2, fillColor:'#3b82f6', fillOpacity:0.12}).addTo(regionalMap);
+            coverageCircle = L.circle(SAN_FRANCISCO_COORDS, { radius: COVERAGE_RADIUS_METERS, color: '#2563eb', weight: 2, fillColor: '#3b82f6', fillOpacity: 0.12 }).addTo(regionalMap);
             businessMarkersLayer = L.layerGroup().addTo(regionalMap);
             refreshCategoryMapLegend();
             regionalMap.fitBounds(coverageCircle.getBounds());
             setTimeout(() => regionalMap.invalidateSize(), 250);
         };
 
-        window.renderBusinessMapMarkers = function() {
+        window.renderBusinessMapMarkers = function(listToRender = servicesData) {
             if (!regionalMap || !businessMarkersLayer) return;
             businessMarkersLayer.clearLayers();
             refreshCategoryMapLegend();
-            servicesData.forEach(item => {
+            listToRender.forEach(item => {
                 const lat = Number(item.lat), lng = Number(item.lng);
                 if (!Number.isFinite(lat) || !Number.isFinite(lng) || item.lat === null || item.lng === null || item.lat === '' || item.lng === '') return;
                 const color = getCategoryMapColor(item.category);
-                const marker = L.circleMarker([lat, lng], {radius:9, color:'#ffffff', weight:2, fillColor:color, fillOpacity:0.95}).addTo(businessMarkersLayer);
+                const marker = L.circleMarker([lat, lng], { radius: 9, color: '#ffffff', weight: 2, fillColor: color, fillOpacity: 0.95 }).addTo(businessMarkersLayer);
                 const addressLine = item.address ? `<br>${escapeHtml(item.address)}` : '';
-                marker.bindPopup(`<b>${escapeHtml(item.name || 'Negocio')}</b><br><span style="color:${color};font-weight:700">${escapeHtml(item.category || 'Otros')}</span><br>${escapeHtml(item.locality || '')}${addressLine}<br><a target="_blank" style="color:#2563eb;font-weight:600" href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}">Cómo llegar</a>`);
+                marker.bindPopup(`<b>${escapeHtml(item.name || 'Negocio')}</b><br><span style="color:${color};font-weight:700">${escapeHtml(item.category || 'Otros')}</span><br>${escapeHtml(item.locality || '')}${addressLine}<br><a target="_blank" rel="noopener noreferrer" style="color:#2563eb;font-weight:600" href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}">Cómo llegar</a>`);
                 marker.businessId = item.id;
             });
         };
@@ -736,40 +782,25 @@
         window.showBusinessOnMap = function(id) {
             const item = servicesData.find(x => x.id === id);
             if (!item || item.lat === null || item.lng === null || item.lat === '' || item.lng === '' || !Number.isFinite(Number(item.lat)) || !Number.isFinite(Number(item.lng))) {
-                showToast('Ubicación pendiente', 'Este negocio todavía no tiene coordenadas exactas cargadas.'); return;
+                showToast('Ubicación pendiente', 'Este negocio todavía no tiene coordenadas exactas cargadas.');
+                return;
             }
             if (regionalMap) {
                 regionalMap.setView([Number(item.lat), Number(item.lng)], 16);
                 const marker = businessMarkersLayer.getLayers().find(m => m.businessId === id);
                 if (marker) marker.openPopup();
-                document.getElementById('regional-map').scrollIntoView({behavior:'smooth', block:'center'});
+                document.getElementById('regional-map').scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         };
 
-        // Inicializar y controlar el mini-mapa del diseñador
         window.initAdminPickerMap = function(initialLat = null, initialLng = null) {
             if (!window.L) return;
             if (!adminPickerMap) {
                 adminPickerMap = L.map('admin-picker-map').setView(SAN_FRANCISCO_COORDS, 8);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 18,
-                    attribution: '&copy; OpenStreetMap'
-                }).addTo(adminPickerMap);
-
-                adminPickerCircle = L.circle(SAN_FRANCISCO_COORDS, {
-                    radius: COVERAGE_RADIUS_METERS,
-                    color: '#2563eb',
-                    weight: 1.5,
-                    fillColor: '#3b82f6',
-                    fillOpacity: 0.1
-                }).addTo(adminPickerMap);
-
-                // Permitir hacer clic en cualquier parte del mapa para fijar la ubicación
-                adminPickerMap.on('click', function(e) {
-                    setAdminPickerLocation(e.latlng.lat, e.latlng.lng, false);
-                });
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap' }).addTo(adminPickerMap);
+                adminPickerCircle = L.circle(SAN_FRANCISCO_COORDS, { radius: COVERAGE_RADIUS_METERS, color: '#2563eb', weight: 1.5, fillColor: '#3b82f6', fillOpacity: 0.1 }).addTo(adminPickerMap);
+                adminPickerMap.on('click', e => setAdminPickerLocation(e.latlng.lat, e.latlng.lng, false));
             }
-
             setTimeout(() => {
                 adminPickerMap.invalidateSize();
                 if (initialLat !== null && initialLng !== null && initialLat !== '' && initialLng !== '' && Number.isFinite(Number(initialLat)) && Number.isFinite(Number(initialLng))) {
@@ -810,21 +841,17 @@
             document.getElementById('admin-bus-lng').value = fixedLng;
 
             if (!adminPickerMap) return;
-
             if (adminPickerMarker) {
                 adminPickerMarker.setLatLng([lat, lng]);
             } else {
                 adminPickerMarker = L.marker([lat, lng], { draggable: true }).addTo(adminPickerMap);
                 adminPickerMarker.bindPopup('Ubicación del negocio (arrastrable)').openPopup();
-                adminPickerMarker.on('dragend', function(e) {
+                adminPickerMarker.on('dragend', e => {
                     const pos = e.target.getLatLng();
                     setAdminPickerLocation(pos.lat, pos.lng, false);
                 });
             }
-
-            if (centerMap) {
-                adminPickerMap.setView([lat, lng], 15);
-            }
+            if (centerMap) adminPickerMap.setView([lat, lng], 15);
             updateAdminRadiusBadge(Number(fixedLat), Number(fixedLng));
         };
 
@@ -849,11 +876,11 @@
                 const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`);
                 const data = await res.json();
                 if (!data.length) { showToast('No encontrada', 'No se pudo localizar. Hacé clic directamente en el mapa.'); return; }
-                const lat = Number(data[0].lat);
-                const lng = Number(data[0].lon);
-                initAdminPickerMap(lat, lng);
+                initAdminPickerMap(Number(data[0].lat), Number(data[0].lon));
                 showToast('Ubicación encontrada', 'Podés arrastrar el marcador para ajustar la esquina exacta.');
-            } catch (error) { console.error(error); showToast('Error', 'No se pudo buscar la dirección.'); }
+            } catch (error) {
+                showToast('Error', 'No se pudo buscar la dirección.');
+            }
         };
 
         window.searchMapLocality = async function() {
@@ -871,38 +898,31 @@
                 searchedPlaceMarker = L.marker(coords).addTo(regionalMap).bindPopup(place.display_name).openPopup();
                 const filter = document.getElementById('locality-search');
                 if (filter) { filter.value = locality; filterByLocation(locality); }
-            } catch (err) { console.error(err); showToast('Error de mapa', 'No se pudo buscar la localidad.'); }
+            } catch (err) {
+                showToast('Error de mapa', 'No se pudo buscar la localidad.');
+            }
         };
 
-        // Initialize App
         document.addEventListener('DOMContentLoaded', () => {
             loadDataFromFirebase();
             initRegionalMap();
-
-            // Mobile menu toggle
             const menuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
+            menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
         });
 
-        // Registrar visita / clic en Firestore
         async function registrarVisita(nombreNegocio) {
             try {
-                const docId = nombreNegocio.replace(/[^a-zA-Z0-9]/g, "_");
-                const docRef = doc(db, "visitas", docId);
-                await setDoc(docRef, {
+                const docId = String(nombreNegocio).replace(/[^a-zA-Z0-9]/g, "_");
+                await setDoc(doc(db, "visitas", docId), {
                     negocio: nombreNegocio,
                     contador: increment(1),
                     ultimaVisita: new Date().toISOString()
                 }, { merge: true });
-            } catch (e) {
-                console.error("Error al registrar visita:", e);
-            }
+            } catch (e) {}
         }
 
-        // Banner Slider Logic
+        // --- SLIDER ---
         let activeSlideIndex = 0;
         let sliderInterval;
 
@@ -928,18 +948,18 @@
             }
 
             sliderContainer.innerHTML = featuredItems.map((item, index) => `
-                <div class="banner-slide absolute inset-0 transition-opacity duration-1000 ${index === 0 ? 'opacity-100' : 'opacity-0'} flex items-center">
+                <div class="banner-slide absolute inset-0 transition-opacity duration-1000 ${index === 0 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} flex items-center">
                     <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent z-10"></div>
-                    <img src="${item.image}" onerror="this.src='https://placehold.co/1200x600/1e293b/cbd5e1?text=Destacado'" class="absolute inset-0 w-full h-full object-cover">
+                    <img src="${escapeHtml(item.image)}" onerror="this.src='https://placehold.co/1200x600/1e293b/cbd5e1?text=Destacado'" class="absolute inset-0 w-full h-full object-cover">
                     <div class="relative z-20 max-w-2xl px-6 sm:px-12 text-white">
-                        <span class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">${item.locality} • ${item.category}</span>
-                        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">${item.name}</h1>
-                        <p class="text-slate-300 text-sm sm:text-base mb-6 line-clamp-2">${item.description}</p>
+                        <span class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">${escapeHtml(item.locality)} • ${escapeHtml(item.category)}</span>
+                        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">${escapeHtml(item.name)}</h1>
+                        <p class="text-slate-300 text-sm sm:text-base mb-6 line-clamp-2">${escapeHtml(item.description)}</p>
                         <div class="flex gap-3">
-                            <button onclick="openModal('${item.id}')" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-slate-100 transition-all">
+                            <button type="button" onclick="openModal('${item.id}')" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-slate-100 transition-all">
                                 Ver Detalles <i class="fa-solid fa-arrow-right"></i>
                             </button>
-                            <a href="https://wa.me/549${item.whatsapp}" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-emerald-700 transition-all">
+                            <a href="https://wa.me/549${escapeHtml(item.whatsapp)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:bg-emerald-700 transition-all">
                                 <i class="fa-brands fa-whatsapp"></i> WhatsApp
                             </a>
                         </div>
@@ -948,108 +968,158 @@
             `).join('');
 
             dotsContainer.innerHTML = featuredItems.map((_, index) => `
-                <button onclick="currentSlide(${index})" class="slider-dot w-3 h-3 rounded-full ${index === 0 ? 'bg-white' : 'bg-white/50'} hover:bg-white transition-all"></button>
+                <button type="button" onclick="currentSlide(${index})" class="slider-dot w-3 h-3 rounded-full ${index === 0 ? 'bg-white' : 'bg-white/50'} hover:bg-white transition-all"></button>
             `).join('');
-        }
+        };
 
         window.updateSlider = function() {
             const slides = document.querySelectorAll('.banner-slide');
             const dots = document.querySelectorAll('.slider-dot');
             slides.forEach((slide, index) => {
-                slide.style.opacity = index === activeSlideIndex ? '1' : '0';
+                const isActive = index === activeSlideIndex;
+                slide.style.opacity = isActive ? '1' : '0';
+                slide.style.pointerEvents = isActive ? 'auto' : 'none';
             });
             dots.forEach((dot, index) => {
                 dot.style.backgroundColor = index === activeSlideIndex ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0.5)';
             });
-        }
+        };
 
         window.nextSlide = function() {
             const slides = document.querySelectorAll('.banner-slide');
-            if (slides.length === 0) return;
+            if (!slides.length) return;
             activeSlideIndex = (activeSlideIndex + 1) % slides.length;
             updateSlider();
-        }
+        };
 
         window.prevSlide = function() {
             const slides = document.querySelectorAll('.banner-slide');
-            if (slides.length === 0) return;
+            if (!slides.length) return;
             activeSlideIndex = (activeSlideIndex - 1 + slides.length) % slides.length;
             updateSlider();
-        }
+        };
 
         window.currentSlide = function(index) {
             activeSlideIndex = index;
             updateSlider();
-        }
+        };
 
         function initSlider() {
+            activeSlideIndex = 0;
             renderBannerSlider();
             if (sliderInterval) clearInterval(sliderInterval);
             sliderInterval = setInterval(nextSlide, 5000);
         }
 
-        // Render Category Filter Buttons & Selects
+        // --- CATEGORÍAS Y FILTROS ---
         window.renderCategories = function() {
             const container = document.getElementById('category-filters-container');
             const formSelect = document.getElementById('form-category');
             const adminSelect = document.getElementById('admin-bus-category');
 
-            if (!container) return;
-
-            container.innerHTML = `
-                <button onclick="filterByCategory('Todas')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${currentCategory === 'Todas' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
-                    <i class="fa-solid fa-border-all"></i> Todas las categorías
-                </button>
-            ` + categoriesData.map(cat => `
-                <button onclick="filterByCategory('${cat.name}')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${currentCategory === cat.name ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
-                    <i class="${cat.icon}"></i> ${cat.name}
-                </button>
-            `).join('');
-
-            if (formSelect) {
-                formSelect.innerHTML = categoriesData.map(cat => `<option value="${cat.name}" class="bg-slate-900">${cat.name}</option>`).join('');
+            if (currentCategory !== 'Todas' && !categoriesData.some(c => normalizeText(c.name) === normalizeText(currentCategory))) {
+                currentCategory = 'Todas';
             }
 
-            if (adminSelect) {
-                adminSelect.innerHTML = categoriesData.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
+            if (container) {
+                container.innerHTML = `
+                    <button type="button" onclick="filterByCategory('Todas')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${currentCategory === 'Todas' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                        <i class="fa-solid fa-border-all"></i> Todas las categorías <span class="text-xs opacity-75">(${servicesData.length})</span>
+                    </button>
+                ` + categoriesData.map(cat => {
+                    const count = servicesData.filter(s => normalizeText(s.category) === normalizeText(cat.name)).length;
+                    const active = normalizeText(currentCategory) === normalizeText(cat.name);
+                    return `
+                        <button type="button" onclick="filterByCategoryById('${cat.id}')" class="cat-btn flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all ${active ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                            <i class="${escapeHtml(cat.icon)}"></i> ${escapeHtml(cat.name)} <span class="text-xs opacity-75">(${count})</span>
+                        </button>
+                    `;
+                }).join('');
             }
-            if (regionalMap) { refreshCategoryMapLegend(); renderBusinessMapMarkers(); }
-        }
+
+            const optionsHtml = categoriesData.map(cat =>
+                `<option value="${escapeHtml(cat.name)}" class="bg-slate-900">${escapeHtml(cat.name)}</option>`
+            ).join('');
+
+            const adminOptionsHtml = categoriesData.map(cat =>
+                `<option value="${escapeHtml(cat.name)}">${escapeHtml(cat.name)}</option>`
+            ).join('');
+
+            if (formSelect) formSelect.innerHTML = optionsHtml;
+            if (adminSelect) adminSelect.innerHTML = adminOptionsHtml;
+
+            if (regionalMap) {
+                refreshCategoryMapLegend();
+                renderBusinessMapMarkers();
+            }
+        };
 
         window.filterByCategory = function(category) {
             currentCategory = category;
             renderCategories();
             renderServices();
-        }
+        };
+
+        window.filterByCategoryById = function(catId) {
+            const cat = categoriesData.find(c => c.id === catId);
+            currentCategory = cat ? cat.name : 'Todas';
+            renderCategories();
+            renderServices();
+        };
 
         window.filterByLocation = function(locality) {
-            currentLocality = (locality || '').trim().toLowerCase();
+            currentLocality = normalizeText(locality);
+            const input = document.getElementById('locality-search');
+            if (input && !locality) input.value = '';
             renderServices();
-        }
+        };
 
         window.handleSearch = function() {
-            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            searchQuery = normalizeText(document.getElementById('search-input').value);
             renderServices();
-        }
+        };
 
-        // Render Services Grid
+        window.resetAllFilters = function() {
+            currentCategory = 'Todas';
+            currentLocality = '';
+            searchQuery = '';
+            const searchInput = document.getElementById('search-input');
+            const localityInput = document.getElementById('locality-search');
+            if (searchInput) searchInput.value = '';
+            if (localityInput) localityInput.value = '';
+            renderCategories();
+            renderServices();
+        };
+
+        // --- LISTADO DE COMERCIOS ---
         window.renderServices = function() {
             const grid = document.getElementById('services-grid');
             const emptyState = document.getElementById('empty-state');
             if (!grid) return;
 
+            const normCurrentCat = normalizeText(currentCategory);
+
             const filtered = servicesData.filter(item => {
-                const matchCategory = currentCategory === 'Todas' || item.category === currentCategory;
-                const matchLocality = !currentLocality || (item.locality || '').toLowerCase().includes(currentLocality);
-                const matchSearch = item.name.toLowerCase().includes(searchQuery) || 
-                                    item.description.toLowerCase().includes(searchQuery) ||
-                                    item.category.toLowerCase().includes(searchQuery) || (item.locality || '').toLowerCase().includes(searchQuery);
+                const itemCat = normalizeText(item.category);
+                const itemLoc = normalizeText(item.locality);
+                const itemName = normalizeText(item.name);
+                const itemDesc = normalizeText(item.description);
+
+                const matchCategory = currentCategory === 'Todas' || itemCat === normCurrentCat;
+                const matchLocality = !currentLocality || itemLoc.includes(currentLocality);
+                const matchSearch = !searchQuery ||
+                    itemName.includes(searchQuery) ||
+                    itemDesc.includes(searchQuery) ||
+                    itemCat.includes(searchQuery) ||
+                    itemLoc.includes(searchQuery);
+
                 return matchCategory && matchLocality && matchSearch;
             });
 
             if (filtered.length === 0) {
                 grid.innerHTML = '';
                 emptyState.classList.remove('hidden');
+                renderBusinessMapMarkers([]);
                 return;
             }
 
@@ -1058,44 +1128,46 @@
                 <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
                     <div>
                         <div class="relative h-48 overflow-hidden bg-slate-100">
-                            <img src="${item.image}" alt="${item.name}" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Local'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute top-3 left-3 flex gap-2">
+                            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" onerror="this.src='https://placehold.co/600x400/e2e8f0/64748b?text=Local'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-3 left-3 flex flex-wrap gap-2">
                                 <span class="bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
-                                    ${item.category}
+                                    ${escapeHtml(item.category)}
                                 </span>
                                 ${item.featured ? '<span class="bg-amber-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-sm"><i class="fa-solid fa-star"></i> Destacado</span>' : ''}
                             </div>
                             <div class="absolute top-3 right-3">
                                 <span class="bg-slate-900/80 backdrop-blur-sm text-white text-xs font-medium px-3 py-1 rounded-full shadow-sm">
-                                    ${item.locality}
+                                    ${escapeHtml(item.locality)}
                                 </span>
                             </div>
                         </div>
                         <div class="p-6">
-                            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">${item.name}</h3>
-                            <p class="text-slate-600 text-sm line-clamp-2 leading-relaxed mb-4">${item.description}</p>
+                            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-blue-600 transition-colors">${escapeHtml(item.name)}</h3>
+                            <p class="text-slate-600 text-sm line-clamp-2 leading-relaxed mb-4">${escapeHtml(item.description)}</p>
                         </div>
                     </div>
-                    <div class="px-6 pb-6 pt-0 flex items-center justify-between gap-3 border-t border-slate-50 pt-4">
-                        <a href="https://wa.me/549${item.whatsapp}" target="_blank" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
+                    <div class="px-6 pb-6 flex items-center justify-between gap-2 border-t border-slate-50 pt-4">
+                        <a href="https://wa.me/549${escapeHtml(item.whatsapp)}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
                             <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp
                         </a>
-                        <button onclick="showBusinessOnMap('${item.id}')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5"><i class="fa-solid fa-map-location-dot"></i> Mapa</button>
-                        <button onclick="openModal('${item.id}')" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
+                        <button type="button" onclick="showBusinessOnMap('${item.id}')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-map-location-dot"></i> Mapa
+                        </button>
+                        <button type="button" onclick="openModal('${item.id}')" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold py-2.5 px-3 rounded-xl text-center transition-colors flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-circle-info text-sm"></i> Ver más
                         </button>
                     </div>
                 </div>
             `).join('');
-            renderBusinessMapMarkers();
-        }
 
-        // Modal Controls
+            renderBusinessMapMarkers(filtered);
+        };
+
+        // --- MODAL DETALLES ---
         window.openModal = function(id) {
             const item = servicesData.find(s => s.id === id);
             if (!item) return;
 
-            // Registrar visita automáticamente al abrir el modal
             registrarVisita(item.name);
 
             document.getElementById('modal-img').src = item.image;
@@ -1104,6 +1176,7 @@
             document.getElementById('modal-title').textContent = item.name;
             document.getElementById('modal-desc').textContent = item.description;
             document.getElementById('modal-whatsapp').href = `https://wa.me/549${item.whatsapp}`;
+
             const websiteLink = document.getElementById('modal-link');
             websiteLink.href = item.website || '#';
             websiteLink.style.display = item.website ? '' : 'none';
@@ -1113,26 +1186,26 @@
             const modal = document.getElementById('details-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-        }
+        };
 
         window.closeModal = function() {
             const modal = document.getElementById('details-modal');
             modal.classList.remove('flex');
             modal.classList.add('hidden');
-        }
+        };
 
-        // Designer Authentication & Dashboard Logic
+        // --- PANEL DISEÑADOR ---
         window.openDesignerLoginModal = function() {
             const modal = document.getElementById('designer-login-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
-        }
+        };
 
         window.closeDesignerLoginModal = function() {
             const modal = document.getElementById('designer-login-modal');
             modal.classList.remove('flex');
             modal.classList.add('hidden');
-        }
+        };
 
         window.handleDesignerLogin = function(e) {
             e.preventDefault();
@@ -1145,16 +1218,17 @@
             } else {
                 showToast("Clave incorrecta", "La clave de acceso ingresada no es válida.");
             }
-        }
+        };
 
         window.openDesignerDashboard = function() {
+            renderCategories();
             renderAdminBusinessList();
             renderAdminCategoryList();
             const modal = document.getElementById('designer-dashboard-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             initAdminPickerMap();
-        }
+        };
 
         window.closeDesignerDashboard = function() {
             const modal = document.getElementById('designer-dashboard-modal');
@@ -1163,7 +1237,7 @@
             initSlider();
             renderCategories();
             renderServices();
-        }
+        };
 
         window.switchAdminTab = function(tab) {
             const tabNegocios = document.getElementById('admin-tab-negocios');
@@ -1174,7 +1248,6 @@
             const btnCategorias = document.getElementById('tab-btn-categorias');
             const btnVisitas = document.getElementById('tab-btn-visitas');
 
-            // Hide all tabs
             tabNegocios.classList.add('hidden');
             tabCategorias.classList.add('hidden');
             if (tabVisitas) tabVisitas.classList.add('hidden');
@@ -1195,83 +1268,88 @@
                 if (btnVisitas) btnVisitas.className = "px-5 py-2.5 rounded-2xl font-semibold text-sm transition-all bg-slate-900 text-white";
                 renderAdminVisitasList();
             }
-        }
+        };
 
-        // Render Admin Visitas List from Firestore
         async function renderAdminVisitasList() {
             const tbody = document.getElementById('admin-visitas-list');
             if (!tbody) return;
-
             tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-slate-400">Cargando estadísticas...</td></tr>`;
-
             try {
                 const querySnapshot = await getDocs(collection(db, "visitas"));
                 let visitasArray = [];
-                querySnapshot.forEach(doc => {
-                    visitasArray.push(doc.data());
-                });
+                querySnapshot.forEach(docSnap => visitasArray.push(docSnap.data()));
+                visitasArray.sort((a, b) => (b.contador || 0) - (a.contador || 0));
 
-                // Ordenar de mayor a menor según las visitas
-                visitasArray.sort((a, b) => b.contador - a.contador);
-
-                if (visitasArray.length === 0) {
+                if (!visitasArray.length) {
                     tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-slate-400">Aún no hay registros de visitas.</td></tr>`;
                     return;
                 }
 
                 tbody.innerHTML = visitasArray.map(item => `
                     <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-3 pl-4 font-semibold text-slate-800">${item.negocio}</td>
+                        <td class="p-3 pl-4 font-semibold text-slate-800">${escapeHtml(item.negocio)}</td>
                         <td class="p-3 text-center">
                             <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">
-                                ${item.contador} visitas
+                                ${item.contador || 0} visitas
                             </span>
                         </td>
                     </tr>
                 `).join('');
             } catch (error) {
-                console.error("Error al cargar visitas:", error);
                 tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-rose-500">Error al obtener las estadísticas.</td></tr>`;
             }
         }
 
-        // Admin Business CRUD (Firebase)
+        // --- CRUD NEGOCIOS ---
         window.renderAdminBusinessList = function() {
             const list = document.getElementById('admin-business-list');
             if (!list) return;
-            list.innerHTML = servicesData.map(item => {
+            const filterTerm = normalizeText(document.getElementById('admin-bus-filter')?.value || '');
+            const items = filterTerm
+                ? servicesData.filter(s => normalizeText(s.name).includes(filterTerm) || normalizeText(s.category).includes(filterTerm) || normalizeText(s.locality).includes(filterTerm))
+                : servicesData;
+
+            if (!items.length) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">No hay negocios que coincidan con la búsqueda.</p>`;
+                return;
+            }
+
+            list.innerHTML = items.map(item => {
                 const hasCoords = item.lat !== null && item.lng !== null && item.lat !== undefined && item.lng !== undefined && item.lat !== '' && item.lng !== '';
+                const validCat = categoriesData.some(c => normalizeText(c.name) === normalizeText(item.category));
                 return `
                 <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
                     <div class="flex items-center gap-3">
-                        <img src="${item.image}" onerror="this.src='https://placehold.co/100x100/e2e8f0/64748b?text=Local'" class="w-12 h-12 rounded-xl object-cover">
+                        <img src="${escapeHtml(item.image)}" onerror="this.src='https://placehold.co/100x100/e2e8f0/64748b?text=Local'" class="w-12 h-12 rounded-xl object-cover">
                         <div>
                             <h5 class="font-bold text-slate-800 text-sm flex flex-wrap items-center gap-2">
-                                ${item.name} 
+                                ${escapeHtml(item.name)}
                                 ${item.featured ? '<span class="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded-full font-bold">Destacado</span>' : ''}
                                 ${hasCoords ? '<span class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded-full font-bold"><i class="fa-solid fa-location-dot"></i> En mapa</span>' : '<span class="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded-full">Sin ubicar</span>'}
+                                ${!validCat ? '<span class="bg-rose-100 text-rose-700 text-[10px] px-2 py-0.5 rounded-full font-bold">Revisar categoría</span>' : ''}
                             </h5>
-                            <p class="text-xs text-slate-400">${item.locality} • ${item.category}</p>
+                            <p class="text-xs text-slate-400">${escapeHtml(item.locality)} • ${escapeHtml(item.category)}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <button onclick="editBusiness('${item.id}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteBusiness('${item.id}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
+                        <button type="button" onclick="editBusiness('${item.id}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
+                        <button type="button" onclick="deleteBusiness('${item.id}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
                     </div>
                 </div>
             `}).join('');
-        }
+        };
 
         window.handleAdminBusinessSubmit = async function(e) {
             e.preventDefault();
             const id = document.getElementById('admin-bus-id').value;
-            const name = document.getElementById('admin-bus-name').value;
-            const category = document.getElementById('admin-bus-category').value;
-            const locality = document.getElementById('admin-bus-locality').value;
+            const name = document.getElementById('admin-bus-name').value.trim();
+            const categorySelect = document.getElementById('admin-bus-category');
+            const category = categorySelect.value || categoriesData[0]?.name || 'Comercios';
+            const locality = document.getElementById('admin-bus-locality').value.trim();
             const phone = document.getElementById('admin-bus-phone').value;
-            const website = document.getElementById('admin-bus-website').value;
-            const image = document.getElementById('admin-bus-image').value;
-            const description = document.getElementById('admin-bus-desc').value;
+            const website = document.getElementById('admin-bus-website').value.trim();
+            const image = document.getElementById('admin-bus-image').value.trim();
+            const description = document.getElementById('admin-bus-desc').value.trim();
             const featured = document.getElementById('admin-bus-featured').checked;
             const address = document.getElementById('admin-bus-address').value.trim();
             const latValue = document.getElementById('admin-bus-lat').value.trim();
@@ -1279,35 +1357,54 @@
             const lat = latValue ? Number(latValue) : null;
             const lng = lngValue ? Number(lngValue) : null;
 
-            const businessData = { name, category, locality, address, lat, lng, whatsapp: phone.replace(/\D/g,''), website, image, description, featured };
+            const businessData = {
+                name,
+                category,
+                locality,
+                address,
+                lat,
+                lng,
+                whatsapp: phone.replace(/\D/g, ''),
+                website,
+                image,
+                description,
+                featured
+            };
 
             try {
                 if (id) {
                     await updateDoc(doc(db, "negocios", id), businessData);
                     const index = servicesData.findIndex(s => s.id === id);
                     if (index !== -1) servicesData[index] = { id, ...businessData };
-                    showToast("¡Negocio actualizado!", "Los datos y su ubicación fueron guardados.");
+                    showToast("¡Negocio actualizado!", "Los datos y su categoría fueron guardados.");
                 } else {
                     const docRef = await addDoc(collection(db, "negocios"), businessData);
                     servicesData.unshift({ id: docRef.id, ...businessData });
-                    showToast("¡Negocio creado!", "El comercio fue agregado al directorio y al mapa.");
+                    showToast("¡Negocio creado!", "El comercio fue agregado al directorio.");
                 }
+                sortData();
                 resetAdminBusForm();
                 renderAdminBusinessList();
+                renderCategories();
                 renderServices();
                 renderBannerSlider();
             } catch (error) {
                 console.error("Error al guardar en Firebase:", error);
                 showToast("Error", "No se pudo guardar en la base de datos.");
             }
-        }
+        };
 
         window.editBusiness = function(id) {
             const item = servicesData.find(s => s.id === id);
             if (!item) return;
+
             document.getElementById('admin-bus-id').value = item.id;
             document.getElementById('admin-bus-name').value = item.name;
-            document.getElementById('admin-bus-category').value = item.category;
+
+            const catSelect = document.getElementById('admin-bus-category');
+            const matchedCat = categoriesData.find(c => normalizeText(c.name) === normalizeText(item.category));
+            catSelect.value = matchedCat ? matchedCat.name : (categoriesData[0]?.name || '');
+
             document.getElementById('admin-bus-locality').value = item.locality;
             document.getElementById('admin-bus-address').value = item.address || '';
             document.getElementById('admin-bus-lat').value = item.lat ?? '';
@@ -1316,12 +1413,12 @@
             document.getElementById('admin-bus-website').value = item.website || '';
             document.getElementById('admin-bus-image').value = item.image;
             document.getElementById('admin-bus-desc').value = item.description;
-            document.getElementById('admin-bus-featured').checked = item.featured || false;
+            document.getElementById('admin-bus-featured').checked = Boolean(item.featured);
             document.getElementById('admin-bus-submit-btn').textContent = "Actualizar Negocio";
-            
+
             initAdminPickerMap(item.lat ?? null, item.lng ?? null);
             document.getElementById('admin-business-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        };
 
         window.deleteBusiness = async function(id) {
             if (confirm("¿Estás seguro de eliminar este negocio de la nube?")) {
@@ -1329,6 +1426,7 @@
                     await deleteDoc(doc(db, "negocios", id));
                     servicesData = servicesData.filter(s => s.id !== id);
                     renderAdminBusinessList();
+                    renderCategories();
                     renderServices();
                     renderBannerSlider();
                     showToast("Negocio eliminado", "El elemento fue removido.");
@@ -1336,61 +1434,78 @@
                     console.error("Error al eliminar:", error);
                 }
             }
-        }
+        };
 
         window.resetAdminBusForm = function() {
             document.getElementById('admin-business-form').reset();
             document.getElementById('admin-bus-id').value = '';
             clearAdminBusLocation();
             document.getElementById('admin-bus-submit-btn').textContent = "Guardar Negocio";
-        }
+        };
 
-        // Admin Category CRUD (Firebase)
+        // --- CRUD CATEGORÍAS ---
         window.renderAdminCategoryList = function() {
             const list = document.getElementById('admin-category-list');
             if (!list) return;
-            list.innerHTML = categoriesData.map(cat => `
-                <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg">
-                            <i class="${cat.icon}"></i>
+            list.innerHTML = categoriesData.map(cat => {
+                const count = servicesData.filter(s => normalizeText(s.category) === normalizeText(cat.name)).length;
+                return `
+                    <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-lg">
+                                <i class="${escapeHtml(cat.icon)}"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800 text-sm">${escapeHtml(cat.name)} <span class="text-xs font-normal text-slate-400">(${count} comercios)</span></h5>
+                                <p class="text-xs text-slate-400">Icono: ${escapeHtml(cat.icon)}</p>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="font-bold text-slate-800 text-sm">${cat.name}</h5>
-                            <p class="text-xs text-slate-400">Icono: ${cat.icon}</p>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="editCategoryById('${cat.id}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" onclick="deleteCategoryById('${cat.id}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="editCategory('${cat.name}')" class="p-2 bg-slate-100 hover:bg-blue-50 text-slate-600 hover:text-blue-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick="deleteCategory('${cat.name}', '${cat.id}')" class="p-2 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
+                `;
+            }).join('');
+        };
 
         window.handleAdminCatSubmit = async function(e) {
             e.preventDefault();
-            const oldName = document.getElementById('admin-cat-old-name').value;
+            const catId = document.getElementById('admin-cat-old-name').value;
             const name = document.getElementById('admin-cat-name').value.trim();
-            const icon = document.getElementById('admin-cat-icon').value.trim();
+            const icon = document.getElementById('admin-cat-icon').value.trim() || "fa-solid fa-tag text-blue-500";
+
+            if (!name) return;
 
             try {
-                if (oldName) {
-                    const cat = categoriesData.find(c => c.name === oldName);
-                    if (cat && cat.id) {
-                        await updateDoc(doc(db, "categorias", cat.id), { name, icon });
-                        // Actualizar también el rubro de los negocios asociados.
-                        const affected = servicesData.filter(b => b.category === oldName && b.id);
-                        for (const business of affected) {
-                            await updateDoc(doc(db, "negocios", business.id), { category: name });
-                            business.category = name;
-                        }
-                        cat.name = name;
-                        cat.icon = icon;
+                if (catId) {
+                    const cat = categoriesData.find(c => c.id === catId);
+                    if (!cat) return;
+
+                    const duplicate = categoriesData.some(c => c.id !== catId && normalizeText(c.name) === normalizeText(name));
+                    if (duplicate) {
+                        showToast("Error", "Ya existe otra categoría con ese nombre.");
+                        return;
                     }
-                    showToast("¡Categoría actualizada!", "Los cambios se aplicaron correctamente.");
+
+                    const previousName = cat.name;
+                    await updateDoc(doc(db, "categorias", cat.id), { name, icon });
+
+                    const affected = servicesData.filter(b => normalizeText(b.category) === normalizeText(previousName) && b.id);
+                    for (const business of affected) {
+                        await updateDoc(doc(db, "negocios", business.id), { category: name });
+                        business.category = name;
+                    }
+
+                    if (normalizeText(currentCategory) === normalizeText(previousName)) {
+                        currentCategory = name;
+                    }
+
+                    cat.name = name;
+                    cat.icon = icon;
+                    showToast("¡Categoría actualizada!", "Se actualizó la categoría y sus comercios asociados.");
                 } else {
-                    if (categoriesData.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+                    if (categoriesData.some(c => normalizeText(c.name) === normalizeText(name))) {
                         showToast("Error", "Ya existe una categoría con ese nombre.");
                         return;
                     }
@@ -1398,53 +1513,78 @@
                     categoriesData.push({ id: docRef.id, name, icon });
                     showToast("¡Categoría creada!", "La nueva categoría está lista.");
                 }
+
+                sortData();
                 resetAdminCatForm();
                 renderAdminCategoryList();
+                renderAdminBusinessList();
                 renderCategories();
                 renderServices();
-                showToast("Categorías actualizadas", "Los cambios se guardaron correctamente.");
             } catch (error) {
                 console.error("Error al guardar categoría:", error);
+                showToast("Error", "No se pudo guardar la categoría.");
             }
-        }
+        };
 
-        window.editCategory = function(name) {
-            const cat = categoriesData.find(c => c.name === name);
+        window.editCategoryById = function(catId) {
+            const cat = categoriesData.find(c => c.id === catId);
             if (!cat) return;
-            document.getElementById('admin-cat-old-name').value = cat.name;
+            document.getElementById('admin-cat-old-name').value = cat.id;
             document.getElementById('admin-cat-name').value = cat.name;
             document.getElementById('admin-cat-icon').value = cat.icon;
             document.getElementById('admin-cat-submit-btn').textContent = "Actualizar Categoría";
-        }
+        };
 
-        window.deleteCategory = async function(name, id) {
+        window.deleteCategoryById = async function(catId) {
             if (categoriesData.length <= 1) {
                 showToast("Acción no permitida", "Debe existir al menos una categoría.");
                 return;
             }
-            if (confirm(`¿Estás seguro de eliminar la categoría "${name}"?`)) {
+            const cat = categoriesData.find(c => c.id === catId);
+            if (!cat) return;
+
+            const fallbackCat = categoriesData.find(c => c.id !== catId);
+            const affected = servicesData.filter(b => normalizeText(b.category) === normalizeText(cat.name));
+            const warning = affected.length
+                ? ` Hay ${affected.length} comercio(s) en esta categoría que pasarán a "${fallbackCat.name}".`
+                : '';
+
+            if (confirm(`¿Estás seguro de eliminar la categoría "${cat.name}"?${warning}`)) {
                 try {
-                    await deleteDoc(doc(db, "categorias", id));
-                    categoriesData = categoriesData.filter(c => c.name !== name);
+                    for (const business of affected) {
+                        if (business.id) {
+                            await updateDoc(doc(db, "negocios", business.id), { category: fallbackCat.name });
+                        }
+                        business.category = fallbackCat.name;
+                    }
+                    await deleteDoc(doc(db, "categorias", cat.id));
+                    categoriesData = categoriesData.filter(c => c.id !== cat.id);
+
+                    if (normalizeText(currentCategory) === normalizeText(cat.name)) {
+                        currentCategory = 'Todas';
+                    }
+
                     renderAdminCategoryList();
+                    renderAdminBusinessList();
                     renderCategories();
-                    showToast("Categoría eliminada", "Se removió la categoría.");
+                    renderServices();
+                    showToast("Categoría eliminada", "Se reasignaron los comercios y se eliminó la categoría.");
                 } catch (error) {
                     console.error("Error al eliminar categoría:", error);
+                    showToast("Error", "No se pudo eliminar la categoría.");
                 }
             }
-        }
+        };
 
         window.resetAdminCatForm = function() {
             document.getElementById('admin-cat-form').reset();
             document.getElementById('admin-cat-old-name').value = '';
             document.getElementById('admin-cat-submit-btn').textContent = "Guardar Categoría";
-        }
+        };
 
-        // Public Form Submit Handler modificado para WhatsApp
+        // --- FORMULARIO PÚBLICO WHATSAPP ---
         window.handleFormSubmit = function(e) {
             e.preventDefault();
-
             const name = document.getElementById('form-name').value.trim();
             const category = document.getElementById('form-category').value;
             const locality = document.getElementById('form-locality').value;
@@ -1453,41 +1593,31 @@
             const image = document.getElementById('form-image').value.trim();
             const description = document.getElementById('form-desc').value.trim();
 
-            // Construir el mensaje formateado para WhatsApp
             let mensaje = `*¡Hola! Quiero sumar mi negocio al Directorio Regional:*%0A%0A`;
-            mensaje += `🏪 *Nombre:* ${name}%0A`;
-            mensaje += `📂 *Categoría:* ${category}%0A`;
-            mensaje += `📍 *Localidad:* ${locality}%0A`;
-            mensaje += `📱 *WhatsApp / Teléfono:* ${phone}%0A`;
-            if (website) mensaje += `🌐 *Sitio Web/App:* ${website}%0A`;
-            if (image) mensaje += `🖼️ *Imagen:* ${image}%0A`;
-            mensaje += `📝 *Descripción:* ${description}`;
+            mensaje += `🏪 *Nombre:* ${encodeURIComponent(name)}%0A`;
+            mensaje += `📂 *Categoría:* ${encodeURIComponent(category)}%0A`;
+            mensaje += `📍 *Localidad:* ${encodeURIComponent(locality)}%0A`;
+            mensaje += `📱 *WhatsApp / Teléfono:* ${encodeURIComponent(phone)}%0A`;
+            if (website) mensaje += `🌐 *Sitio Web/App:* ${encodeURIComponent(website)}%0A`;
+            if (image) mensaje += `🖼️ *Imagen:* ${encodeURIComponent(image)}%0A`;
+            mensaje += `📝 *Descripción:* ${encodeURIComponent(description)}`;
 
-            // Número de destino solicitado
-            const numeroDestino = "5493564687954";
-
-            // Abrir WhatsApp con el mensaje codificado
-            const urlWhatsApp = `https://wa.me/${numeroDestino}?text=${mensaje}`;
-            window.open(urlWhatsApp, '_blank');
-
-            // Limpiar formulario y mostrar notificación
+            window.open(`https://wa.me/5493564687954?text=${mensaje}`, '_blank');
             document.getElementById('business-form').reset();
             showToast("¡Solicitud preparada!", "Se está abriendo WhatsApp para enviar tus datos.");
-        }
+        };
 
         window.showToast = function(title, desc) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-title').textContent = title;
             document.getElementById('toast-desc').textContent = desc;
-
             toast.classList.remove('translate-y-28', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
-
             setTimeout(() => {
                 toast.classList.remove('translate-y-0', 'opacity-100');
                 toast.classList.add('translate-y-28', 'opacity-0');
             }, 4000);
-        }
+        };
     </script>
 </body>
 </html>
